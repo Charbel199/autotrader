@@ -17,8 +17,8 @@ class DataFetcher(ABC):
         pass
 
 
-def get_fetcher(name):
+def get_fetcher(name, symbol, timeframe):
     for fetcher in DataFetcher.__subclasses__():
         if fetcher.condition(name):
-            return fetcher
+            return fetcher(symbol, timeframe)
     return None
