@@ -1,15 +1,10 @@
-from data.data_fetcher import DataFetcher
-from data.binance.data_fetcher_binance import DataFetcherBinance
+from data.data_fetcher import DataFetcher, get_fetcher
+from dotenv import load_dotenv
 
-
-def get_fetcher(name):
-    for subclass in DataFetcher.__subclasses__():
-        if subclass.condition(name):
-            return subclass
-    return None
-
+load_dotenv()
 
 subclass = get_fetcher('binance')
 if subclass:
-    data_fetcher_obj = subclass('DOGE', '5m')
-    data_fetcher_obj.get_candlesticks('test')
+    data_fetcher_obj = subclass('DOGEUSDT', '5m')
+    data = data_fetcher_obj.get_candlesticks('13 Sep, 2021')
+    print(len(data))
