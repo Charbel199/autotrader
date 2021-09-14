@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+import numpy
+import numpy as np
 
 class DataFetcher(ABC):
 
@@ -8,7 +10,7 @@ class DataFetcher(ABC):
         self.timeframe = timeframe
 
     @abstractmethod
-    def get_candlesticks(self, start_date, end_date=None):
+    def get_candlesticks(self, start_date, end_date=None) -> numpy.ndarray:
         pass
 
     @staticmethod
