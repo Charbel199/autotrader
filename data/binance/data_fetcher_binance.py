@@ -4,6 +4,14 @@ import os
 
 
 class DataFetcherBinance(DataFetcher):
+    binance_timeframes = {
+        "1m": Client.KLINE_INTERVAL_1MINUTE,
+        "5m": Client.KLINE_INTERVAL_5MINUTE,
+        "15m": Client.KLINE_INTERVAL_15MINUTE,
+        "1h": Client.KLINE_INTERVAL_1HOUR,
+        "2h": Client.KLINE_INTERVAL_2HOUR
+    }
+
     def __init__(self, symbol, timeframe):
         super().__init__(symbol, timeframe)
 
@@ -11,19 +19,13 @@ class DataFetcherBinance(DataFetcher):
         try:
             client = Client(os.getenv('API_KEY'), os.getenv('API_SECRET'))
 
-            if self.timeframe == "1m":
-                binance_timeframe = Client.KLINE_INTERVAL_1MINUTE
-            elif self.timeframe == "5m":
-                binance_timeframe = Client.KLINE_INTERVAL_5MINUTE
-            elif self.timeframe == "15m":
-                binance_timeframe = Client.KLINE_INTERVAL_15MINUTE
-            elif self.timeframe == "1h":
-                binance_timeframe = Client.KLINE_INTERVAL_1HOUR
-            elif self.timeframe == "2h":
-                binance_timeframe = Client.KLINE_INTERVAL_2HOUR
+            # Format timeframe
+            if self.timeframe in self.binance_timeframes:
+                binance_timeframe = self.binance_timeframes[self.timeframe]
             else:
                 binance_timeframe = None
 
+            # Get candlesticks
             if binance_timeframe:
                 if end_date:
                     candlesticks = client.get_historical_klines(self.symbol, binance_timeframe, start_date, end_date)

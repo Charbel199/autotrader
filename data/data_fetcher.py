@@ -17,6 +17,7 @@ class DataFetcher(ABC):
         pass
 
 
+# Get fetcher based on broker name
 def get_fetcher(name, symbol, timeframe):
     for fetcher in DataFetcher.__subclasses__():
         if fetcher.condition(name):
