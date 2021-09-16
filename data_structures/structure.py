@@ -14,3 +14,20 @@ class TickStructure(ABC):
     @abstractmethod
     def change_last_row(self, row):
         pass
+
+    @abstractmethod
+    def get_data(self):
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def condition(name):
+        pass
+
+
+# Get fetcher based on broker name
+def get_data_structure(name):
+    for data_structure in TickStructure.__subclasses__():
+        if data_structure.condition(name):
+            return data_structure()
+    return None
