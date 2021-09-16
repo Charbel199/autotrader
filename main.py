@@ -45,22 +45,13 @@ from binance import ThreadedWebsocketManager
 from live_data.live_data_fetcher import get_live_fetcher
 
 
-def handle_socket_message(m):
-    print(m)
 data_fetcher = get_live_fetcher('binance')
-data_fetcher.run('DOGEUSDT', '1m',handle_socket_message)
-data_fetcher.run('BNBUSDT', '5m',handle_socket_message)
+df = get_data_structure('pandas')
+data_fetcher.run('DOGEUSDT', '1m', df)
 print('start')
 time.sleep(10)
-
+print(df.get_data())
+print(df.get_tick())
 data_fetcher.stop()
 print('stop')
-time.sleep(5)
-print('done')
-data_fetcher = get_live_fetcher('binance')
-data_fetcher.run('DOGEUSDT', '1m',handle_socket_message)
-data_fetcher.run('BNBUSDT', '5m',handle_socket_message)
-print('start')
-time.sleep(10)
 
-data_fetcher.stop()
