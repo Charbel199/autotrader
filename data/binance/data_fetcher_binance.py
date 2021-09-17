@@ -34,6 +34,7 @@ class DataFetcherBinance(DataFetcher):
                     candlesticks = client.get_historical_klines(self.symbol, binance_timeframe, start_date)
             else:
                 return np.array([])
+            candlesticks = list(map(format_tick, candlesticks))
             return np.array(candlesticks)
         except Exception:
             return np.array([])
@@ -41,3 +42,17 @@ class DataFetcherBinance(DataFetcher):
     @staticmethod
     def condition(name):
         return name == 'binance'
+
+
+def format_tick(tick):
+    candlestick = {
+        "Time": tick[0],
+        "Open": tick[1],
+        "Close": tick[4],
+        "High": tick[2],
+        "Low": tick[3],
+        "Volume": tick[5],
+        "OpenTime": tick[0],
+        "CloseTime": tick[6]
+    }
+    return candlestick

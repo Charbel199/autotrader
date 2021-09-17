@@ -4,6 +4,8 @@ import pandas as pd
 
 class PandasTickStructure(TickStructure):
 
+
+
     def __init__(self):
         self.df = pd.DataFrame(columns=self.columns)
         self.tick = {}
@@ -11,12 +13,10 @@ class PandasTickStructure(TickStructure):
     def add_row(self, row):
         self.df.loc[len(self.df.index)] = row
 
-    def add_tick(self, tick):
+    def add_bulk_rows(self, rows):
+        pass
 
-        # Only add to rows if it's a new candlestick
-        if self.tick != {} and tick["CloseTime"] != self.tick["CloseTime"]:
-            self.add_row(self.tick)
-
+    def set_tick(self, tick):
         self.tick = tick
 
     def change_last_row(self, row):
@@ -28,6 +28,7 @@ class PandasTickStructure(TickStructure):
     def get_tick(self):
         if self.tick:
             return self.tick
+        return {}
 
     @staticmethod
     def condition(name):

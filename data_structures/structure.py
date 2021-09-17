@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 class TickStructure(ABC):
     columns = ['Time', 'Open', 'Close', 'High', 'Low', 'Volume', 'OpenTime', 'CloseTime']
+
     def __init__(self):
         pass
 
@@ -11,7 +12,11 @@ class TickStructure(ABC):
         pass
 
     @abstractmethod
-    def add_tick(self, tick):
+    def add_bulk_rows(self, rows):
+        pass
+
+    @abstractmethod
+    def set_tick(self, tick):
         pass
 
     @abstractmethod

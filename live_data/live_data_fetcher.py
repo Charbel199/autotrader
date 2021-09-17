@@ -8,11 +8,11 @@ class LiveDataFetcher(ABC):
         pass
 
     @abstractmethod
-    async def run(self):
+    def run(self, symbol, timeframe, data_structure):
         pass
 
     @abstractmethod
-    async def stop(self):
+    def stop(self):
         pass
 
     @staticmethod
