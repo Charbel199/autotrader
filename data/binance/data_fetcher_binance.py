@@ -1,6 +1,5 @@
 from data.data_fetcher import DataFetcher
 from binance.client import Client
-import numpy as np
 import os
 
 
@@ -13,31 +12,31 @@ class DataFetcherBinance(DataFetcher):
         "2h": Client.KLINE_INTERVAL_2HOUR
     }
 
-    def __init__(self, symbol, timeframe):
-        super().__init__(symbol, timeframe)
+    def __init__(self):
+        super().__init__()
 
-    def get_candlesticks(self, start_date, end_date=None) -> np.ndarray:
+    def get_candlesticks(self, symbol, timeframe, start_date, end_date=None):
         try:
             client = Client(os.getenv('API_KEY'), os.getenv('API_SECRET'))
 
             # Format timeframe
-            if self.timeframe in self.binance_timeframes:
-                binance_timeframe = self.binance_timeframes[self.timeframe]
+            if timeframe in self.binance_timeframes:
+                binance_timeframe = self.binance_timeframes[timeframe]
             else:
                 binance_timeframe = None
 
             # Get candlesticks
             if binance_timeframe:
                 if end_date:
-                    candlesticks = client.get_historical_klines(self.symbol, binance_timeframe, start_date, end_date)
+                    candlesticks = client.get_historical_klines(symbol, binance_timeframe, start_date, end_date)
                 else:
-                    candlesticks = client.get_historical_klines(self.symbol, binance_timeframe, start_date)
+                    candlesticks = client.get_historical_klines(symbol, binance_timeframe, start_date)
             else:
-                return np.array([])
+                return []
             candlesticks = list(map(format_tick, candlesticks))
-            return np.array(candlesticks)
+            return candlesticks
         except Exception:
-            return np.array([])
+            return []
 
     @staticmethod
     def condition(name):

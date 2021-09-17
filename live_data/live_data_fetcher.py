@@ -8,7 +8,7 @@ class LiveDataFetcher(ABC):
         pass
 
     @abstractmethod
-    def run(self, symbol, timeframe, data_structure):
+    def run(self, symbol, timeframe, process_message):
         pass
 
     @abstractmethod

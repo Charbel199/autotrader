@@ -7,7 +7,7 @@ class QuickStrategy(Strategy):
         super().__init__(data_structure)
 
     def process_new_candlestick(self):
-        print('Got a new candlestick strat ',self.data_structure.get_data())
+        #print('Got a new candlestick strat ',self.data_structure.get_data())
         pass
 
     def process_new_tick(self):

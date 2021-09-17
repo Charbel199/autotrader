@@ -4,9 +4,8 @@ import pandas as pd
 
 class PandasTickStructure(TickStructure):
 
-
-
     def __init__(self):
+        super().__init__()
         self.df = pd.DataFrame(columns=self.columns)
         self.tick = {}
 
@@ -14,7 +13,7 @@ class PandasTickStructure(TickStructure):
         self.df.loc[len(self.df.index)] = row
 
     def add_bulk_rows(self, rows):
-        pass
+        self.df = self.df.append(pd.DataFrame(rows), ignore_index=True)
 
     def set_tick(self, tick):
         self.tick = tick

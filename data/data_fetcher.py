@@ -4,12 +4,11 @@ import numpy as np
 
 class DataFetcher(ABC):
 
-    def __init__(self, symbol, timeframe):
-        self.symbol = symbol
-        self.timeframe = timeframe
+    def __init__(self):
+        pass
 
     @abstractmethod
-    def get_candlesticks(self, start_date, end_date=None) -> np.ndarray:
+    def get_candlesticks(self, symbol, timeframe, start_date, end_date=None):
         pass
 
     @staticmethod
@@ -19,8 +18,8 @@ class DataFetcher(ABC):
 
 
 # Get fetcher based on broker name
-def get_fetcher(name, symbol, timeframe):
+def get_fetcher(name):
     for fetcher in DataFetcher.__subclasses__():
         if fetcher.condition(name):
-            return fetcher(symbol, timeframe)
+            return fetcher()
     return None
