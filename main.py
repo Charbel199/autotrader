@@ -46,10 +46,13 @@ from live_data.live_data_fetcher import get_live_fetcher
 
 
 data_fetcher = get_live_fetcher('binance')
+# if back testing DONT ADD BULK BUT ADD THROUGH LOOP ON EACH TICK
+#
 df = get_data_structure('pandas')
+#Add bulk old data
 data_fetcher.run('DOGEUSDT', '1m', df)
 print('start')
-time.sleep(10)
+time.sleep(200)
 print(df.get_data())
 print(df.get_tick())
 data_fetcher.stop()

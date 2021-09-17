@@ -12,8 +12,12 @@ class PandasTickStructure(TickStructure):
         self.df.loc[len(self.df.index)] = row
 
     def add_tick(self, tick):
+
+        # Only add to rows if it's a new candlestick
+        if self.tick != {} and tick["CloseTime"] != self.tick["CloseTime"]:
+            self.add_row(self.tick)
+
         self.tick = tick
-        self.add_row(tick)
 
     def change_last_row(self, row):
         self.df.iloc[-1] = row
