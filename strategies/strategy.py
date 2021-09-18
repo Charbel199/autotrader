@@ -1,12 +1,15 @@
 from abc import ABC, abstractmethod
 from data_structures.structure import TickStructure
+from account.account import Account
 
 
 class Strategy(ABC):
-    df: TickStructure
+    data_structure: TickStructure
+    account: Account
 
-    def __init__(self, data_structure):
+    def __init__(self, data_structure, account):
         self.data_structure = data_structure
+        self.account = account
 
     @abstractmethod
     def process_new_tick(self):
@@ -23,8 +26,8 @@ class Strategy(ABC):
 
 
 # Get strategy
-def get_strategy(name, data_structure):
+def get_strategy(name, data_structure, account):
     for strategy in Strategy.__subclasses__():
         if strategy.condition(name):
-            return strategy(data_structure)
+            return strategy(data_structure, account)
     return None

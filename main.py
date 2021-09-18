@@ -8,13 +8,14 @@ import time
 from backtester import BackTester
 from live_data.live_data_fetcher import get_live_fetcher
 from strategies.strategy import get_strategy
-
+from account.account import get_account
 symbol = "DOGEUSDT"
 timeframe = "1m"
+account = get_account("testAccount")
 data_fetcher = get_fetcher('binance')
 data_structure = get_data_structure('pandas')
 live_data_fetcher = get_live_fetcher('binance')
-strategy = get_strategy('quickStrategy', data_structure)
+strategy = get_strategy('quickStrategy', data_structure, account)
 start_date = "17 Sep, 2021"
 
 # backtester_instance = BackTester(symbol, timeframe, data_fetcher, data_structure, strategy, start_date)

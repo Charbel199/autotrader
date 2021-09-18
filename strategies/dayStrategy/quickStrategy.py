@@ -3,8 +3,8 @@ from strategies.strategy import Strategy
 
 class QuickStrategy(Strategy):
 
-    def __init__(self, data_structure):
-        super().__init__(data_structure)
+    def __init__(self, data_structure, account):
+        super().__init__(data_structure, account)
 
     def process_new_candlestick(self):
         #print('Got a new candlestick strat ',self.data_structure.get_data())
