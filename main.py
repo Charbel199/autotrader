@@ -8,6 +8,7 @@ from backtester import BackTester
 from live_data.live_data_fetcher import get_live_fetcher
 from strategies.strategy import get_strategy
 from account.account import get_account
+
 symbol = "DOGEUSDT"
 timeframe = "1m"
 account = get_account("testAccount")

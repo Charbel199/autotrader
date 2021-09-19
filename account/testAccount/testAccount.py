@@ -9,12 +9,12 @@ class TestAccount(Account):
     def get_position(self):
         return self.position
 
-    def buy(self, symbol, amount):
-        print("Bought ", amount, " of: ", symbol)
+    def buy(self, symbol, amount, price):
+        print("Bought ", amount, " of: ", symbol, " at ", price)
         print("New position ", self.position)
 
-    def sold(self, symbol, amount):
-        print("Sold ", amount, " of: ", symbol)
+    def sold(self, symbol, amount, price):
+        print("Sold ", amount, " of: ", symbol, " at ", price)
         print("New position ", self.position)
 
     @staticmethod

@@ -10,6 +10,16 @@ class Account(ABC):
     def get_position(self):
         return self.position
 
+    @abstractmethod
+    def buy(self, symbol, amount, price):
+        pass
+
+    @abstractmethod
+    def sold(self, symbol, amount, price):
+        pass
+
+    # Sell and buy orders
+
     @staticmethod
     @abstractmethod
     def condition(name):
