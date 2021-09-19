@@ -2,7 +2,6 @@ from data.data_fetcher import get_fetcher
 from dotenv import load_dotenv
 from live_trader import LiveTrader
 from data_structures.structure import get_data_structure
-
 load_dotenv()
 import time
 from backtester import BackTester

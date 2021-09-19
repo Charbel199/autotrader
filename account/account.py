@@ -4,9 +4,11 @@ from abc import ABC, abstractmethod
 class Account(ABC):
 
     def __init__(self):
-        pass
+        self.position = {}
 
-
+    @abstractmethod
+    def get_position(self):
+        return self.position
 
     @staticmethod
     @abstractmethod
