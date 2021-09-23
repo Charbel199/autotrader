@@ -21,6 +21,9 @@ class PandasTickStructure(TickStructure):
     def change_last_row(self, row):
         self.df.iloc[-1] = row
 
+    def get_last_value(self, column_name):
+        return self.df[column_name].iloc[-1]
+
     def get_data(self):
         return self.df
 
@@ -28,6 +31,18 @@ class PandasTickStructure(TickStructure):
         if self.tick:
             return self.tick
         return {}
+
+    def get_last_row(self):
+        return self.df.tail(1)
+
+    def get_last_rows(self, n):
+        return self.df.tail(n)
+
+    def get_before_last_row(self):
+        return self.df.iloc[-2]
+
+    def get_number_of_rows(self):
+        return len(self.df.index)
 
     @staticmethod
     def condition(name):

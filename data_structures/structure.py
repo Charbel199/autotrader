@@ -31,6 +31,24 @@ class TickStructure(ABC):
     def get_tick(self):
         pass
 
+    @abstractmethod
+    def get_number_of_rows(self):
+        pass
+
+    @abstractmethod
+    def get_last_row(self):
+        pass
+
+    @abstractmethod
+    def get_last_rows(self, n):
+        pass
+    @abstractmethod
+    def get_last_value(self, column_name):
+        pass
+    @abstractmethod
+    def get_before_last_row(self):
+        pass
+
     @staticmethod
     @abstractmethod
     def condition(name):
