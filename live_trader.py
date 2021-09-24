@@ -21,9 +21,14 @@ class LiveTrader(object):
 
     def run_live_trader(self):
         if self.back_date:
-            self.data_structure.add_bulk_rows(self.data_fetcher.get_candlesticks(
+            candlesticks = self.data_fetcher.get_candlesticks(
                 self.symbol, self.timeframe, self.back_date
-            ))
+            )
+            for candlestick in candlesticks:
+                if self.data_structure:
+                    self.data_structure.add_row(candlestick)
+                    self.strategy.process_new_candlestick()
+
         self.live_data_fetcher.run(self.symbol, self.timeframe, self.process_message)
 
     def stop_live_trader(self):
