@@ -42,9 +42,15 @@ class TickStructure(ABC):
     @abstractmethod
     def get_last_rows(self, n):
         pass
+
     @abstractmethod
     def get_last_value(self, column_name):
         pass
+
+    @abstractmethod
+    def get_before_last_value(self, column_name):
+        pass
+
     @abstractmethod
     def get_before_last_row(self):
         pass

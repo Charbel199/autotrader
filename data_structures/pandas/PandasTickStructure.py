@@ -22,7 +22,10 @@ class PandasTickStructure(TickStructure):
         self.df.iloc[-1] = row
 
     def get_last_value(self, column_name):
-        return self.df[column_name].iloc[-1]
+        return float(self.df[column_name].iloc[-1])
+
+    def get_before_last_value(self, column_name):
+        return float(self.df[column_name].iloc[-2])
 
     def get_data(self):
         return self.df
