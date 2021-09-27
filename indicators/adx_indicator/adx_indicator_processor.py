@@ -15,11 +15,12 @@ class ADX(object):
         self.data_structure = data_structure
 
     def process_new_candlestick(self):
-        # Create temporary dataframe (We only need the last 14 data points)
+        # Create temporary dataframe (We only need the last {period} data points)
         if len(self.df.index) > self.period:
             temp_df = self.df.tail(self.period).copy()
         else:
             temp_df = self.df.copy()
+
         # Create new row
         temp_df.loc[len(self.df.index)] = {'Time': self.data_structure.get_last_value('Time')}
         if self.data_structure.get_number_of_rows() >= 2:
@@ -62,7 +63,6 @@ class ADX(object):
 
         # Update ADX dataframe
         self.df = self.df.append(temp_df.tail(1))
-        print(self.df.to_string())
 
     def get_last_adx_values(self, n=1):
         # Gets last ADX by default
