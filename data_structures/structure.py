@@ -28,6 +28,10 @@ class TickStructure(ABC):
         pass
 
     @abstractmethod
+    def get_specific_value(self, column_name, n):
+        pass
+
+    @abstractmethod
     def get_tick(self):
         pass
 
