@@ -1,5 +1,6 @@
 import pandas as pd
 from data_structures.structure import TickStructure
+import pandas as pd
 
 
 class CandlestickType(object):
@@ -21,59 +22,63 @@ class CandlestickType(object):
 
         # Create new row
         self.df.loc[len(self.df.index)] = {'Time': self.data_structure.get_last_value('Time')}
+
+        # Get candlestick info
         real_body = abs(self.data_structure.get_last_value('Close') - self.data_structure.get_last_value('Open'))
         candle_range = self.data_structure.get_last_value('High') - self.data_structure.get_last_value('Low')
+        candlestick_type = None
 
         # Get type
-
-        if self.temp_data_structure.get_number_of_rows() >= 2:
+        if self.data_structure.get_number_of_rows() >= 2:
             # Bullish pinbar
             if real_body <= candle_range / 3 and \
                     min(self.data_structure.get_last_value('Close'), self.data_structure.get_last_value('Open')) > (
                     self.data_structure.get_last_value('High') + self.data_structure.get_last_value('Low')) / 2 and \
                     self.data_structure.get_last_value('Low') < self.data_structure.get_before_last_value('Low'):
-                self.df['Type'].iloc[-1] = 'BullishPinbar'
+                candlestick_type = 'BullishPinbar'
 
             # Bearish pinbar
             if real_body <= candle_range / 3 and \
                     max(self.data_structure.get_last_value('Close'), self.data_structure.get_last_value('Open')) < (
                     self.data_structure.get_last_value('High') + self.data_structure.get_last_value('Low')) / 2 and \
                     self.data_structure.get_last_value('High') > self.data_structure.get_before_last_value('High'):
-                self.df['Type'].iloc[-1] = 'BearishPinbar'
+                candlestick_type = 'BearishPinbar'
 
             # Inside bar
             if self.data_structure.get_last_value('High') < self.data_structure.get_before_last_value('High') and \
                     self.data_structure.get_last_value('Low') > self.data_structure.get_before_last_value('Low'):
-                self.df['Type'].iloc[-1] = 'InsideBar'
+                candlestick_type = 'InsideBar'
 
             # Outside bar
             if self.data_structure.get_last_value('High') > self.data_structure.get_before_last_value('High') and \
                     self.data_structure.get_last_value('Low') < self.data_structure.get_before_last_value('Low'):
-                self.df['Type'].iloc[-1] = 'OutsideBar'
+                candlestick_type = 'OutsideBar'
 
             # Bullish engulfing
             if self.data_structure.get_last_value('High') > self.data_structure.get_before_last_value('High') and \
                     self.data_structure.get_last_value('Low') < self.data_structure.get_before_last_value('Low') and \
-                    real_body >= 0.8*candle_range and \
+                    real_body >= 0.8 * candle_range and \
                     self.data_structure.get_last_value('Close') > self.data_structure.get_last_value('Open'):
-                self.df['Type'].iloc[-1] = 'BullishEngulfing'
+                candlestick_type = 'BullishEngulfing'
 
             # Bearish engulfing
             if self.data_structure.get_last_value('High') > self.data_structure.get_before_last_value('High') and \
                     self.data_structure.get_last_value('Low') < self.data_structure.get_before_last_value('Low') and \
-                    real_body >= 0.8*candle_range and \
+                    real_body >= 0.8 * candle_range and \
                     self.data_structure.get_last_value('Close') < self.data_structure.get_last_value('Open'):
-                self.df['Type'].iloc[-1] = 'BearishEngulfing'
+                candlestick_type = 'BearishEngulfing'
 
-        if self.temp_data_structure.get_number_of_rows() >= 3:
+        if self.data_structure.get_number_of_rows() >= 3:
             # Bullish swing
-            if self.temp_data_structure.get_last_value('Low') > self.temp_data_structure.get_before_last_value('Low') and \
-                    self.temp_data_structure.get_before_last_value('Low') < self.temp_data_structure.get_specific_value('Low', -3):
-                self.df['Type'].iloc[-1] = 'BullishSwing'
+            if self.data_structure.get_last_value('Low') > self.data_structure.get_before_last_value('Low') and \
+                    self.data_structure.get_before_last_value('Low') < self.data_structure.get_specific_value('Low', -3):
+                candlestick_type = 'BullishSwing'
             # Bearish swing
-            if self.temp_data_structure.get_last_value('High') < self.temp_data_structure.get_before_last_value('High') and \
-                    self.temp_data_structure.get_before_last_value('High') > self.temp_data_structure.get_specific_value('High', -3):
-                self.df['Type'].iloc[-1] = 'BearishSwing'
+            if self.data_structure.get_last_value('High') < self.data_structure.get_before_last_value('High') and \
+                    self.data_structure.get_before_last_value('High') > self.data_structure.get_specific_value('High', -3):
+                candlestick_type = 'BearishSwing'
+
+        self.df.loc[self.df.index[-1], 'Type'] = candlestick_type
 
     def get_last_candlestick_type_values(self, n=1):
         # Gets last ADX by default
