@@ -38,11 +38,17 @@ class PandasTickStructure(TickStructure):
             return self.tick
         return {}
 
+    def get_copy(self):
+        return self.df.copy()
+
     def get_last_row(self):
         return self.df.tail(1)
 
     def get_last_rows(self, n):
         return self.df.tail(n)
+
+    def get_last_rows_copy(self, n):
+        return self.df.tail(n).copy()
 
     def get_before_last_row(self):
         return self.df.iloc[-2]
