@@ -21,7 +21,7 @@ class CandlestickType(object):
             self.temp_data_structure = self.data_structure.get_tick_structure_copy()
 
         # Create new row
-        self.df.loc[len(self.df.index)] = {'Time': self.temp_data_structure.get_last_value('Time')}
+        self.df.loc[len(self.df.index)] = {'Time': self.temp_data_structure.get_last_time()}
         candlestick_type = ''
 
         # Get candlestick info
@@ -83,3 +83,6 @@ class CandlestickType(object):
     def get_last_candlestick_type_values(self, n=1):
         # Gets last ADX by default
         return self.df[['Time', 'Type']].tail(n)
+
+    def get_all_candlestick_type_values(self):
+        return self.df[['Time', 'Type']]

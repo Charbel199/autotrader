@@ -21,7 +21,7 @@ class RSI(object):
             temp_df = self.df.copy()
 
         # Create new row
-        temp_df.loc[len(self.df.index)] = {'Time': self.data_structure.get_last_value('Time')}
+        temp_df.loc[len(self.df.index)] = {'Time': self.data_structure.get_last_time()}
 
         # Compute gain and loss
         if self.data_structure.get_number_of_rows() >= 2:
@@ -37,8 +37,9 @@ class RSI(object):
         if temp_df['Gain'].count() >= self.period:
             temp_df['AverageGain'].iloc[-1] = np.mean(temp_df['Gain'].tail(self.period).tolist())
             temp_df['AverageLoss'].iloc[-1] = np.mean(temp_df['Loss'].tail(self.period).tolist())
-            temp_df['RS'].iloc[-1] = temp_df['AverageGain'].iloc[-1] / temp_df['AverageLoss'].iloc[-1]
-            temp_df['RSI'].iloc[-1] = 100 - (100 / (1 + temp_df['RS'].iloc[-1]))
+            if temp_df['AverageLoss'].iloc[-1] != 0:
+                temp_df['RS'].iloc[-1] = temp_df['AverageGain'].iloc[-1] / temp_df['AverageLoss'].iloc[-1]
+                temp_df['RSI'].iloc[-1] = 100 - (100 / (1 + temp_df['RS'].iloc[-1]))
 
         # Update RSI dataframe
         self.df = self.df.append(temp_df.tail(1))
@@ -46,3 +47,6 @@ class RSI(object):
     def get_last_rsi_values(self, n=1):
         # Gets last ADX by default
         return self.df[['Time', 'RSI']].tail(n)
+
+    def get_all_rsi_values(self):
+        return self.df[['Time', 'RSI']]

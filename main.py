@@ -8,6 +8,8 @@ from backtester import BackTester
 from live_data.live_data_fetcher import get_live_fetcher
 from strategies.strategy import get_strategy
 from account.account import get_account
+import datetime
+
 
 symbol = "DOGEUSDT"
 timeframe = "15m"
@@ -18,6 +20,9 @@ live_data_fetcher = get_live_fetcher('binance')
 strategy = get_strategy('quickStrategy', data_structure, account)
 start_date = "30 Sep, 2021"
 
+start_time = datetime.datetime.now()
+
+
 backtester_instance = BackTester(symbol, timeframe, data_fetcher, data_structure, strategy, start_date)
 backtester_instance.run_backtester()
 
@@ -27,5 +32,13 @@ backtester_instance.run_backtester()
 #time.sleep(90)
 #live_trader_instance.stop_live_trader()
 #print('stop')
+import pandas as pd
 
-print(data_structure.get_data())
+end_time = datetime.datetime.now()
+print(end_time - start_time)
+from functools import reduce
+dfs = [data_structure.get_data(),strategy.ADX.get_all_adx_values(),strategy.CandlestickType.get_all_candlestick_type_values(),strategy.RSI.get_all_rsi_values()]
+
+df_merged = reduce(lambda  left,right: pd.merge(left,right,on=['Time'],
+                                            how='outer'), dfs)
+print(df_merged.to_string())

@@ -18,6 +18,9 @@ class PandasTickStructure(TickStructure):
     def set_tick(self, tick):
         self.tick = tick
 
+    def get_last_time(self):
+        return self.df['Time'].iloc[-1]
+
     def change_last_row(self, row):
         self.df.iloc[-1] = row
 
@@ -62,9 +65,9 @@ class PandasTickStructure(TickStructure):
     def get_tick_structure_copy(self, n=0):
         new_data_structure = PandasTickStructure()
         if n == 0:
-            new_data_structure.set_data_structure_content(self.df.copy())
+            new_data_structure.set_data_structure_content(self.df)
         else:
-            new_data_structure.set_data_structure_content(self.df.tail(n).copy())
+            new_data_structure.set_data_structure_content(self.df.tail(n))
         return new_data_structure
 
     @staticmethod

@@ -28,7 +28,7 @@ class ADX(object):
             self.temp_data_structure = self.data_structure.get_tick_structure_copy()
 
         # Create new row
-        temp_df.loc[len(self.df.index)] = {'Time': self.temp_data_structure.get_last_value('Time')}
+        temp_df.loc[len(self.df.index)] = {'Time': self.temp_data_structure.get_last_time()}
         if self.temp_data_structure.get_number_of_rows() >= 2:
             # Calculate true range
             temp_df['TrueRange'].iloc[-1] = max(
@@ -73,3 +73,6 @@ class ADX(object):
     def get_last_adx_values(self, n=1):
         # Gets last ADX by default
         return self.df[['Time', 'ADX']].tail(n)
+
+    def get_all_adx_values(self):
+        return self.df[['Time', 'ADX']]
