@@ -22,11 +22,11 @@ class CandlestickType(object):
 
         # Create new row
         self.df.loc[len(self.df.index)] = {'Time': self.data_structure.get_last_value('Time')}
+        candlestick_type = ''
 
         # Get candlestick info
         real_body = abs(self.data_structure.get_last_value('Close') - self.data_structure.get_last_value('Open'))
         candle_range = self.data_structure.get_last_value('High') - self.data_structure.get_last_value('Low')
-        candlestick_type = None
 
         # Get type
         if self.data_structure.get_number_of_rows() >= 2:

@@ -11,10 +11,12 @@ class Strategy(ABC):
         self.data_structure = data_structure
         self.account = account
 
+    # Happens AFTER updating the tick in the data structure
     @abstractmethod
     def process_new_tick(self):
         pass
 
+    # Happens AFTER adding the new candlestick in the data structure
     @abstractmethod
     def process_new_candlestick(self):
         pass
