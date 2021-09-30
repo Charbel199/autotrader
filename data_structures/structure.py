@@ -65,6 +65,12 @@ class TickStructure(ABC):
     @abstractmethod
     def get_copy(self):
         pass
+    @abstractmethod
+    def set_data_structure_content(self, data_structure_content):
+        pass
+    @abstractmethod
+    def get_tick_structure_copy(self, n=0):
+        pass
     @staticmethod
     @abstractmethod
     def condition(name):

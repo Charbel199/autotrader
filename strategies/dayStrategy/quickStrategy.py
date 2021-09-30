@@ -15,8 +15,9 @@ class QuickStrategy(Strategy):
         self.ADX.process_new_candlestick()
         self.CandlestickType.process_new_candlestick()
         self.RSI.process_new_candlestick()
-        print(self.RSI.get_last_rsi_values())
-        #print(self.CandlestickType.get_last_candlestick_type_values())
+        #print(self.RSI.get_last_rsi_values())
+        print(self.CandlestickType.get_last_candlestick_type_values())
+        #print(self.ADX.get_last_adx_values())
         #print('Got a new candlestick strat ', self.data_structure.get_data())
         pass
 

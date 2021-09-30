@@ -56,6 +56,17 @@ class PandasTickStructure(TickStructure):
     def get_number_of_rows(self):
         return len(self.df.index)
 
+    def set_data_structure_content(self, data_structure_content):
+        self.df = data_structure_content
+
+    def get_tick_structure_copy(self, n=0):
+        new_data_structure = PandasTickStructure()
+        if n == 0:
+            new_data_structure.set_data_structure_content(self.df.copy())
+        else:
+            new_data_structure.set_data_structure_content(self.df.tail(n).copy())
+        return new_data_structure
+
     @staticmethod
     def condition(name):
         return name == 'pandas'

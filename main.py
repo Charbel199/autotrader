@@ -16,7 +16,7 @@ data_fetcher = get_fetcher('binance')
 data_structure = get_data_structure('pandas')
 live_data_fetcher = get_live_fetcher('binance')
 strategy = get_strategy('quickStrategy', data_structure, account)
-start_date = "29 Sep, 2021"
+start_date = "30 Sep, 2021"
 
 backtester_instance = BackTester(symbol, timeframe, data_fetcher, data_structure, strategy, start_date)
 backtester_instance.run_backtester()

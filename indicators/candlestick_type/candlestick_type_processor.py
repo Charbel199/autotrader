@@ -5,7 +5,7 @@ import pandas as pd
 
 class CandlestickType(object):
     columns = ['Time', 'Type']
-    maxNumberOfPreviousCandlesticks = 4
+    number_of_ticks_needed = 3
     data_structure: TickStructure
     temp_data_structure: TickStructure
 
@@ -14,68 +14,68 @@ class CandlestickType(object):
         self.data_structure = data_structure
 
     def process_new_candlestick(self):
-        # Create temporary dataframe (We only need a couple of the last data points)
-        if self.data_structure.get_number_of_rows() > self.maxNumberOfPreviousCandlesticks:
-            self.temp_data_structure = self.data_structure.get_last_rows_copy(self.maxNumberOfPreviousCandlesticks)
+        # Create temporary data_structure
+        if self.data_structure.get_number_of_rows() > self.number_of_ticks_needed:
+            self.temp_data_structure = self.data_structure.get_tick_structure_copy(self.number_of_ticks_needed)
         else:
-            self.temp_data_structure = self.data_structure.get_copy()
+            self.temp_data_structure = self.data_structure.get_tick_structure_copy()
 
         # Create new row
-        self.df.loc[len(self.df.index)] = {'Time': self.data_structure.get_last_value('Time')}
+        self.df.loc[len(self.df.index)] = {'Time': self.temp_data_structure.get_last_value('Time')}
         candlestick_type = ''
 
         # Get candlestick info
-        real_body = abs(self.data_structure.get_last_value('Close') - self.data_structure.get_last_value('Open'))
-        candle_range = self.data_structure.get_last_value('High') - self.data_structure.get_last_value('Low')
+        real_body = abs(self.temp_data_structure.get_last_value('Close') - self.temp_data_structure.get_last_value('Open'))
+        candle_range = self.temp_data_structure.get_last_value('High') - self.temp_data_structure.get_last_value('Low')
 
         # Get type
-        if self.data_structure.get_number_of_rows() >= 2:
+        if self.temp_data_structure.get_number_of_rows() >= 2:
             # Bullish pinbar
             if real_body <= candle_range / 3 and \
-                    min(self.data_structure.get_last_value('Close'), self.data_structure.get_last_value('Open')) > (
-                    self.data_structure.get_last_value('High') + self.data_structure.get_last_value('Low')) / 2 and \
-                    self.data_structure.get_last_value('Low') < self.data_structure.get_before_last_value('Low'):
+                    min(self.temp_data_structure.get_last_value('Close'), self.temp_data_structure.get_last_value('Open')) > (
+                    self.temp_data_structure.get_last_value('High') + self.temp_data_structure.get_last_value('Low')) / 2 and \
+                    self.temp_data_structure.get_last_value('Low') < self.temp_data_structure.get_before_last_value('Low'):
                 candlestick_type = 'BullishPinbar'
 
             # Bearish pinbar
             if real_body <= candle_range / 3 and \
-                    max(self.data_structure.get_last_value('Close'), self.data_structure.get_last_value('Open')) < (
-                    self.data_structure.get_last_value('High') + self.data_structure.get_last_value('Low')) / 2 and \
-                    self.data_structure.get_last_value('High') > self.data_structure.get_before_last_value('High'):
+                    max(self.temp_data_structure.get_last_value('Close'), self.temp_data_structure.get_last_value('Open')) < (
+                    self.temp_data_structure.get_last_value('High') + self.temp_data_structure.get_last_value('Low')) / 2 and \
+                    self.temp_data_structure.get_last_value('High') > self.temp_data_structure.get_before_last_value('High'):
                 candlestick_type = 'BearishPinbar'
 
             # Inside bar
-            if self.data_structure.get_last_value('High') < self.data_structure.get_before_last_value('High') and \
-                    self.data_structure.get_last_value('Low') > self.data_structure.get_before_last_value('Low'):
+            if self.temp_data_structure.get_last_value('High') < self.temp_data_structure.get_before_last_value('High') and \
+                    self.temp_data_structure.get_last_value('Low') > self.temp_data_structure.get_before_last_value('Low'):
                 candlestick_type = 'InsideBar'
 
             # Outside bar
-            if self.data_structure.get_last_value('High') > self.data_structure.get_before_last_value('High') and \
-                    self.data_structure.get_last_value('Low') < self.data_structure.get_before_last_value('Low'):
+            if self.temp_data_structure.get_last_value('High') > self.temp_data_structure.get_before_last_value('High') and \
+                    self.temp_data_structure.get_last_value('Low') < self.temp_data_structure.get_before_last_value('Low'):
                 candlestick_type = 'OutsideBar'
 
             # Bullish engulfing
-            if self.data_structure.get_last_value('High') > self.data_structure.get_before_last_value('High') and \
-                    self.data_structure.get_last_value('Low') < self.data_structure.get_before_last_value('Low') and \
+            if self.temp_data_structure.get_last_value('High') > self.temp_data_structure.get_before_last_value('High') and \
+                    self.temp_data_structure.get_last_value('Low') < self.temp_data_structure.get_before_last_value('Low') and \
                     real_body >= 0.8 * candle_range and \
-                    self.data_structure.get_last_value('Close') > self.data_structure.get_last_value('Open'):
+                    self.temp_data_structure.get_last_value('Close') > self.temp_data_structure.get_last_value('Open'):
                 candlestick_type = 'BullishEngulfing'
 
             # Bearish engulfing
-            if self.data_structure.get_last_value('High') > self.data_structure.get_before_last_value('High') and \
-                    self.data_structure.get_last_value('Low') < self.data_structure.get_before_last_value('Low') and \
+            if self.temp_data_structure.get_last_value('High') > self.temp_data_structure.get_before_last_value('High') and \
+                    self.temp_data_structure.get_last_value('Low') < self.temp_data_structure.get_before_last_value('Low') and \
                     real_body >= 0.8 * candle_range and \
-                    self.data_structure.get_last_value('Close') < self.data_structure.get_last_value('Open'):
+                    self.temp_data_structure.get_last_value('Close') < self.temp_data_structure.get_last_value('Open'):
                 candlestick_type = 'BearishEngulfing'
 
-        if self.data_structure.get_number_of_rows() >= 3:
+        if self.temp_data_structure.get_number_of_rows() >= 3:
             # Bullish swing
-            if self.data_structure.get_last_value('Low') > self.data_structure.get_before_last_value('Low') and \
-                    self.data_structure.get_before_last_value('Low') < self.data_structure.get_specific_value('Low', -3):
+            if self.temp_data_structure.get_last_value('Low') > self.temp_data_structure.get_before_last_value('Low') and \
+                    self.temp_data_structure.get_before_last_value('Low') < self.temp_data_structure.get_specific_value('Low', -3):
                 candlestick_type = 'BullishSwing'
             # Bearish swing
-            if self.data_structure.get_last_value('High') < self.data_structure.get_before_last_value('High') and \
-                    self.data_structure.get_before_last_value('High') > self.data_structure.get_specific_value('High', -3):
+            if self.temp_data_structure.get_last_value('High') < self.temp_data_structure.get_before_last_value('High') and \
+                    self.temp_data_structure.get_before_last_value('High') > self.temp_data_structure.get_specific_value('High', -3):
                 candlestick_type = 'BearishSwing'
 
         self.df.loc[self.df.index[-1], 'Type'] = candlestick_type

@@ -7,8 +7,9 @@ class ADX(object):
     columns = ['Time', 'TrueRange', 'ATR', 'H-pH', 'pL-L', '+DX', '-DX', 'Smooth+DX', 'Smooth-DX', '+DMI', '-DMI', 'DX',
                'ADX']
     period = 14
-
+    number_of_ticks_needed = 2
     data_structure: TickStructure
+    temp_data_structure: TickStructure
 
     def __init__(self, data_structure):
         self.df = pd.DataFrame(columns=self.columns)
@@ -20,19 +21,24 @@ class ADX(object):
             temp_df = self.df.tail(self.period).copy()
         else:
             temp_df = self.df.copy()
+        # Create temporary data_structure
+        if self.data_structure.get_number_of_rows() > self.number_of_ticks_needed:
+            self.temp_data_structure = self.data_structure.get_tick_structure_copy(self.number_of_ticks_needed)
+        else:
+            self.temp_data_structure = self.data_structure.get_tick_structure_copy()
 
         # Create new row
-        temp_df.loc[len(self.df.index)] = {'Time': self.data_structure.get_last_value('Time')}
-        if self.data_structure.get_number_of_rows() >= 2:
+        temp_df.loc[len(self.df.index)] = {'Time': self.temp_data_structure.get_last_value('Time')}
+        if self.temp_data_structure.get_number_of_rows() >= 2:
             # Calculate true range
             temp_df['TrueRange'].iloc[-1] = max(
-                self.data_structure.get_last_value('High') - self.data_structure.get_last_value('Low'),
-                self.data_structure.get_last_value('High') - self.data_structure.get_before_last_value('Close'),
-                self.data_structure.get_before_last_value('Close') - self.data_structure.get_last_value('Low')
+                self.temp_data_structure.get_last_value('High') - self.temp_data_structure.get_last_value('Low'),
+                self.temp_data_structure.get_last_value('High') - self.temp_data_structure.get_before_last_value('Close'),
+                self.temp_data_structure.get_before_last_value('Close') - self.temp_data_structure.get_last_value('Low')
             )
             # Calculate H-pH and pL-L
-            temp_df['H-pH'].iloc[-1] = self.data_structure.get_last_value('High') - self.data_structure.get_before_last_value('High')
-            temp_df['pL-L'].iloc[-1] = self.data_structure.get_before_last_value('Low') - self.data_structure.get_last_value('Low')
+            temp_df['H-pH'].iloc[-1] = self.temp_data_structure.get_last_value('High') - self.temp_data_structure.get_before_last_value('High')
+            temp_df['pL-L'].iloc[-1] = self.temp_data_structure.get_before_last_value('Low') - self.temp_data_structure.get_last_value('Low')
 
             # Calculate +DX and -DX
             temp_df['+DX'].iloc[-1] = temp_df['H-pH'].iloc[-1] if temp_df['H-pH'].iloc[-1] > temp_df['pL-L'].iloc[-1] and temp_df['H-pH'].iloc[-1] > 0 else 0
