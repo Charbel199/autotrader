@@ -34,6 +34,8 @@ class DataFetcherBinance(DataFetcher):
             else:
                 return []
             candlesticks = list(map(format_tick, candlesticks))
+            # Close connection
+            client.close_connection()
             return candlesticks
         except Exception:
             return []

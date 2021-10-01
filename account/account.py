@@ -1,24 +1,25 @@
 from abc import ABC, abstractmethod
+import pandas as pd
 
 
 class Account(ABC):
+    columns = ['Time', 'Action', 'Amount', 'Symbol', 'Price']
 
     def __init__(self):
         self.position = {}
+        self.df = pd.DataFrame(columns=self.columns)
 
     @abstractmethod
     def get_position(self):
         return self.position
 
     @abstractmethod
-    def buy(self, symbol, amount, price):
+    def buy(self, time, symbol, amount, price):
         pass
 
     @abstractmethod
-    def sold(self, symbol, amount, price):
+    def sell(self, time, symbol, amount, price):
         pass
-
-    # Sell and buy orders
 
     @staticmethod
     @abstractmethod
