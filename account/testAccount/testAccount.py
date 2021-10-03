@@ -1,8 +1,8 @@
 from account.account import Account
+import plotly.graph_objects as go
 
 
 class TestAccount(Account):
-    columns = ['Time', 'Action', 'Amount', 'Symbol', 'Price']
 
     def __init__(self):
         super().__init__()
@@ -31,6 +31,23 @@ class TestAccount(Account):
             'Symbol': symbol,
             'Price': price
         }
+
+    def get_plot(self):
+        buy_df = self.df[(self.df['Action'] == 'Buy')]
+        sell_df = self.df[(self.df['Action'] == 'Sell')]
+        return go.Scatter(
+            x=buy_df['Time'],
+            y=buy_df['Price'],
+            marker=dict(color="gold", size=13, symbol=46),
+            mode="markers",
+            name="Buy"
+        ), go.Scatter(
+            x=sell_df['Time'],
+            y=sell_df['Price'],
+            marker=dict(color="gold", size=13, symbol=46),
+            mode="markers",
+            name="Sell"
+        )
 
     @staticmethod
     def condition(name):

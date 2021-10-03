@@ -1,5 +1,6 @@
 from data_structures.structure import TickStructure
 import pandas as pd
+import plotly.graph_objects as go
 
 
 class PandasTickStructure(TickStructure):
@@ -69,6 +70,16 @@ class PandasTickStructure(TickStructure):
         else:
             new_data_structure.set_data_structure_content(self.df.tail(n))
         return new_data_structure
+
+    def get_tick_close(self):
+        return float(self.tick['Close'])
+
+    def get_plot(self):
+        return go.Candlestick(x=self.df['Time'],
+                              open=self.df['Open'],
+                              high=self.df['High'],
+                              low=self.df['Low'],
+                              close=self.df['Close'], name="Candlesticks")
 
     @staticmethod
     def condition(name):

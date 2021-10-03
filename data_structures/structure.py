@@ -79,6 +79,14 @@ class TickStructure(ABC):
     def get_last_time(self):
         pass
 
+    @abstractmethod
+    def get_plot(self):
+        pass
+
+    @abstractmethod
+    def get_tick_close(self):
+        pass
+
     @staticmethod
     @abstractmethod
     def condition(name):

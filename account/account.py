@@ -21,6 +21,10 @@ class Account(ABC):
     def sell(self, time, symbol, amount, price):
         pass
 
+    @abstractmethod
+    def get_plot(self):
+        pass
+
     @staticmethod
     @abstractmethod
     def condition(name):
