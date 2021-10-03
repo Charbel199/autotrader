@@ -22,6 +22,14 @@ class Strategy(ABC):
         pass
 
     @abstractmethod
+    def enable_transactions(self):
+        pass
+
+    @abstractmethod
+    def disable_transactions(self):
+        pass
+
+    @abstractmethod
     def get_figure(self):
         pass
 

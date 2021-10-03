@@ -24,11 +24,13 @@ class LiveTrader(object):
             candlesticks = self.data_fetcher.get_candlesticks(
                 self.symbol, self.timeframe, self.back_date
             )
+            self.strategy.disable_transactions()
             for candlestick in candlesticks:
                 if self.data_structure:
+                    self.data_structure.set_tick(candlestick)
                     self.data_structure.add_row(candlestick)
                     self.strategy.process_new_candlestick()
-
+            self.strategy.enable_transactions()
         self.live_data_fetcher.run(self.symbol, self.timeframe, self.process_message)
 
     def stop_live_trader(self):

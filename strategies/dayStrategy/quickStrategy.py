@@ -11,6 +11,7 @@ class QuickStrategy(Strategy):
         self.ADX = ADX(data_structure)
         self.CandlestickType = CandlestickType(data_structure)
         self.RSI = RSI(data_structure)
+        self.transactions_allowed = True
 
     def process_new_candlestick(self):
         # Process ADX
@@ -21,14 +22,19 @@ class QuickStrategy(Strategy):
         # print(self.CandlestickType.get_last_candlestick_type_values())
         # print(self.ADX.get_last_adx_values())
         # print('Got a new candlestick strat ', self.data_structure.get_data())
-
-        if self.ADX.get_last_adx_values()['ADX'].iloc[-1] > 26:
-            self.account.buy(self.ADX.get_last_adx_values()['Time'].iloc[-1], 'DOGEUSDT', 10, self.data_structure.get_tick_close())
-        pass
+        if self.transactions_allowed:
+            if self.ADX.get_last_adx_values()['ADX'].iloc[-1] > 5:
+                self.account.buy(self.ADX.get_last_adx_values()['Time'].iloc[-1], 'DOGEUSDT', 10, self.data_structure.get_tick_close())
 
     def process_new_tick(self):
         print('Got new tick in strat ', self.data_structure.get_tick())
         pass
+
+    def enable_transactions(self):
+        self.transactions_allowed = True
+
+    def disable_transactions(self):
+        self.transactions_allowed = False
 
     def get_figure(self):
         fig = make_subplots(rows=3, cols=1)
