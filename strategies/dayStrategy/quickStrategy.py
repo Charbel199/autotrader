@@ -11,7 +11,6 @@ class QuickStrategy(Strategy):
         self.ADX = ADX(data_structure)
         self.CandlestickType = CandlestickType(data_structure)
         self.RSI = RSI(data_structure)
-        self.transactions_allowed = True
 
     def process_new_candlestick(self):
         # Process ADX
@@ -30,19 +29,12 @@ class QuickStrategy(Strategy):
         print('Got new tick in strat ', self.data_structure.get_tick())
         pass
 
-    def enable_transactions(self):
-        self.transactions_allowed = True
-
-    def disable_transactions(self):
-        self.transactions_allowed = False
-
     def get_figure(self):
         fig = make_subplots(rows=3, cols=1)
         fig.append_trace(self.data_structure.get_plot(), row=1, col=1)
         buy_plot, sell_plot = self.account.get_plot()
         fig.append_trace(buy_plot, row=1, col=1)
         fig.append_trace(sell_plot, row=1, col=1)
-
         fig.append_trace(self.ADX.get_plot(), row=2, col=1)
         fig.append_trace(self.RSI.get_plot(), row=3, col=1)
         fig.update_layout(xaxis_rangeslider_visible=False)

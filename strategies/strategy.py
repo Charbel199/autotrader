@@ -10,6 +10,7 @@ class Strategy(ABC):
     def __init__(self, data_structure, account):
         self.data_structure = data_structure
         self.account = account
+        self.transactions_allowed = True
 
     # Happens AFTER updating the tick in the data structure
     @abstractmethod
@@ -21,13 +22,11 @@ class Strategy(ABC):
     def process_new_candlestick(self):
         pass
 
-    @abstractmethod
     def enable_transactions(self):
-        pass
+        self.transactions_allowed = True
 
-    @abstractmethod
     def disable_transactions(self):
-        pass
+        self.transactions_allowed = False
 
     @abstractmethod
     def get_figure(self):
