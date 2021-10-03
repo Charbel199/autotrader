@@ -1,6 +1,7 @@
 import pandas as pd
 from data_structures.structure import TickStructure
 import numpy as np
+import plotly.graph_objects as go
 
 
 class RSI(object):
@@ -50,3 +51,6 @@ class RSI(object):
 
     def get_all_rsi_values(self):
         return self.df[['Time', 'RSI']]
+
+    def get_plot(self):
+        return go.Scatter(x=self.df['Time'].tolist(), y=self.df['RSI'].tolist(), name="RSI")

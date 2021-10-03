@@ -1,6 +1,7 @@
 import pandas as pd
 from data_structures.structure import TickStructure
 import numpy as np
+import plotly.graph_objects as go
 
 
 class ADX(object):
@@ -76,3 +77,6 @@ class ADX(object):
 
     def get_all_adx_values(self):
         return self.df[['Time', 'ADX']]
+
+    def get_plot(self):
+        return go.Scatter(x=self.df['Time'].tolist(), y=self.df['ADX'].tolist(), name="ADX")
