@@ -21,6 +21,10 @@ class Strategy(ABC):
     def process_new_candlestick(self):
         pass
 
+    @abstractmethod
+    def get_figure(self):
+        pass
+
     @staticmethod
     @abstractmethod
     def condition(name):
