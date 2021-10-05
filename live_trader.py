@@ -2,6 +2,7 @@ from strategies.strategy import Strategy
 from data_structures.structure import TickStructure
 from data.data_fetcher import DataFetcher
 from live_data.live_data_fetcher import LiveDataFetcher
+from account.account import Account
 
 
 class LiveTrader(object):
@@ -9,8 +10,9 @@ class LiveTrader(object):
     data_structure: TickStructure
     data_fetcher: DataFetcher
     live_data_fetcher: LiveDataFetcher
+    account: Account
 
-    def __init__(self, symbol, timeframe, live_data_fetcher, data_fetcher, data_structure, strategy, back_date=None):
+    def __init__(self, symbol, timeframe, live_data_fetcher, data_fetcher, data_structure, strategy, account, back_date=None):
         self.data_structure = data_structure
         self.live_data_fetcher = live_data_fetcher
         self.strategy = strategy
@@ -18,6 +20,7 @@ class LiveTrader(object):
         self.timeframe = timeframe
         self.data_fetcher = data_fetcher
         self.back_date = back_date
+        self.account = account
 
     def run_live_trader(self):
         if self.back_date:
@@ -45,3 +48,33 @@ class LiveTrader(object):
 
             self.data_structure.set_tick(tick)
             self.strategy.process_new_tick()
+
+
+from data.data_fetcher import get_fetcher
+from data_structures.structure import get_data_structure
+from strategies.strategy import get_strategy
+from account.account import get_account
+from live_data.live_data_fetcher import get_live_fetcher
+
+
+class LiveTraderRunner(object):
+    live_traders = []
+
+    def __init__(self, live_fetcher_provider):
+        self.live_data_fetcher = get_live_fetcher(live_fetcher_provider)
+
+    def prepare_live_trader(self, symbol, timeframe, account_provider, data_fetcher_provider, data_structure_provider, strategy_provider, back_date=None):
+        account = get_account(account_provider)
+        data_fetcher = get_fetcher(data_fetcher_provider)
+        data_structure = get_data_structure(data_structure_provider)
+        strategy = get_strategy(strategy_provider, data_structure, account, symbol)
+        live_trader_instance = LiveTrader(symbol, timeframe, self.live_data_fetcher, data_fetcher, data_structure, strategy, account, back_date)
+        self.live_traders.append(live_trader_instance)
+        return live_trader_instance
+
+    def start_all_live_traders(self):
+        for live_trader in self.live_traders:
+            live_trader.run_live_trader()
+
+    def stop_all_live_traders(self):
+        self.live_data_fetcher.stop()
