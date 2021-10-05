@@ -7,9 +7,10 @@ class Strategy(ABC):
     data_structure: TickStructure
     account: Account
 
-    def __init__(self, data_structure, account):
+    def __init__(self, data_structure, account, symbol):
         self.data_structure = data_structure
         self.account = account
+        self.symbol = symbol
         self.transactions_allowed = True
 
     # Happens AFTER updating the tick in the data structure
@@ -39,8 +40,8 @@ class Strategy(ABC):
 
 
 # Get strategy
-def get_strategy(name, data_structure, account):
+def get_strategy(name, data_structure, account, symbol):
     for strategy in Strategy.__subclasses__():
         if strategy.condition(name):
-            return strategy(data_structure, account)
+            return strategy(data_structure, account, symbol)
     return None

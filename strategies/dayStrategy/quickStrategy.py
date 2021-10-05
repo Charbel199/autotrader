@@ -6,8 +6,8 @@ from plotly.subplots import make_subplots
 
 
 class QuickStrategy(Strategy):
-    def __init__(self, data_structure, account):
-        super().__init__(data_structure, account)
+    def __init__(self, data_structure, account, symbol):
+        super().__init__(data_structure, account, symbol)
         self.ADX = ADX(data_structure)
         self.CandlestickType = CandlestickType(data_structure)
         self.RSI = RSI(data_structure)
@@ -23,7 +23,7 @@ class QuickStrategy(Strategy):
         # print('Got a new candlestick strat ', self.data_structure.get_data())
         if self.transactions_allowed:
             if self.ADX.get_last_adx_values()['ADX'].iloc[-1] > 5:
-                self.account.buy(self.ADX.get_last_adx_values()['Time'].iloc[-1], 'DOGEUSDT', 10, self.data_structure.get_tick_close())
+                self.account.buy(self.ADX.get_last_adx_values()['Time'].iloc[-1], self.symbol, 10, self.data_structure.get_tick_close())
 
     def process_new_tick(self):
         print('Got new tick in strat ', self.data_structure.get_tick())
