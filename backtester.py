@@ -1,19 +1,22 @@
 from strategies.strategy import Strategy
 from data_structures.structure import TickStructure
 from data.data_fetcher import DataFetcher
+from account.account import Account
 
 
 class BackTester(object):
     strategy: Strategy
     data_structure: TickStructure
     data_fetcher: DataFetcher
+    account: Account
 
-    def __init__(self, symbol, timeframe, data_fetcher, data_structure, strategy, start_date, end_date=None):
+    def __init__(self, symbol, timeframe, data_fetcher, data_structure, strategy, account, start_date, end_date=None):
         self.data_structure = data_structure
         self.strategy = strategy
         self.symbol = symbol
         self.timeframe = timeframe
         self.data_fetcher = data_fetcher
+        self.account = account
         self.start_date = start_date
         self.end_date = end_date
 
@@ -25,3 +28,33 @@ class BackTester(object):
                 self.strategy.process_new_candlestick()
                 self.data_structure.set_tick(candlestick)
                 # self.strategy.process_new_tick()
+
+
+from data.data_fetcher import get_fetcher
+from data_structures.structure import get_data_structure
+from backtester import BackTester
+from strategies.strategy import get_strategy
+from account.account import get_account
+import threading
+
+
+class BackTesterRunner(object):
+    threads = []
+
+    def __init__(self):
+        pass
+
+    def prepare_backtester(self, symbol, timeframe, account_provider, data_fetcher_provider, data_structure_provider, strategy_provider, start_date=None):
+        account = get_account(account_provider)
+        data_fetcher = get_fetcher(data_fetcher_provider)
+        data_structure = get_data_structure(data_structure_provider)
+        strategy = get_strategy(strategy_provider, data_structure, account, symbol)
+        backtester_instance = BackTester(symbol, timeframe, data_fetcher, data_structure, strategy, account, start_date)
+        thread = threading.Thread(target=backtester_instance.run_backtester)
+        thread.start()
+        self.threads.append(thread)
+        return backtester_instance
+
+    def launch(self):
+        for thread in self.threads:
+            thread.join()
