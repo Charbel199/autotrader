@@ -1,4 +1,4 @@
-from account.account import Account
+from trading.accounts.account import Account
 import plotly.graph_objects as go
 
 

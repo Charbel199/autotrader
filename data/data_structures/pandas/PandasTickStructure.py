@@ -1,4 +1,4 @@
-from data_structures.structure import TickStructure
+from data.data_structures.structure import TickStructure
 import pandas as pd
 import plotly.graph_objects as go
 

@@ -1,8 +1,8 @@
-from strategies.strategy import Strategy
-from data_structures.structure import TickStructure
-from data.data_fetcher import DataFetcher
-from live_data.live_data_fetcher import LiveDataFetcher
-from account.account import Account
+from trading.strategies.strategy import Strategy
+from data.data_structures.structure import TickStructure
+from data.previous_data.data_fetcher import DataFetcher
+from data.live_data.live_data_fetcher import LiveDataFetcher
+from trading.accounts.account import Account
 
 
 class LiveTrader(object):
@@ -50,11 +50,11 @@ class LiveTrader(object):
             self.strategy.process_new_tick()
 
 
-from data.data_fetcher import get_fetcher
-from data_structures.structure import get_data_structure
-from strategies.strategy import get_strategy
-from account.account import get_account
-from live_data.live_data_fetcher import get_live_fetcher
+from data.previous_data.data_fetcher import get_fetcher
+from data.data_structures.structure import get_data_structure
+from trading.strategies.strategy import get_strategy
+from trading.accounts.account import get_account
+from data.live_data.live_data_fetcher import get_live_fetcher
 
 
 class LiveTraderRunner(object):

@@ -27,11 +27,11 @@ def show_candlesticks(df):
 
                    Click on markets in the graph.
                """),
-            html.Pre(id='click-data'),
+            html.Pre(id='click-previous_data'),
         ], className='three columns')
     ])
     @app.callback(
-    Output('click-data', 'children'),
+    Output('click-previous_data', 'children'),
     [Input('graph', 'clickData')])
     def display_click_data(clickData):
         print(clickData)

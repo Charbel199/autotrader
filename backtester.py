@@ -1,7 +1,7 @@
-from strategies.strategy import Strategy
-from data_structures.structure import TickStructure
-from data.data_fetcher import DataFetcher
-from account.account import Account
+from trading.strategies.strategy import Strategy
+from data.data_structures.structure import TickStructure
+from data.previous_data.data_fetcher import DataFetcher
+from trading.accounts.account import Account
 
 
 class BackTester(object):
@@ -30,11 +30,11 @@ class BackTester(object):
                 # self.strategy.process_new_tick()
 
 
-from data.data_fetcher import get_fetcher
-from data_structures.structure import get_data_structure
+from data.previous_data.data_fetcher import get_fetcher
+from data.data_structures.structure import get_data_structure
 from backtester import BackTester
-from strategies.strategy import get_strategy
-from account.account import get_account
+from trading.strategies.strategy import get_strategy
+from trading.accounts.account import get_account
 import threading
 
 

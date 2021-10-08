@@ -1,6 +1,6 @@
-from live_data.live_data_fetcher import LiveDataFetcher
-from strategies.strategy import Strategy
-from data_structures.structure import TickStructure
+from data.live_data.live_data_fetcher import LiveDataFetcher
+from trading.strategies.strategy import Strategy
+from data.data_structures.structure import TickStructure
 from binance import ThreadedWebsocketManager
 
 

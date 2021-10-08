@@ -1,4 +1,4 @@
-from data.data_fetcher import DataFetcher
+from data.previous_data.data_fetcher import DataFetcher
 from binance.client import Client
 import os
 

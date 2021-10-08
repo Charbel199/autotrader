@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from data_structures.structure import TickStructure
-from account.account import Account
+from data.data_structures.structure import TickStructure
+from trading.accounts.account import Account
 
 
 class Strategy(ABC):
@@ -13,12 +13,12 @@ class Strategy(ABC):
         self.symbol = symbol
         self.transactions_allowed = True
 
-    # Happens AFTER updating the tick in the data structure
+    # Happens AFTER updating the tick in the previous_data structure
     @abstractmethod
     def process_new_tick(self):
         pass
 
-    # Happens AFTER adding the new candlestick in the data structure
+    # Happens AFTER adding the new candlestick in the previous_data structure
     @abstractmethod
     def process_new_candlestick(self):
         pass

@@ -1,7 +1,7 @@
-from strategies.strategy import Strategy
-from indicators.adx_indicator.adx_indicator_processor import ADX
-from indicators.candlestick_type.candlestick_type_processor import CandlestickType
-from indicators.rsi_indicator.rsi_indicator_processor import RSI
+from trading.strategies.strategy import Strategy
+from trading.indicators.adx_indicator.adx_indicator_processor import ADX
+from trading.indicators.candlestick_type.candlestick_type_processor import CandlestickType
+from trading.indicators.rsi_indicator.rsi_indicator_processor import RSI
 from plotly.subplots import make_subplots
 
 
