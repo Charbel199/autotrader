@@ -21,6 +21,18 @@ class Account(ABC):
     def sell(self, time, symbol, amount, price):
         pass
 
+    def get_profit(self):
+        sells = self.df[self.df["Action"] == "Sell"]
+        buys = self.df[self.df["Action"] == "Buy"]
+        total_buy_price = (buys["Price"] * buys["Amount"]).sum()
+        total_sell_price = (sells["Price"] * sells["Amount"]).sum()
+        profit = total_sell_price - total_buy_price
+        percentage = ((total_sell_price - total_buy_price) / total_buy_price) * 100
+        print("Buy ", total_buy_price)
+        print("Sell ", total_sell_price)
+        print("Percentage gain: ", percentage)
+        return profit
+
     @abstractmethod
     def get_plot(self):
         pass

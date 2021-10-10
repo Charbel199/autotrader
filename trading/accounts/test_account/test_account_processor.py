@@ -28,16 +28,17 @@ class TestAccount(Account):
         }
 
     def sell(self, time, symbol, amount, price):
-        print(time, "  -  Sold ", amount, " of: ", symbol, " at ", price)
-        self.position = {}
-        print("New position ", self.position)
-        self.df.loc[len(self.df.index)] = {
-            'Time': time,
-            'Action': 'Sell',
-            'Amount': amount,
-            'Symbol': symbol,
-            'Price': price
-        }
+        if self.position['Time'] != time:
+            print(time, "  -  Sold ", amount, " of: ", symbol, " at ", price)
+            self.position = {}
+            print("New position ", self.position)
+            self.df.loc[len(self.df.index)] = {
+                'Time': time,
+                'Action': 'Sell',
+                'Amount': amount,
+                'Symbol': symbol,
+                'Price': price
+            }
 
     def get_plot(self):
         buy_df = self.df[(self.df['Action'] == 'Buy')]

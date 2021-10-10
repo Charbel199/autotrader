@@ -22,8 +22,10 @@ class QuickStrategy(Strategy):
         # print(self.ADX.get_last_adx_values())
         # print('Got a new candlestick strat ', self.data_structure.get_data())
         if self.transactions_allowed:
-            if self.ADX.get_last_adx_values()['ADX'].iloc[-1] > 5:
+            if self.RSI.get_all_rsi_values()['RSI'].iloc[-1] < 25 and self.account.get_position() == {}:
                 self.account.buy(self.ADX.get_last_adx_values()['Time'].iloc[-1], self.symbol, 10, self.data_structure.get_tick_close())
+            if self.RSI.get_all_rsi_values()['RSI'].iloc[-1] > 70 and self.account.get_position() != {}:
+                self.account.sell(self.ADX.get_last_adx_values()['Time'].iloc[-1], self.symbol, 10, self.data_structure.get_tick_close())
 
     def process_new_tick(self):
         print('Got new tick in strat ', self.data_structure.get_tick())

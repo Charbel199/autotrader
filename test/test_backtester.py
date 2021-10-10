@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 from trading.backtester import BackTesterRunner
-start_date = "10 Oct, 2021"
+start_date = "9 Oct, 2021"
 
 runner = BackTesterRunner()
 backtester1 = runner.prepare_backtester(symbol="DOGEUSDT", timeframe="15m", account_provider="testAccount",
@@ -26,5 +26,9 @@ fig.show()
 fig2 = backtester2.strategy.get_figure()
 fig2.show()
 
-account1 = backtester2.account
+account1 = backtester1.account
 print(account1.df.to_string())
+account1.get_profit()
+account2 = backtester2.account
+print(account2.df.to_string())
+account2.get_profit()
