@@ -52,5 +52,8 @@ class RSI(object):
     def get_all_rsi_values(self):
         return self.df[['Time', 'RSI']]
 
+    def delete_data(self):
+        self.df = pd.DataFrame(columns=self.columns)
+
     def get_plot(self):
         return go.Scatter(x=self.df['Time'].tolist(), y=self.df['RSI'].tolist(), name="RSI")

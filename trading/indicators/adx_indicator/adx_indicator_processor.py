@@ -78,5 +78,8 @@ class ADX(object):
     def get_all_adx_values(self):
         return self.df[['Time', 'ADX']]
 
+    def delete_data(self):
+        self.df = pd.DataFrame(columns=self.columns)
+
     def get_plot(self):
         return go.Scatter(x=self.df['Time'].tolist(), y=self.df['ADX'].tolist(), name="ADX")

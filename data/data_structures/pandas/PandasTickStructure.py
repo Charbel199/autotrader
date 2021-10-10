@@ -81,6 +81,10 @@ class PandasTickStructure(TickStructure):
                               low=self.df['Low'],
                               close=self.df['Close'], name="Candlesticks")
 
+    def delete_data(self):
+        self.df = pd.DataFrame(columns=self.columns)
+        self.tick = {}
+
     @staticmethod
     def condition(name):
         return name == 'pandas'

@@ -86,7 +86,9 @@ class TickStructure(ABC):
     @abstractmethod
     def get_tick_close(self):
         pass
-
+    @abstractmethod
+    def delete_data(self):
+        pass
     @staticmethod
     @abstractmethod
     def condition(name):

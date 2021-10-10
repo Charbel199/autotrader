@@ -85,3 +85,6 @@ class CandlestickType(object):
 
     def get_all_candlestick_type_values(self):
         return self.df[['Time', 'Type']]
+
+    def delete_data(self):
+        self.df = pd.DataFrame(columns=self.columns)
