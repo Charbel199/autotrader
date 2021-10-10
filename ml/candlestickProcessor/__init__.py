@@ -1,0 +1,1 @@
+from .simpleProcessor.simple_candlestick_processor import SimpleCandlestickProcessor
