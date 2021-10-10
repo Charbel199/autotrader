@@ -3,7 +3,7 @@ from data.data_structures.structure import TickStructure
 import collections
 import random
 from helper import date_helper
-from ml.candlestickProcessor.candlestick_processor import CandlestickProcessor
+from ml.candlestick_processor.candlestick_processor import CandlestickProcessor
 
 
 class CandlestickGenerator(object):

@@ -32,7 +32,6 @@ class BackTester(object):
 
 from data.previous_data.data_fetcher import get_fetcher
 from data.data_structures.structure import get_data_structure
-from backtester import BackTester
 from trading.strategies.strategy import get_strategy
 from trading.accounts.account import get_account
 import threading

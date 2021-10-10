@@ -1,1 +1,1 @@
-from .dayStrategy.quickStrategy import QuickStrategy
+from .day_strategy.quick_strategy import QuickStrategy

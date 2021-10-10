@@ -16,7 +16,7 @@ live_trader3 = live_runner.prepare_live_trader(symbol="LTCUSDT", timeframe="15m"
                                                back_date=start_date)
 live_runner.start_all_live_traders()
 print('start')
-time.sleep(600)
+time.sleep(20)
 live_runner.stop_all_live_traders()
 print('stop')
 fig = live_trader1.strategy.get_figure()

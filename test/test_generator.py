@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from ml.candlestick_generator import CandlestickGenerator
-from ml.candlestickProcessor.candlestick_processor import get_candlestick_processor
+from ml.candlestick_processor.candlestick_processor import get_candlestick_processor
 from data.previous_data.data_fetcher import get_fetcher
 from helper import date_helper
 import threading

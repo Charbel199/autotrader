@@ -1,6 +1,6 @@
 from trading.indicators.adx_indicator.adx_indicator_processor import ADX
 from trading.indicators.rsi_indicator.rsi_indicator_processor import RSI
-from ml.candlestickProcessor.candlestick_processor import CandlestickProcessor
+from ml.candlestick_processor.candlestick_processor import CandlestickProcessor
 
 
 class SimpleCandlestickProcessor(CandlestickProcessor):

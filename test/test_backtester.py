@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 from trading.backtester import BackTesterRunner
-start_date = "8 Oct, 2021"
+start_date = "10 Oct, 2021"
 
 runner = BackTesterRunner()
 backtester1 = runner.prepare_backtester(symbol="DOGEUSDT", timeframe="15m", account_provider="testAccount",
