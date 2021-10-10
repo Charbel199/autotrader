@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from live_trader import LiveTraderRunner
+from trading.live_trader import LiveTraderRunner
 load_dotenv()
 import time
 start_date = "8 Oct, 2021"

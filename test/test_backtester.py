@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 
 load_dotenv()
-from backtester import BackTesterRunner
+from trading.backtester import BackTesterRunner
 start_date = "8 Oct, 2021"
 
 runner = BackTesterRunner()
