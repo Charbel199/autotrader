@@ -12,6 +12,12 @@ class TestAccount(Account):
 
     def buy(self, time, symbol, amount, price):
         print(time, "  -  Bought ", amount, " of: ", symbol, " at ", price)
+        self.position = {
+            "Time": time,
+            "Symbol": symbol,
+            "Amount": amount,
+            "Price": price
+        }
         print("New position ", self.position)
         self.df.loc[len(self.df.index)] = {
             'Time': time,
@@ -23,6 +29,7 @@ class TestAccount(Account):
 
     def sell(self, time, symbol, amount, price):
         print(time, "  -  Sold ", amount, " of: ", symbol, " at ", price)
+        self.position = {}
         print("New position ", self.position)
         self.df.loc[len(self.df.index)] = {
             'Time': time,
@@ -44,7 +51,7 @@ class TestAccount(Account):
         ), go.Scatter(
             x=sell_df['Time'],
             y=sell_df['Price'],
-            marker=dict(color="gold", size=13, symbol=46),
+            marker=dict(color="silver", size=13, symbol=45),
             mode="markers",
             name="Sell"
         )
