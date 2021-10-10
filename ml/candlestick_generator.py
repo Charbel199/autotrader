@@ -1,23 +1,31 @@
 from data.previous_data.data_fetcher import DataFetcher
+from data.data_structures.structure import TickStructure
 import collections
 import random
 from helper import date_helper
+from ml.candlestickProcessor.candlestick_processor import CandlestickProcessor
 
 
 class CandlestickGenerator(object):
     data_fetcher: DataFetcher
+    data_structure: TickStructure
+    candlestick_processor: CandlestickProcessor
 
-    def __init__(self, data_fetcher, symbols, timeframe):
+    def __init__(self, candlestick_generator_processor, data_fetcher, data_structure, symbols, timeframe):
         self.buffer = collections.deque()
         self.symbols = symbols
         self.data_fetcher = data_fetcher
+        self.data_structure = data_structure
+        self.candlestick_generator_processor = candlestick_generator_processor
         self.timeframe = timeframe
-        pass
 
     def fetch_new_candlesticks(self, start_date, duration):
         print(date_helper.from_timestamp_to_binance_date(start_date))
-        print( date_helper.from_timestamp_to_binance_date(
-                date_helper.get_next_timestamp(start_date, hours=duration)))
+        print(date_helper.from_timestamp_to_binance_date(
+            date_helper.get_next_timestamp(start_date, hours=duration)))
+        print("==================\n")
+
+
         candlesticks = self.data_fetcher.get_candlesticks(
             random.choice(self.symbols),
             self.timeframe,
@@ -25,8 +33,8 @@ class CandlestickGenerator(object):
             date_helper.from_timestamp_to_binance_date(
                 date_helper.get_next_timestamp(start_date, hours=duration))
         )
-        self.buffer.append(candlesticks)
-        print("Deque ",self.buffer)
-        print("len of dq ",len(self.buffer) )
+
+        self.buffer.append(self.candlestick_generator_processor.process_candlesticks(candlesticks))
+
     def get_new_candlesticks(self):
         return self.buffer.pop()
