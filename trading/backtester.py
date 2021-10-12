@@ -27,7 +27,7 @@ class BackTester(object):
                 self.data_structure.add_row(candlestick)
                 self.strategy.process_new_candlestick()
                 self.data_structure.set_tick(candlestick)
-                # self.strategy.process_new_tick()
+                self.strategy.process_new_tick()
 
 
 from data.previous_data.data_fetcher import get_fetcher
