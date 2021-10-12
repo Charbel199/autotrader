@@ -4,6 +4,9 @@ import collections
 import random
 from helper import date_helper
 from ml.candlestick_processor.candlestick_processor import CandlestickProcessor
+from data.data_logger import logger
+
+log = logger.get_logger(__name__)
 
 
 class CandlestickGenerator(object):
@@ -20,10 +23,9 @@ class CandlestickGenerator(object):
         self.timeframe = timeframe
 
     def fetch_new_candlesticks(self, start_date, duration):
-        print(date_helper.from_timestamp_to_binance_date(start_date))
-        print(date_helper.from_timestamp_to_binance_date(
+        log.info(date_helper.from_timestamp_to_binance_date(start_date))
+        log.info(date_helper.from_timestamp_to_binance_date(
             date_helper.get_next_timestamp(start_date, hours=duration)))
-        print("==================\n")
 
 
         candlesticks = self.data_fetcher.get_candlesticks(

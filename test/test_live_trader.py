@@ -1,8 +1,10 @@
 from dotenv import load_dotenv
 from trading.live_trader import LiveTraderRunner
+from data.data_logger import logger
 load_dotenv()
+log = logger.setup_applevel_logger(file_name = 'test_live_trader_debug.log')
 import time
-start_date = "8 Oct, 2021"
+start_date = "12 Oct, 2021"
 live_runner = LiveTraderRunner('binance')
 
 live_trader1 = live_runner.prepare_live_trader(symbol="BTCUSDT", timeframe="15m", account_provider="testAccount",
