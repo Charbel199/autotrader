@@ -1,5 +1,8 @@
 from trading.accounts.account import Account
 import plotly.graph_objects as go
+from data.data_logger import logger
+
+log = logger.get_logger(__name__)
 
 
 class TestAccount(Account):
@@ -11,14 +14,14 @@ class TestAccount(Account):
         return self.position
 
     def buy(self, time, symbol, amount, price):
-        print(time, "  -  Bought ", amount, " of: ", symbol, " at ", price)
+        log.info(f"{time} - Bought - {amount} of {symbol} at {price}")
         self.position = {
             "Time": time,
             "Symbol": symbol,
             "Amount": amount,
             "Price": price
         }
-        print("New position ", self.position)
+        log.info(f"New position {self.position}")
         self.df.loc[len(self.df.index)] = {
             'Time': time,
             'Action': 'Buy',
@@ -29,9 +32,8 @@ class TestAccount(Account):
 
     def sell(self, time, symbol, amount, price):
         if self.position['Time'] != time:
-            print(time, "  -  Sold ", amount, " of: ", symbol, " at ", price)
+            log.info(f"{time} - Sold - {amount} of {symbol} at {price}")
             self.position = {}
-            print("New position ", self.position)
             self.df.loc[len(self.df.index)] = {
                 'Time': time,
                 'Action': 'Sell',

@@ -1,6 +1,8 @@
 from data.previous_data.data_fetcher import DataFetcher
 from binance.client import Client
 import os
+from data.data_logger import logger
+log = logger.get_logger(__name__)
 
 
 class DataFetcherBinance(DataFetcher):
@@ -16,6 +18,7 @@ class DataFetcherBinance(DataFetcher):
         super().__init__()
 
     def get_candlesticks(self, symbol, timeframe, start_date, end_date=None):
+        log.info(f'Fetching candlesticks for {symbol}, timeframe of {timeframe} and a start date of {start_date} and an end date of {end_date}')
         try:
             client = Client(os.getenv('API_KEY'), os.getenv('API_SECRET'))
 
@@ -36,8 +39,10 @@ class DataFetcherBinance(DataFetcher):
             candlesticks = list(map(format_tick, candlesticks))
             # Close connection
             client.close_connection()
+            log.info('Finished fetching candlesticks')
             return candlesticks
         except Exception:
+            log.error('Ran into an error while fetching candlesticks')
             return []
 
     @staticmethod

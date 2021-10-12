@@ -1,8 +1,9 @@
 import pandas as pd
 from data.data_structures.structure import TickStructure
-import numpy as np
-import plotly.graph_objects as go
 import sys
+from data.data_logger import logger
+
+log = logger.get_logger(__name__)
 
 
 class SellSignal(object):
@@ -33,13 +34,13 @@ class SellSignal(object):
             # Set max price reached
             if last_tick_price > self.max_price_reached_in_position:
                 sell_signal = 'SellZone'
-                print("Sell zone at ", last_tick_price)
+                log.info(f"Sell zone at {last_tick_price}")
                 self.max_price_reached_in_position = last_tick_price
 
             if last_tick_price < (self.max_price_reached_in_position * self.sell_below_max_percentage):
                 # Sell
                 sell_signal = 'Sell'
-                print("Sell at ", last_tick_price, " last max was ", self.max_price_reached_in_position)
+                log.info(f"Sell at {last_tick_price} last max was {self.max_price_reached_in_position}")
                 # Reset target and max
                 self.reset_target()
 
@@ -58,7 +59,7 @@ class SellSignal(object):
 
     def set_sell_target(self, price):
         self.target = price
-        print("target set to ", price)
+        log.info(f"Target set to {price}")
 
     def reset_target(self):
         self.in_sell_zone = False
@@ -76,5 +77,4 @@ class SellSignal(object):
                     coordinate["x1"] = row['Time']
                     coordinates.append(coordinate)
                     coordinate = {}
-        print("COORDINATES ",coordinates)
         return coordinates

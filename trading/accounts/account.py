@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 import pandas as pd
+from data.data_logger import logger
 
+log = logger.get_logger(__name__)
 
 class Account(ABC):
     columns = ['Time', 'Action', 'Amount', 'Symbol', 'Price']
@@ -33,9 +35,9 @@ class Account(ABC):
             percentage = ((total_sell_price - total_buy_price) / total_buy_price) * 100
         else:
             percentage = 0
-        print("Buy ", total_buy_price)
-        print("Sell ", total_sell_price)
-        print("Percentage gain: ", percentage)
+        log.info(f"Buy {total_buy_price}")
+        log.info(f"Sell {total_sell_price}")
+        log.info(f"Percentage gain: {percentage}")
         return profit
 
     @abstractmethod

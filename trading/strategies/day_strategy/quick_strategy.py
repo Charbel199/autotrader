@@ -4,6 +4,10 @@ from trading.indicators.candlestick_type.candlestick_type_processor import Candl
 from trading.indicators.rsi_indicator.rsi_indicator_processor import RSI
 from trading.indicators.sell_signal.sell_signal_processor import SellSignal
 from plotly.subplots import make_subplots
+from data.data_logger import logger
+
+log = logger.get_logger(__name__)
+
 
 
 class QuickStrategy(Strategy):
@@ -19,23 +23,25 @@ class QuickStrategy(Strategy):
         self.ADX.process_new_candlestick()
         self.CandlestickType.process_new_candlestick()
         self.RSI.process_new_candlestick()
-        # print(self.RSI.get_last_rsi_values())
-        # print(self.CandlestickType.get_last_candlestick_type_values())
-        # print(self.ADX.get_last_adx_values())
-        # print('Got a new candlestick strat ', self.data_structure.get_data())
+        # log.info(self.RSI.get_last_rsi_values())
+        # log.info(self.CandlestickType.get_last_candlestick_type_values())
+        # log.info(self.ADX.get_last_adx_values())
+        # log.info('Got a new candlestick strat ', self.data_structure.get_data())
         if self.transactions_allowed:
             if self.RSI.get_all_rsi_values()['RSI'].iloc[-1] < 20 and self.account.get_position() == {}:
-                self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.01)
                 self.account.buy(self.ADX.get_last_adx_values()['Time'].iloc[-1], self.symbol, 10, self.data_structure.get_tick_close())
+                self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.01)
 
     def process_new_tick(self):
         # print('Got new tick in strat ', self.data_structure.get_tick())
         if self.transactions_allowed:
             if self.account.get_position() != {}:
+                # Sell logic
                 if self.SellSignal.process_new_tick():
                     self.account.sell(self.ADX.get_last_adx_values()['Time'].iloc[-1], self.symbol, 10, self.data_structure.get_tick_close())
+                # Stop loss
                 elif float(self.account.get_position()['Price']) * 0.98 >= self.data_structure.get_tick_close():
-                    print("Hit stoploss of", float(self.account.get_position()['Price']) * 0.98, ", at ", self.data_structure.get_tick_close())
+                    log.warn(f"Hit stoploss of {float(self.account.get_position()['Price']) * 0.98}  at {self.data_structure.get_tick_close()}")
                     self.account.sell(self.ADX.get_last_adx_values()['Time'].iloc[-1], self.symbol, 10, self.data_structure.get_tick_close())
 
     def get_figure(self):
