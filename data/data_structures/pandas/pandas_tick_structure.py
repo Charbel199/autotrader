@@ -25,6 +25,11 @@ class PandasTickStructure(TickStructure):
     def change_last_row(self, row):
         self.df.iloc[-1] = row
 
+    def get_last_time_tick(self):
+        if self.tick:
+            return self.tick['Time']
+        return 0
+
     def get_last_value(self, column_name):
         return float(self.df[column_name].iloc[-1])
 
