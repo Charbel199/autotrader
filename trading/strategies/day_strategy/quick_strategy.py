@@ -3,6 +3,8 @@ from trading.indicators.adx_indicator.adx_indicator_processor import ADX
 from trading.indicators.candlestick_type.candlestick_type_processor import CandlestickType
 from trading.indicators.rsi_indicator.rsi_indicator_processor import RSI
 from trading.indicators.sell_signal.sell_signal_processor import SellSignal
+from trading.indicators.bollinger_band_indicator.bollinger_band_indicator_proccessor import BollingerBand
+from trading.indicators.chaikin_money_flow_indicator.chaikin_money_flow_indicator_processor import ChaikinMoneyFlow
 from plotly.subplots import make_subplots
 from data.data_logger import logger
 
@@ -16,6 +18,8 @@ class QuickStrategy(Strategy):
         self.ADX = ADX(data_structure)
         self.CandlestickType = CandlestickType(data_structure)
         self.RSI = RSI(data_structure)
+        self.BollingerBand = BollingerBand(data_structure)
+        self.ChaikinMoneyFlow = ChaikinMoneyFlow(data_structure)
         self.SellSignal = SellSignal(data_structure, sell_below_max_percentage=0.995)
 
     def process_new_candlestick(self):
@@ -23,10 +27,15 @@ class QuickStrategy(Strategy):
         self.ADX.process_new_candlestick()
         self.CandlestickType.process_new_candlestick()
         self.RSI.process_new_candlestick()
-        # log.info(self.RSI.get_last_rsi_values())
-        # log.info(self.CandlestickType.get_last_candlestick_type_values())
-        # log.info(self.ADX.get_last_adx_values())
-        # log.info('Got a new candlestick strat ', self.data_structure.get_data())
+        self.BollingerBand.process_new_candlestick()
+        self.ChaikinMoneyFlow.process_new_candlestick()
+
+
+        # if self.transactions_allowed:
+        #     if self.RSI.get_all_rsi_values()['RSI'].iloc[-1] < 20 and self.account.get_position() == {}:
+        #         self.account.buy(self.ADX.get_last_adx_values()['Time'].iloc[-1], self.symbol, 10, self.data_structure.get_tick_close())
+        #         self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.01)
+
         if self.transactions_allowed:
             if self.RSI.get_all_rsi_values()['RSI'].iloc[-1] < 20 and self.account.get_position() == {}:
                 self.account.buy(self.ADX.get_last_adx_values()['Time'].iloc[-1], self.symbol, 10, self.data_structure.get_tick_close())
@@ -45,8 +54,12 @@ class QuickStrategy(Strategy):
                     self.account.sell(self.ADX.get_last_adx_values()['Time'].iloc[-1], self.symbol, 10, self.data_structure.get_tick_close())
 
     def get_figure(self):
-        fig = make_subplots(rows=3, cols=1)
+        fig = make_subplots(rows=4, cols=1)
         fig.append_trace(self.data_structure.get_plot(), row=1, col=1)
+        fig.append_trace(self.ChaikinMoneyFlow.get_plot(), row=4, col=1)
+        # fig.append_trace(self.BollingerBand.get_plot()[0], row=1, col=1)
+        # fig.append_trace(self.BollingerBand.get_plot()[1], row=1, col=1)
+        # fig.append_trace(self.BollingerBand.get_plot()[2], row=1, col=1)
         buy_plot, sell_plot = self.account.get_plot()
         fig.append_trace(buy_plot, row=1, col=1)
         fig.append_trace(sell_plot, row=1, col=1)
