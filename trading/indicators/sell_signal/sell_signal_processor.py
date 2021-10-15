@@ -1,6 +1,7 @@
 import pandas as pd
 from data.data_structures.structure import TickStructure
 import sys
+from helper import data_structure_helper
 from data.data_logger import logger
 
 log = logger.get_logger(__name__)
@@ -19,6 +20,8 @@ class SellSignal(object):
         self.sell_below_max_percentage = sell_below_max_percentage
 
     def process_new_tick(self):
+        self.df = data_structure_helper.reduce_df(self.df)
+
         sell_signal = ''
         last_tick = self.data_structure.get_tick()
         if last_tick == {}:

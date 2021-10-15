@@ -25,7 +25,9 @@ class QuickStrategy(Strategy):
         self.thirdStep = False
 
     def process_new_candlestick(self):
-        # Process ADX
+        self.data_structure.reduce()
+
+
         # self.ADX.process_new_candlestick()
         # self.CandlestickType.process_new_candlestick()
         self.RSI.process_new_candlestick()
@@ -76,9 +78,9 @@ class QuickStrategy(Strategy):
                     self.account.sell(self.data_structure.get_last_value('Time'), self.symbol, self.data_structure.get_tick_close())
 
     def get_figure(self):
-        fig = make_subplots(rows=2, cols=1)
+        fig = make_subplots(rows=3, cols=1)
         fig.append_trace(self.data_structure.get_plot(), row=1, col=1)
-        # fig.append_trace(self.ChaikinMoneyFlow.get_plot(), row=4, col=1)
+        fig.append_trace(self.ChaikinMoneyFlow.get_plot(), row=3, col=1)
         fig.append_trace(self.BollingerBand.get_plot()[0], row=1, col=1)
         fig.append_trace(self.BollingerBand.get_plot()[1], row=1, col=1)
         fig.append_trace(self.BollingerBand.get_plot()[2], row=1, col=1)

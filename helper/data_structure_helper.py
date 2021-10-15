@@ -17,3 +17,10 @@ def get_temp_df(df: pd.DataFrame, period):
     else:
         temp_df = df.copy()
     return temp_df
+
+
+def reduce_df(df: pd.DataFrame, reduced_size=300, trigger_size=500):
+    if len(df) >= trigger_size:
+        reduced_df = df.tail(reduced_size)
+        return reduced_df
+    return df

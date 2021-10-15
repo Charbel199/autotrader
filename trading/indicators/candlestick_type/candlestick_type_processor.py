@@ -14,6 +14,7 @@ class CandlestickType(object):
         self.data_structure = data_structure
 
     def process_new_candlestick(self):
+        self.df = data_structure_helper.reduce_df(self.df)
         # Create temporary data structures
         self.temp_data_structure = data_structure_helper.get_temp_tick_data_structure(self.data_structure, self.number_of_ticks_needed)
 

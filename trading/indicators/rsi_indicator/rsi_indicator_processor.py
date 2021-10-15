@@ -16,6 +16,7 @@ class RSI(object):
         self.data_structure = data_structure
 
     def process_new_candlestick(self):
+        self.df = data_structure_helper.reduce_df(self.df)
         # Create temporary data structures
         temp_df = data_structure_helper.get_temp_df(self.df, self.period)
 
