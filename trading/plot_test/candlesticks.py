@@ -1,13 +1,13 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import plotly.graph_objects as go # or plotly.express as px
-
+import plotly.graph_objects as go  # or plotly.express as px
 
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 
 from dash.dependencies import Input, Output
+
 
 def show_candlesticks(df):
     fig = make_subplots(rows=3, cols=1)
@@ -17,10 +17,9 @@ def show_candlesticks(df):
                                     low=df['Low'],
                                     close=df['Close'], name="Candlesticks"), row=1, col=1)
 
-
     app = dash.Dash()
     app.layout = html.Div([
-        dcc.Graph(id='graph',figure=fig),
+        dcc.Graph(id='graph', figure=fig),
         html.Div([
             dcc.Markdown("""
                    **Click Data**
@@ -30,9 +29,10 @@ def show_candlesticks(df):
             html.Pre(id='click-previous_data'),
         ], className='three columns')
     ])
+
     @app.callback(
-    Output('click-previous_data', 'children'),
-    [Input('graph', 'clickData')])
+        Output('click-previous_data', 'children'),
+        [Input('graph', 'clickData')])
     def display_click_data(clickData):
         print(clickData)
 

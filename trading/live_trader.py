@@ -63,8 +63,8 @@ class LiveTraderRunner(object):
     def __init__(self, live_fetcher_provider):
         self.live_data_fetcher = get_live_fetcher(live_fetcher_provider)
 
-    def prepare_live_trader(self, symbol, timeframe, account_provider, data_fetcher_provider, data_structure_provider, strategy_provider, back_date=None):
-        account = get_account(account_provider)
+    def prepare_live_trader(self, symbol, timeframe, account_provider, data_fetcher_provider, data_structure_provider, strategy_provider, balance=100, back_date=None):
+        account = get_account(account_provider, balance)
         data_fetcher = get_fetcher(data_fetcher_provider)
         data_structure = get_data_structure(data_structure_provider)
         strategy = get_strategy(strategy_provider, data_structure, account, symbol)

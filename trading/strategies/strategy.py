@@ -12,6 +12,8 @@ class Strategy(ABC):
         self.account = account
         self.symbol = symbol
         self.transactions_allowed = True
+        self.number_of_trades = 0
+        self.number_of_stop_losses = 0
 
     # Happens AFTER updating the tick in the previous_data structure
     @abstractmethod
