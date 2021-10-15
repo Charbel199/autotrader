@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from data.data_logger import logger
+
 load_dotenv()
 log = logger.setup_applevel_logger(file_name='test_generator_debug.log')
 from ml.candlestick_generator import CandlestickGeneratorRunner

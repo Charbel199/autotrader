@@ -64,9 +64,8 @@ class CandlestickGeneratorRunner(object):
     def get_new_candlesticks(self):
         # Save old data
         if len(self.clicked_candlesticks) > 0:
-            print('candlesticks ',self.clicked_candlesticks)
-            print(self.data['ADX'].to_string())
-
+            print('candlesticks ', self.clicked_candlesticks)
+            # print(self.data['ADX'].to_string())
 
         self.clicked_candlesticks = []
         self.data = self.generator.get_new_candlesticks()

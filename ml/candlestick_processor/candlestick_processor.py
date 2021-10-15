@@ -1,5 +1,5 @@
 from data.data_structures.structure import TickStructure
-from abc import  abstractmethod
+from abc import abstractmethod
 
 
 class CandlestickProcessor(object):

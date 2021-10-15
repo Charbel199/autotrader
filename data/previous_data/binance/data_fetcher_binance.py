@@ -2,6 +2,7 @@ from data.previous_data.data_fetcher import DataFetcher
 from binance.client import Client
 import os
 from data.data_logger import logger
+
 log = logger.get_logger(__name__)
 
 
