@@ -53,11 +53,11 @@ class DataFetcherBinance(DataFetcher):
 def format_tick(tick):
     candlestick = {
         "Time": tick[0],
-        "Open": tick[1],
-        "Close": tick[4],
-        "High": tick[2],
-        "Low": tick[3],
-        "Volume": tick[5],
+        "Open": float(tick[1]),
+        "Close": float(tick[4]),
+        "High": float(tick[2]),
+        "Low": float(tick[3]),
+        "Volume": float(tick[5]),
         "OpenTime": tick[0],
         "CloseTime": tick[6]
     }

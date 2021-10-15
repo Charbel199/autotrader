@@ -28,11 +28,11 @@ class LiveDataFetcherBinance(LiveDataFetcher):
     def map_message(self, message):
         tick = {
             "Time": message["E"],
-            "Open": message["k"]["o"],
-            "Close": message["k"]["c"],
-            "High": message["k"]["h"],
-            "Low": message["k"]["l"],
-            "Volume": message["k"]["v"],
+            "Open": float(message["k"]["o"]),
+            "Close": float(message["k"]["c"]),
+            "High": float(message["k"]["h"]),
+            "Low": float(message["k"]["l"]),
+            "Volume": float(message["k"]["v"]),
             "OpenTime": message["k"]["t"],
             "CloseTime": message["k"]["T"],
         }
