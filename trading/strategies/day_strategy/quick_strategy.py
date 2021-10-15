@@ -11,7 +11,6 @@ from data.data_logger import logger
 log = logger.get_logger(__name__)
 
 
-
 class QuickStrategy(Strategy):
     def __init__(self, data_structure, account, symbol):
         super().__init__(data_structure, account, symbol)
@@ -20,7 +19,7 @@ class QuickStrategy(Strategy):
         self.RSI = RSI(data_structure)
         self.BollingerBand = BollingerBand(data_structure)
         self.ChaikinMoneyFlow = ChaikinMoneyFlow(data_structure)
-        self.SellSignal = SellSignal(data_structure, sell_below_max_percentage=0.995)
+        self.SellSignal = SellSignal(data_structure, sell_below_max_percentage=0.997)
 
     def process_new_candlestick(self):
         # Process ADX
@@ -30,16 +29,22 @@ class QuickStrategy(Strategy):
         self.BollingerBand.process_new_candlestick()
         self.ChaikinMoneyFlow.process_new_candlestick()
 
-
         # if self.transactions_allowed:
         #     if self.RSI.get_all_rsi_values()['RSI'].iloc[-1] < 20 and self.account.get_position() == {}:
         #         self.account.buy(self.ADX.get_last_adx_values()['Time'].iloc[-1], self.symbol, 10, self.data_structure.get_tick_close())
         #         self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.01)
 
-        if self.transactions_allowed:
-            if self.RSI.get_all_rsi_values()['RSI'].iloc[-1] < 20 and self.account.get_position() == {}:
-                self.account.buy(self.ADX.get_last_adx_values()['Time'].iloc[-1], self.symbol, 10, self.data_structure.get_tick_close())
-                self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.01)
+        if self.transactions_allowed and self.account.get_position() == {} and self.data_structure.get_number_of_rows() > 30:
+            # Step 1: Price needs to break the middle line of the bollinger band
+            if self.data_structure.get_before_last_value('Open') < self.BollingerBand.get_last_bollinger_bands_values(2)['UpperBollingerBand'].tolist()[-2] < self.data_structure.get_before_last_value('Close')\
+                    and self.data_structure.get_last_value('Close') > self.BollingerBand.get_last_bollinger_bands_values()['UpperBollingerBand'].tolist()[-1]:
+                # Step 2: RSI above 50
+                if self.RSI.get_last_rsi_values()['RSI'].tolist()[-1] > 50:
+                    # Step 3: CMF Breaks above 0
+                    if self.ChaikinMoneyFlow.get_all_cmf_values()['ChaikinMoneyFlow'].tolist()[-1] > 0:
+                        self.account.buy(self.ADX.get_last_adx_values()['Time'].iloc[-1], self.symbol, 10, self.data_structure.get_tick_close())
+
+                        self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.015)
 
     def process_new_tick(self):
         # print('Got new tick in strat ', self.data_structure.get_tick())
@@ -54,17 +59,17 @@ class QuickStrategy(Strategy):
                     self.account.sell(self.ADX.get_last_adx_values()['Time'].iloc[-1], self.symbol, 10, self.data_structure.get_tick_close())
 
     def get_figure(self):
-        fig = make_subplots(rows=4, cols=1)
+        fig = make_subplots(rows=1, cols=1)
         fig.append_trace(self.data_structure.get_plot(), row=1, col=1)
-        fig.append_trace(self.ChaikinMoneyFlow.get_plot(), row=4, col=1)
-        # fig.append_trace(self.BollingerBand.get_plot()[0], row=1, col=1)
-        # fig.append_trace(self.BollingerBand.get_plot()[1], row=1, col=1)
-        # fig.append_trace(self.BollingerBand.get_plot()[2], row=1, col=1)
+        # fig.append_trace(self.ChaikinMoneyFlow.get_plot(), row=4, col=1)
+        fig.append_trace(self.BollingerBand.get_plot()[0], row=1, col=1)
+        fig.append_trace(self.BollingerBand.get_plot()[1], row=1, col=1)
+        fig.append_trace(self.BollingerBand.get_plot()[2], row=1, col=1)
         buy_plot, sell_plot = self.account.get_plot()
         fig.append_trace(buy_plot, row=1, col=1)
         fig.append_trace(sell_plot, row=1, col=1)
-        fig.append_trace(self.ADX.get_plot(), row=2, col=1)
-        fig.append_trace(self.RSI.get_plot(), row=3, col=1)
+        # fig.append_trace(self.ADX.get_plot(), row=2, col=1)
+        # fig.append_trace(self.RSI.get_plot(), row=3, col=1)
         coordinates = self.SellSignal.get_plot()
         for coordinate in coordinates:
             fig.add_vrect(
