@@ -1,42 +1,58 @@
 from dotenv import load_dotenv
-
 from data.data_logger import logger
 load_dotenv()
-log = logger.setup_applevel_logger(file_name = 'test_generator_debug.log')
-
-from ml.candlestick_generator import CandlestickGenerator
-from ml.candlestick_processor.candlestick_processor import get_candlestick_processor
-from data.previous_data.data_fetcher import get_fetcher
-from helper import date_helper
-import threading
-import plotly.graph_objects as go
-import pandas as pd
-from data.data_structures.structure import get_data_structure
-from plotly.subplots import make_subplots
+log = logger.setup_applevel_logger(file_name='test_generator_debug.log')
+from ml.candlestick_generator import CandlestickGeneratorRunner
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
+from dash.dependencies import Input, Output
 
 start_date = "1 Oct, 2018"
 
-data_fetcher = get_fetcher('binance')
-data_structure = get_data_structure('pandas')
-candlestick_generator_processor = get_candlestick_processor('simple',data_structure)
-generator = CandlestickGenerator(candlestick_generator_processor, data_fetcher, data_structure, ['DOGEUSDT', 'BTCUSDT', 'ADAUSDT'], '5m')
-generator.fetch_new_candlesticks(date_helper.get_random_timestamp(date_helper.from_binance_date_to_timestamp(start_date)), 8)
-while True:
-    thread = threading.Thread(target=generator.fetch_new_candlesticks, args=[date_helper.get_random_timestamp(date_helper.from_binance_date_to_timestamp(start_date)), 8])
-    thread.start()
-    data = generator.get_new_candlesticks()
-    candlesticks = data['Ticks']
-    print("GOT IT ")
-    #print(data['ADX'].to_string())
-    df = pd.DataFrame(candlesticks)
-    if df.__len__() > 0:
-        fig = make_subplots(rows=1, cols=1)
-        fig.append_trace(go.Candlestick(x=df['Time'],
-                                        open=df['Open'],
-                                        high=df['High'],
-                                        low=df['Low'],
-                                        close=df['Close'], name="Candlesticks"), row=1, col=1)
+runner = CandlestickGeneratorRunner(symbols=['DOGEUSDT', 'BTCUSDT', 'ADAUSDT'], timeframe='5m', data_fetcher_provider='binance',
+                                    data_structure_provider='pandas', candlestick_processor_provider='simple', start_date=start_date)
+runner.get_new_candlesticks()
+fig = runner.get_fig()
+app = dash.Dash()
+app.layout = html.Div([
+    dcc.Graph(id='graph', figure=fig),
+    dcc.Interval(
+        id='graph-update',
+        interval=1000
+    ),
+    html.Pre(id='click-data', style={'display': 'none'}),
+    html.Button('Get new data', id='retrieve-data-button', n_clicks=0),
+    html.Div(id='retrieve-data-output', style={'display': 'none'}),
 
-        fig.show()
-    _ = input("Press anything to continue")
-    thread.join()
+])
+
+
+@app.callback(
+    Output('click-data', 'children'),
+    [Input('graph', 'clickData')])
+def display_click_data(click_data):
+    if click_data is not None:
+        runner.click_candlestick(click_data['points'][0])
+
+
+@app.callback(
+    Output(component_id='graph', component_property='figure'),
+    [Input(component_id='graph-update', component_property='n_intervals')]
+)
+def update_graph(_):
+    return runner.get_fig()
+
+
+@app.callback(
+    Output(component_id='retrieve-data-output', component_property='children'),
+    [Input(component_id='retrieve-data-button', component_property='n_clicks')])
+def retrieve_data(n_clicks):
+    if n_clicks <= 0:
+        return
+    log.info('Getting new candlesticks')
+    runner.get_new_candlesticks()
+    return
+
+
+app.run_server(debug=True, use_reloader=False)

@@ -29,13 +29,8 @@ class QuickStrategy(Strategy):
         self.BollingerBand.process_new_candlestick()
         self.ChaikinMoneyFlow.process_new_candlestick()
 
-        # if self.transactions_allowed:
-        #     if self.RSI.get_all_rsi_values()['RSI'].iloc[-1] < 20 and self.account.get_position() == {}:
-        #         self.account.buy(self.ADX.get_last_adx_values()['Time'].iloc[-1], self.symbol, 10, self.data_structure.get_tick_close())
-        #         self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.01)
-
         if self.transactions_allowed and self.account.get_position() == {} and self.data_structure.get_number_of_rows() > 30:
-            # Step 1: Price needs to break the middle line of the bollinger band
+            # Step 1: Price needs to break the upper bollinger band and the next candlestick needs to also close above it
             if self.data_structure.get_before_last_value('Open') < self.BollingerBand.get_last_bollinger_bands_values(2)['UpperBollingerBand'].tolist()[-2] < self.data_structure.get_before_last_value('Close')\
                     and self.data_structure.get_last_value('Close') > self.BollingerBand.get_last_bollinger_bands_values()['UpperBollingerBand'].tolist()[-1]:
                 # Step 2: RSI above 50
