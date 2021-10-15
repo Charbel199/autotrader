@@ -1,5 +1,6 @@
 from data.data_structures.structure import TickStructure
 import pandas as pd
+from helper import data_structure_helper
 
 
 class CandlestickType(object):
@@ -13,11 +14,8 @@ class CandlestickType(object):
         self.data_structure = data_structure
 
     def process_new_candlestick(self):
-        # Create temporary data_structure
-        if self.data_structure.get_number_of_rows() > self.number_of_ticks_needed:
-            self.temp_data_structure = self.data_structure.get_tick_structure_copy(self.number_of_ticks_needed)
-        else:
-            self.temp_data_structure = self.data_structure.get_tick_structure_copy()
+        # Create temporary data structures
+        self.temp_data_structure = data_structure_helper.get_temp_tick_data_structure(self.data_structure, self.number_of_ticks_needed)
 
         # Create new row
         self.df.loc[len(self.df.index)] = {'Time': self.temp_data_structure.get_last_time()}

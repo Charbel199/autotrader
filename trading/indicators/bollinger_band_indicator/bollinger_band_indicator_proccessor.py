@@ -2,6 +2,7 @@ import pandas as pd
 from data.data_structures.structure import TickStructure
 import numpy as np
 import plotly.graph_objects as go
+from helper import data_structure_helper
 
 
 class BollingerBand(object):
@@ -17,20 +18,19 @@ class BollingerBand(object):
         self.data_structure = data_structure
 
     def process_new_candlestick(self):
-        # Create temporary data_structure
-        if self.data_structure.get_number_of_rows() > self.number_of_ticks_needed:
-            self.temp_data_structure = self.data_structure.get_tick_structure_copy(self.number_of_ticks_needed)
-        else:
-            self.temp_data_structure = self.data_structure.get_tick_structure_copy()
+        # Create temporary data structures
+        temp_df = data_structure_helper.get_temp_df(self.df, self.period)
+        self.temp_data_structure = data_structure_helper.get_temp_tick_data_structure(self.data_structure, self.number_of_ticks_needed)
 
         # Create new row
-        self.df.loc[len(self.df.index)] = {'Time': self.temp_data_structure.get_last_time()}
+        temp_df.loc[len(self.df.index)] = {'Time': self.temp_data_structure.get_last_time()}
         if self.temp_data_structure.get_number_of_rows() >= self.period:
-            self.df['SMA'].iloc[-1] = np.mean(self.temp_data_structure.get_last_rows(self.period)['Close'].tolist())
-        if self.df['SMA'].count() >= 1:
+            temp_df['SMA'].iloc[-1] = np.mean(self.temp_data_structure.get_last_rows(self.period)['Close'].tolist())
+        if temp_df['SMA'].count() >= 1:
             deviation = np.std(self.temp_data_structure.get_last_rows(self.period)['Close'].tolist())
-            self.df['UpperBollingerBand'].iloc[-1] = self.df['SMA'].iloc[-1] + deviation * self.bollinger_band_multiplier
-            self.df['LowerBollingerBand'].iloc[-1] = self.df['SMA'].iloc[-1] - deviation * self.bollinger_band_multiplier
+            temp_df['UpperBollingerBand'].iloc[-1] = temp_df['SMA'].iloc[-1] + deviation * self.bollinger_band_multiplier
+            temp_df['LowerBollingerBand'].iloc[-1] = temp_df['SMA'].iloc[-1] - deviation * self.bollinger_band_multiplier
+        self.df = self.df.append(temp_df.tail(1))
 
     def get_last_bollinger_bands_values(self, n=1):
         # Gets last BollingerBands by default

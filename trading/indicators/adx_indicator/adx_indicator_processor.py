@@ -2,6 +2,7 @@ import pandas as pd
 from data.data_structures.structure import TickStructure
 import numpy as np
 import plotly.graph_objects as go
+from helper import data_structure_helper
 
 
 class ADX(object):
@@ -17,16 +18,9 @@ class ADX(object):
         self.data_structure = data_structure
 
     def process_new_candlestick(self):
-        # Create temporary dataframe (We only need the last {period} previous_data points)
-        if len(self.df.index) > self.period:
-            temp_df = self.df.tail(self.period).copy()
-        else:
-            temp_df = self.df.copy()
-        # Create temporary data_structure
-        if self.data_structure.get_number_of_rows() > self.number_of_ticks_needed:
-            self.temp_data_structure = self.data_structure.get_tick_structure_copy(self.number_of_ticks_needed)
-        else:
-            self.temp_data_structure = self.data_structure.get_tick_structure_copy()
+        # Create temporary data structures
+        temp_df = data_structure_helper.get_temp_df(self.df, self.period)
+        self.temp_data_structure = data_structure_helper.get_temp_tick_data_structure(self.data_structure, self.number_of_ticks_needed)
 
         # Create new row
         temp_df.loc[len(self.df.index)] = {'Time': self.temp_data_structure.get_last_time()}

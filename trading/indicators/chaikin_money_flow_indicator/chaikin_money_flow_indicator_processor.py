@@ -2,6 +2,7 @@ import pandas as pd
 from data.data_structures.structure import TickStructure
 import numpy as np
 import plotly.graph_objects as go
+from helper import data_structure_helper
 
 
 class ChaikinMoneyFlow(object):
@@ -16,27 +17,21 @@ class ChaikinMoneyFlow(object):
         self.data_structure = data_structure
 
     def process_new_candlestick(self):
-        if len(self.df.index) > self.period:
-            temp_df = self.df.tail(self.period).copy()
-        else:
-            temp_df = self.df.copy()
-        # Create temporary data_structure
-        if self.data_structure.get_number_of_rows() > self.number_of_ticks_needed:
-            self.temp_data_structure = self.data_structure.get_tick_structure_copy(self.number_of_ticks_needed)
-        else:
-            self.temp_data_structure = self.data_structure.get_tick_structure_copy()
+        # Create temporary data structures
+        temp_df = data_structure_helper.get_temp_df(self.df, self.period)
+        self.temp_data_structure = data_structure_helper.get_temp_tick_data_structure(self.data_structure, self.number_of_ticks_needed)
 
         # Create new row
         temp_df.loc[len(self.df.index)] = {'Time': self.temp_data_structure.get_last_time()}
         if self.temp_data_structure.get_number_of_rows() >= 1:
             temp_df['ChaikinMultiplier'].iloc[-1] = ((self.temp_data_structure.get_last_value('Close') - self.temp_data_structure.get_last_value('Low')) - (
-                        self.temp_data_structure.get_last_value('High') - self.temp_data_structure.get_last_value('Close'))) / (
-                                                               self.temp_data_structure.get_last_value('High') - self.temp_data_structure.get_last_value('Low'))
+                    self.temp_data_structure.get_last_value('High') - self.temp_data_structure.get_last_value('Close'))) / (
+                                                            self.temp_data_structure.get_last_value('High') - self.temp_data_structure.get_last_value('Low'))
             temp_df['MoneyFlowVolume'].iloc[-1] = temp_df['ChaikinMultiplier'].iloc[-1] * self.temp_data_structure.get_last_value('Volume')
-        if temp_df['MoneyFlowVolume'].count()>=self.period:
+        if temp_df['MoneyFlowVolume'].count() >= self.period:
             volume_average = np.mean(self.temp_data_structure.get_last_rows(self.period)['Volume'].tolist())
             money_flow_average = np.mean(temp_df['MoneyFlowVolume'].tail(self.period).tolist())
-            temp_df['ChaikinMoneyFlow'].iloc[-1] = money_flow_average/volume_average
+            temp_df['ChaikinMoneyFlow'].iloc[-1] = money_flow_average / volume_average
 
         # Update CMF dataframe
         self.df = self.df.append(temp_df.tail(1))
