@@ -43,8 +43,8 @@ class BackTesterRunner(object):
     def __init__(self):
         pass
 
-    def prepare_backtester(self, symbol, timeframe, account_provider, data_fetcher_provider, data_structure_provider, strategy_provider, start_date, end_date=None):
-        account = get_account(account_provider)
+    def prepare_backtester(self, symbol, timeframe, account_provider, data_fetcher_provider, data_structure_provider, strategy_provider, start_date, balance=100, end_date=None):
+        account = get_account(account_provider, balance)
         data_fetcher = get_fetcher(data_fetcher_provider)
         data_structure = get_data_structure(data_structure_provider)
         strategy = get_strategy(strategy_provider, data_structure, account, symbol)

@@ -7,13 +7,16 @@ log = logger.get_logger(__name__)
 
 class TestAccount(Account):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, balance):
+        super().__init__(balance)
 
     def get_position(self):
         return self.position
 
-    def buy(self, time, symbol, amount, price):
+    def buy(self, time, symbol, price, amount=0):
+        if amount == 0:
+            amount = self.balance / price
+        self.balance -= amount * price
         log.info(f"{time} - Bought - {amount} of {symbol} at {price}")
         self.position = {
             "Time": time,
@@ -30,9 +33,13 @@ class TestAccount(Account):
             'Price': price
         }
 
-    def sell(self, time, symbol, amount, price):
+    def sell(self, time, symbol, price, amount=0):
         if self.position['Time'] != time:
+            if amount == 0:
+                amount = self.position['Amount']
+            self.balance += amount * price
             log.info(f"{time} - Sold - {amount} of {symbol} at {price}")
+            log.info(f"New balance: {self.balance}")
             self.position = {}
             self.df.loc[len(self.df.index)] = {
                 'Time': time,
