@@ -59,7 +59,7 @@ class QuickStrategy(Strategy):
                     self.account.sell(self.ADX.get_last_adx_values()['Time'].iloc[-1], self.symbol, 10, self.data_structure.get_tick_close())
 
     def get_figure(self):
-        fig = make_subplots(rows=1, cols=1)
+        fig = make_subplots(rows=2, cols=1)
         fig.append_trace(self.data_structure.get_plot(), row=1, col=1)
         # fig.append_trace(self.ChaikinMoneyFlow.get_plot(), row=4, col=1)
         fig.append_trace(self.BollingerBand.get_plot()[0], row=1, col=1)
@@ -69,7 +69,7 @@ class QuickStrategy(Strategy):
         fig.append_trace(buy_plot, row=1, col=1)
         fig.append_trace(sell_plot, row=1, col=1)
         # fig.append_trace(self.ADX.get_plot(), row=2, col=1)
-        # fig.append_trace(self.RSI.get_plot(), row=3, col=1)
+        fig.append_trace(self.RSI.get_plot(), row=2, col=1)
         coordinates = self.SellSignal.get_plot()
         for coordinate in coordinates:
             fig.add_vrect(

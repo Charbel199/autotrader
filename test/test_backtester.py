@@ -5,7 +5,7 @@ load_dotenv()
 log = logger.setup_applevel_logger(file_name='test_backtester_debug.log')
 from trading.backtester import BackTesterRunner
 
-start_date = "7 Oct, 2021"
+start_date = "13 Oct, 2021"
 
 runner = BackTesterRunner()
 backtester1 = runner.prepare_backtester(symbol="SOLUSDT", timeframe="5m", account_provider="testAccount",

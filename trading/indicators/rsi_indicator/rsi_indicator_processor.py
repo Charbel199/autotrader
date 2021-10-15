@@ -39,6 +39,9 @@ class RSI(object):
             if temp_df['AverageLoss'].iloc[-1] != 0:
                 temp_df['RS'].iloc[-1] = temp_df['AverageGain'].iloc[-1] / temp_df['AverageLoss'].iloc[-1]
                 temp_df['RSI'].iloc[-1] = 100 - (100 / (1 + temp_df['RS'].iloc[-1]))
+            else:
+                temp_df['RS'].iloc[-1] = 100
+                temp_df['RSI'].iloc[-1] = 100
 
         # Update RSI dataframe
         self.df = self.df.append(temp_df.tail(1))
