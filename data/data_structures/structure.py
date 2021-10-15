@@ -95,6 +95,10 @@ class TickStructure(ABC):
     def delete_data(self):
         pass
 
+    @abstractmethod
+    def reduce(self, reduced_size=300, trigger_size=500):
+        pass
+
     @staticmethod
     @abstractmethod
     def condition(name):

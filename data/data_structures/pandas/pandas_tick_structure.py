@@ -56,6 +56,11 @@ class PandasTickStructure(TickStructure):
     def get_last_rows(self, n):
         return self.df.tail(n)
 
+    def reduce(self, reduced_size=300, trigger_size=500):
+        if len(self.df) >= trigger_size:
+            self.df = self.df.tail(reduced_size)
+            self.df = self.df.reset_index(drop=True)
+
     def get_last_rows_copy(self, n):
         return self.df.tail(n).copy()
 
