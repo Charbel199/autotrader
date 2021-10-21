@@ -49,11 +49,13 @@ class BackTesterRunner(object):
         data_structure = get_data_structure(data_structure_provider)
         strategy = get_strategy(strategy_provider, data_structure, account, symbol)
         backtester_instance = BackTester(symbol, timeframe, data_fetcher, data_structure, strategy, account, start_date, end_date)
-        thread = threading.Thread(target=backtester_instance.run_backtester)
-        thread.start()
-        self.threads.append(thread)
+        backtester_instance.run_backtester()
+        # thread = threading.Thread(target=backtester_instance.run_backtester)
+        # thread.start()
+        # self.threads.append(thread)
         return backtester_instance
 
     def launch(self):
-        for thread in self.threads:
-            thread.join()
+        # for thread in self.threads:
+        #     thread.join()
+        pass
