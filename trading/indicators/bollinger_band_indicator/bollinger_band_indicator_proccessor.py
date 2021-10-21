@@ -26,9 +26,9 @@ class BollingerBand(object):
         # Create new row
         temp_df.loc[len(self.df.index)] = {'Time': self.temp_data_structure.get_last_time()}
         if self.temp_data_structure.get_number_of_rows() >= self.period:
-            temp_df['SMA'].iloc[-1] = np.mean(self.temp_data_structure.get_last_rows(self.period)['Close'].tolist())
+            temp_df['SMA'].iloc[-1] = np.mean(self.temp_data_structure.get_last_rows(self.period, 'Close'))
         if temp_df['SMA'].count() >= 1:
-            deviation = np.std(self.temp_data_structure.get_last_rows(self.period)['Close'].tolist())
+            deviation = np.std(self.temp_data_structure.get_last_rows(self.period,'Close'))
             temp_df['UpperBollingerBand'].iloc[-1] = temp_df['SMA'].iloc[-1] + deviation * self.bollinger_band_multiplier
             temp_df['LowerBollingerBand'].iloc[-1] = temp_df['SMA'].iloc[-1] - deviation * self.bollinger_band_multiplier
         self.df = self.df.append(temp_df.tail(1))

@@ -27,7 +27,7 @@ start_date = "1 Sep, 2021"
 end_date = "1 Oct, 2021"
 runner = BackTesterRunner()
 backtester1 = runner.prepare_backtester(symbol="ADAUSDT", timeframe="5m", account_provider="testAccount",
-                                        strategy_provider="quickStrategy", data_structure_provider="pandas", data_fetcher_provider="binance",
+                                        strategy_provider="quickStrategy", data_structure_provider="list", data_fetcher_provider="binance",
                                         start_date=start_date, end_date=end_date)
 # backtester2 = runner.prepare_backtester(symbol="DOTUSDT", timeframe="5m", account_provider="testAccount",
 #                                         strategy_provider="quickStrategy", data_structure_provider="pandas", data_fetcher_provider="binance",

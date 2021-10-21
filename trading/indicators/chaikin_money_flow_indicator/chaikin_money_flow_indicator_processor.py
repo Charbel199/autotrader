@@ -30,7 +30,7 @@ class ChaikinMoneyFlow(object):
                                                             self.temp_data_structure.get_last_value('High') - self.temp_data_structure.get_last_value('Low'))
             temp_df['MoneyFlowVolume'].iloc[-1] = temp_df['ChaikinMultiplier'].iloc[-1] * self.temp_data_structure.get_last_value('Volume')
         if temp_df['MoneyFlowVolume'].count() >= self.period:
-            volume_average = np.mean(self.temp_data_structure.get_last_rows(self.period)['Volume'].tolist())
+            volume_average = np.mean(self.temp_data_structure.get_last_rows(self.period,'Volume'))
             money_flow_average = np.mean(temp_df['MoneyFlowVolume'].tail(self.period).tolist())
             temp_df['ChaikinMoneyFlow'].iloc[-1] = money_flow_average / volume_average
 

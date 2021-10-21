@@ -20,10 +20,6 @@ class TickStructure(ABC):
         pass
 
     @abstractmethod
-    def change_last_row(self, row):
-        pass
-
-    @abstractmethod
     def get_data(self):
         pass
 
@@ -40,15 +36,7 @@ class TickStructure(ABC):
         pass
 
     @abstractmethod
-    def get_last_row(self):
-        pass
-
-    @abstractmethod
-    def get_last_rows(self, n):
-        pass
-
-    @abstractmethod
-    def get_last_rows_copy(self, n):
+    def get_last_rows(self, n, column_name):
         pass
 
     @abstractmethod
@@ -57,14 +45,6 @@ class TickStructure(ABC):
 
     @abstractmethod
     def get_before_last_value(self, column_name):
-        pass
-
-    @abstractmethod
-    def get_before_last_row(self):
-        pass
-
-    @abstractmethod
-    def get_copy(self):
         pass
 
     @abstractmethod
