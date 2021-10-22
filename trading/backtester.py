@@ -2,6 +2,10 @@ from trading.strategies.strategy import Strategy
 from data.data_structures.structure import TickStructure
 from data.previous_data.data_fetcher import DataFetcher
 from trading.accounts.account import Account
+import time
+from data.data_logger import logger
+
+log = logger.get_logger(__name__)
 
 
 class BackTester(object):
@@ -21,13 +25,20 @@ class BackTester(object):
         self.end_date = end_date
 
     def run_backtester(self):
+        start = time.time()
         candlesticks = self.data_fetcher.get_candlesticks(self.symbol, self.timeframe, self.start_date, self.end_date)
+        end = time.time()
+        log.info(f"Candlestick fetching duration: {(end - start)}")
+
+        start = time.time()
         for candlestick in candlesticks:
             if self.data_structure:
                 self.data_structure.add_row(candlestick)
                 self.strategy.process_new_candlestick()
                 self.data_structure.set_tick(candlestick)
                 self.strategy.process_new_tick()
+        end = time.time()
+        log.info(f"Candlestick processing duration: {(end - start)}")
 
 
 from data.previous_data.data_fetcher import get_fetcher
@@ -49,6 +60,7 @@ class BackTesterRunner(object):
         data_structure = get_data_structure(data_structure_provider)
         strategy = get_strategy(strategy_provider, data_structure, account, symbol)
         backtester_instance = BackTester(symbol, timeframe, data_fetcher, data_structure, strategy, account, start_date, end_date)
+        #backtester_instance.run_backtester()
         thread = threading.Thread(target=backtester_instance.run_backtester)
         thread.start()
         self.threads.append(thread)
@@ -57,3 +69,4 @@ class BackTesterRunner(object):
     def launch(self):
         for thread in self.threads:
             thread.join()
+        #pass

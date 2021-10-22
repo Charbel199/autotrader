@@ -47,13 +47,13 @@ class QuickStrategy(Strategy):
             #             self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.015)
 
             # Step 1: Price needs to break the upper bollinger band and the next candlestick needs to also close above it
-            if self.data_structure.get_last_value('Close') > self.BollingerBand.get_last_bollinger_bands_values()['LowerBollingerBand'].tolist()[-1] > self.data_structure.get_last_value('Open'):
+            if self.data_structure.get_last_value('Close') > self.BollingerBand.get_last_values()[-1]['LowerBollingerBand'] > self.data_structure.get_last_value('Open'):
                 self.firstStep = True
             # Step 2: RSI above 50
             if self.firstStep:
-                if self.RSI.get_last_rsi_values()['RSI'].tolist()[-1] > 50:
+                if self.RSI.get_last_values()[-1]['RSI'] > 50:
                     self.secondStep = True
-                if self.ChaikinMoneyFlow.get_all_cmf_values()['ChaikinMoneyFlow'].tolist()[-1] > 0:
+                if self.ChaikinMoneyFlow.get_last_values()[-1]['ChaikinMoneyFlow'] > 0:
                     self.thirdStep = True
             if self.firstStep and self.secondStep and self.thirdStep:
                 self.account.buy(self.data_structure.get_last_value('Time'), self.symbol, self.data_structure.get_tick_close())

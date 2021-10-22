@@ -22,8 +22,6 @@ class PandasTickStructure(TickStructure):
     def get_last_time(self):
         return self.df['Time'].iloc[-1]
 
-    def change_last_row(self, row):
-        self.df.iloc[-1] = row
 
     def get_last_time_tick(self):
         if self.tick:
@@ -47,25 +45,14 @@ class PandasTickStructure(TickStructure):
             return self.tick
         return {}
 
-    def get_copy(self):
-        return self.df.copy()
-
-    def get_last_row(self):
-        return self.df.tail(1)
-
-    def get_last_rows(self, n):
-        return self.df.tail(n)
+    def get_last_rows(self, n, column_name):
+        return self.df.tail(n)[column_name].tolist()
 
     def reduce(self, reduced_size=300, trigger_size=500):
         if len(self.df) >= trigger_size:
             self.df = self.df.tail(reduced_size)
             self.df = self.df.reset_index(drop=True)
 
-    def get_last_rows_copy(self, n):
-        return self.df.tail(n).copy()
-
-    def get_before_last_row(self):
-        return self.df.iloc[-2]
 
     def get_number_of_rows(self):
         return len(self.df.index)

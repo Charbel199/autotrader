@@ -2,7 +2,7 @@ from data.previous_data.data_fetcher import DataFetcher
 from binance.client import Client
 import os
 from data.data_logger import logger
-
+from helper import date_helper
 log = logger.get_logger(__name__)
 
 
@@ -53,6 +53,7 @@ class DataFetcherBinance(DataFetcher):
 
 def format_tick(tick):
     candlestick = {
+        # "Time": date_helper.from_timestamp_to_date(int(tick[0])/1000),
         "Time": tick[0],
         "Open": float(tick[1]),
         "Close": float(tick[4]),
