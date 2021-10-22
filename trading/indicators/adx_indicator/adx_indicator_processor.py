@@ -77,7 +77,7 @@ class ADX(object):
         self.list = []
 
     def get_plot(self):
-        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['ADX'] for d in self.list], name="ADX")
+        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['ADX'] for d in self.list  if 'ADX' in d], name="ADX")
 
 # import pandas as pd
 # from data.data_structures.structure import TickStructure
