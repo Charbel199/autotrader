@@ -1,18 +1,16 @@
 from data.data_structures.structure import TickStructure
 import numpy as np
 import plotly.graph_objects as go
+from trading.indicators.inidicator import Indicator
 
 
-class ADX(object):
-    columns = ['Time', 'TrueRange', 'ATR', 'H-pH', 'pL-L', '+DX', '-DX', 'Smooth+DX', 'Smooth-DX', '+DMI', '-DMI', 'DX',
-               'ADX']
+class ADX(Indicator):
+    # columns = ['Time', 'TrueRange', 'ATR', 'H-pH', 'pL-L', '+DX', '-DX', 'Smooth+DX', 'Smooth-DX', '+DMI', '-DMI', 'DX','ADX']
     period = 14
-    number_of_ticks_needed = 2
     data_structure: TickStructure
 
     def __init__(self, data_structure):
-        self.list = []
-        self.data_structure = data_structure
+        super().__init__(data_structure)
         self.true_range_counter = 0
         self.atr_counter = 0
         self.dx_counter = 0
@@ -66,18 +64,11 @@ class ADX(object):
             self.list[-1]['ADX'] = (self.list[-2]['ADX'] * (self.period - 1) + self.list[-1]['DX']) / self.period
             self.adx_counter += 1
 
-    def get_last_adx_values(self, n=1):
-        # Gets last ADX by default
-        return self.list[-n:]
-
-    def get_all_adx_values(self):
-        return self.list
-
-    def delete_data(self):
-        self.list = []
+    def process_new_tick(self):
+        pass
 
     def get_plot(self):
-        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['ADX'] for d in self.list  if 'ADX' in d], name="ADX")
+        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['ADX'] for d in self.list if 'ADX' in d], name="ADX")
 
 # import pandas as pd
 # from data.data_structures.structure import TickStructure
