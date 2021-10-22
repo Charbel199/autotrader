@@ -14,7 +14,7 @@ log = logger.get_logger(__name__)
 class QuickStrategy(Strategy):
     def __init__(self, data_structure, account, symbol):
         super().__init__(data_structure, account, symbol)
-        self.ADX = ADX(data_structure)
+        # self.ADX = ADX(data_structure)
         # self.CandlestickType = CandlestickType(data_structure)
         self.RSI = RSI(data_structure)
         self.BollingerBand = BollingerBand(data_structure)
@@ -28,7 +28,7 @@ class QuickStrategy(Strategy):
         self.data_structure.reduce()
 
 
-        self.ADX.process_new_candlestick()
+        # self.ADX.process_new_candlestick()
         # self.CandlestickType.process_new_candlestick()
         self.RSI.process_new_candlestick()
         self.BollingerBand.process_new_candlestick()
@@ -47,13 +47,13 @@ class QuickStrategy(Strategy):
             #             self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.015)
 
             # Step 1: Price needs to break the upper bollinger band and the next candlestick needs to also close above it
-            if self.data_structure.get_last_value('Close') > self.BollingerBand.get_last_bollinger_bands_values()['LowerBollingerBand'].tolist()[-1] > self.data_structure.get_last_value('Open'):
+            if self.data_structure.get_last_value('Close') > self.BollingerBand.get_last_values()[-1]['LowerBollingerBand'] > self.data_structure.get_last_value('Open'):
                 self.firstStep = True
             # Step 2: RSI above 50
             if self.firstStep:
-                if self.RSI.get_last_rsi_values()['RSI'].tolist()[-1] > 50:
+                if self.RSI.get_last_values()[-1]['RSI'] > 50:
                     self.secondStep = True
-                if self.ChaikinMoneyFlow.get_all_cmf_values()['ChaikinMoneyFlow'].tolist()[-1] > 0:
+                if self.ChaikinMoneyFlow.get_last_values()[-1]['ChaikinMoneyFlow'] > 0:
                     self.thirdStep = True
             if self.firstStep and self.secondStep and self.thirdStep:
                 self.account.buy(self.data_structure.get_last_value('Time'), self.symbol, self.data_structure.get_tick_close())
