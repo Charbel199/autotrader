@@ -14,7 +14,7 @@ log = logger.get_logger(__name__)
 class QuickStrategy(Strategy):
     def __init__(self, data_structure, account, symbol):
         super().__init__(data_structure, account, symbol)
-        # self.ADX = ADX(data_structure)
+        self.ADX = ADX(data_structure)
         # self.CandlestickType = CandlestickType(data_structure)
         self.RSI = RSI(data_structure)
         self.BollingerBand = BollingerBand(data_structure)
@@ -28,7 +28,7 @@ class QuickStrategy(Strategy):
         self.data_structure.reduce()
 
 
-        # self.ADX.process_new_candlestick()
+        self.ADX.process_new_candlestick()
         # self.CandlestickType.process_new_candlestick()
         self.RSI.process_new_candlestick()
         self.BollingerBand.process_new_candlestick()

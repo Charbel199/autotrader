@@ -1,9 +1,8 @@
 from collections import deque
+l=[{'value': 'cars','blah': 2},
+ {'value': 'cars', 'blah': 3},
+ {'value': 'cars', 'blah': 4}]
 
-# Declaring deque
-list = [1,2,3]
-list2=list.copy()
-print(list2)
-list2[1] = 4
-print(list)
-print(list2)
+test = [d.get('value','blah') for d in l]
+print(len(test))
+print(test)
