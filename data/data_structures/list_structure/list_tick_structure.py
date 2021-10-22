@@ -44,7 +44,7 @@ class ListTickStructure(TickStructure):
         return {}
 
     def get_last_rows(self, n, column_name):
-        return [d[column_name] for d in self.list]
+        return [d[column_name] for d in self.list[-n:]]
 
     def reduce(self, reduced_size=300, trigger_size=500):
         if len(self.list) >= trigger_size:
