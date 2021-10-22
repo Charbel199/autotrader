@@ -33,7 +33,7 @@ class ListTickStructure(TickStructure):
         return self.list[-2][column_name]
 
     def get_specific_value(self, column_name, n):
-        return self.list[-n][column_name]
+        return self.list[n][column_name]
 
     def get_data(self):
         return self.list
