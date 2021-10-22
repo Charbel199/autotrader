@@ -25,13 +25,13 @@ class TestAccount(Account):
             "Price": price
         }
         log.info(f"New position {self.position}")
-        self.df.loc[len(self.df.index)] = {
+        self.list.append({
             'Time': time,
             'Action': 'Buy',
             'Amount': amount,
             'Symbol': symbol,
             'Price': price
-        }
+        })
 
     def sell(self, time, symbol, price, amount=0):
         if self.position['Time'] != time:
@@ -41,26 +41,26 @@ class TestAccount(Account):
             log.info(f"{time} - Sold - {amount} of {symbol} at {price}")
             log.info(f"New balance: {self.balance}")
             self.position = {}
-            self.df.loc[len(self.df.index)] = {
+            self.list.append({
                 'Time': time,
                 'Action': 'Sell',
                 'Amount': amount,
                 'Symbol': symbol,
                 'Price': price
-            }
+            })
 
     def get_plot(self):
-        buy_df = self.df[(self.df['Action'] == 'Buy')]
-        sell_df = self.df[(self.df['Action'] == 'Sell')]
+        buys = [d for d in self.list if d["Action"] == "Buy"]
+        sells = [d for d in self.list if d["Action"] == "Sell"]
         return go.Scatter(
-            x=buy_df['Time'],
-            y=buy_df['Price'],
+            x=[d["Time"] for d in buys],
+            y=[d["Price"] for d in buys],
             marker=dict(color="gold", size=13, symbol=46),
             mode="markers",
             name="Buy"
         ), go.Scatter(
-            x=sell_df['Time'],
-            y=sell_df['Price'],
+            x=[d["Time"] for d in sells],
+            y=[d["Price"] for d in sells],
             marker=dict(color="silver", size=13, symbol=45),
             mode="markers",
             name="Sell"

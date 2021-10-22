@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-import pandas as pd
 from data.data_logger import logger
 
 log = logger.get_logger(__name__)
@@ -12,7 +11,7 @@ class Account(ABC):
         self.position = {}
         self.initial_balance = balance
         self.balance = balance
-        self.df = pd.DataFrame(columns=self.columns)
+        self.list = []
 
     @abstractmethod
     def get_position(self):
@@ -29,13 +28,13 @@ class Account(ABC):
     def get_profit(self):
         # If in position when calculating profit, revert last buy
         if self.position != {}:
-            self.df = self.df[:-1]
+            self.list = self.list[:-1]
             self.balance += self.position['Price'] * self.position['Amount']
 
-        sells = self.df[self.df["Action"] == "Sell"]
-        buys = self.df[self.df["Action"] == "Buy"]
-        total_buy_price = (buys["Price"] * buys["Amount"]).sum()
-        total_sell_price = (sells["Price"] * sells["Amount"]).sum()
+        sells = [d for d in self.list if d["Action"] == "Sell"]
+        buys = [d for d in self.list if d["Action"] == "Buy"]
+        total_buy_price = sum([d["Price"]*d["Amount"] for d in buys])
+        total_sell_price = sum([d["Price"]*d["Amount"] for d in sells])
         profit = total_sell_price - total_buy_price
         # if total_buy_price != 0:
         #     percentage = ((total_sell_price - total_buy_price) / total_buy_price) * 100
