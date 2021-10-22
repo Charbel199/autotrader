@@ -43,9 +43,9 @@ backtester1 = runner.prepare_backtester(symbol="ADAUSDT", timeframe="5m", accoun
 #                                         start_date=start_date, end_date=end_date)
 runner.launch()
 
-get_info(backtester1, show_fig=True)
+#get_info(backtester1, show_fig=True)
 
 
 end = time.time()
-log.info(f"Duration: {(end-start)}")
+log.info(f"Total duration: {(end-start)}")
 
