@@ -33,7 +33,6 @@ class DataFetcherBinance(DataFetcher):
                     binance_timeframe = self.binance_timeframes[timeframe]
                 else:
                     binance_timeframe = None
-
                 # Get candlesticks
                 if binance_timeframe:
                     if end_date:
@@ -43,7 +42,8 @@ class DataFetcherBinance(DataFetcher):
                 else:
                     return []
                 candlesticks = list(map(format_tick, candlesticks))
-                save_candlesticks(symbol, timeframe, start_date, end_date, candlesticks)
+                if end_date:
+                    save_candlesticks(symbol, timeframe, start_date, end_date, candlesticks)
                 # Close connection
                 client.close_connection()
 
@@ -84,6 +84,8 @@ def load_candlesticks(symbol, timeframe, start_date, end_date):
                     return pickle.load(f)
             else:
                 return []
+        else:
+            return []
     except Exception:
         return []
 
