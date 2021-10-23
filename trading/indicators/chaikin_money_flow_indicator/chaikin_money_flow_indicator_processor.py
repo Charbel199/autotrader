@@ -19,9 +19,12 @@ class ChaikinMoneyFlow(Indicator):
         self.list.append({'Time': self.data_structure.get_last_time()})
 
         if self.data_structure.get_number_of_rows() >= 1:
-            self.list[-1]['ChaikinMultiplier'] = ((self.data_structure.get_last_value('Close') - self.data_structure.get_last_value('Low')) - (
-                    self.data_structure.get_last_value('High') - self.data_structure.get_last_value('Close'))) / (
-                                                         self.data_structure.get_last_value('High') - self.data_structure.get_last_value('Low'))
+            if (self.data_structure.get_last_value('High') - self.data_structure.get_last_value('Low')) != 0:
+                self.list[-1]['ChaikinMultiplier'] = ((self.data_structure.get_last_value('Close') - self.data_structure.get_last_value('Low')) - (
+                        self.data_structure.get_last_value('High') - self.data_structure.get_last_value('Close'))) / (
+                                                             self.data_structure.get_last_value('High') - self.data_structure.get_last_value('Low'))
+            else:
+                self.list[-1]['ChaikinMultiplier'] = 0
             self.list[-1]['MoneyFlowVolume'] = self.list[-1]['ChaikinMultiplier'] * self.data_structure.get_last_value('Volume')
             self.money_flow_volume_counter += 1
         if self.money_flow_volume_counter >= self.period:
