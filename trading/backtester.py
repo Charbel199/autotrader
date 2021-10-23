@@ -33,10 +33,15 @@ class BackTester(object):
         start = time.time()
         for candlestick in candlesticks:
             if self.data_structure:
-                self.data_structure.add_row(candlestick)
-                self.strategy.process_new_candlestick()
                 self.data_structure.set_tick(candlestick)
                 self.strategy.process_new_tick()
+
+                self.data_structure.add_row(candlestick)
+                self.strategy.process_new_candlestick()
+
+
+
+
         end = time.time()
         log.info(f"Candlestick processing duration: {(end - start)}")
 
