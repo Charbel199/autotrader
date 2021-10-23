@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from data.data_logger import logger
-
+from helper import date_helper
 log = logger.get_logger(__name__)
 
 
@@ -30,11 +30,12 @@ class Account(ABC):
         if self.position != {}:
             self.list = self.list[:-1]
             self.balance += self.position['Price'] * self.position['Amount']
+            self.position = {}
 
         sells = [d for d in self.list if d["Action"] == "Sell"]
         buys = [d for d in self.list if d["Action"] == "Buy"]
-        total_buy_price = sum([d["Price"]*d["Amount"] for d in buys])
-        total_sell_price = sum([d["Price"]*d["Amount"] for d in sells])
+        total_buy_price = sum([d["Price"] * d["Amount"] for d in buys])
+        total_sell_price = sum([d["Price"] * d["Amount"] for d in sells])
         profit = total_sell_price - total_buy_price
         # if total_buy_price != 0:
         #     percentage = ((total_sell_price - total_buy_price) / total_buy_price) * 100
@@ -51,6 +52,32 @@ class Account(ABC):
     @abstractmethod
     def get_plot(self):
         pass
+
+    def get_all_trades(self):
+        transactions = []
+        balance_copy = self.initial_balance
+        # If in position when calculating profit, revert last buy
+        if self.position != {}:
+            self.list = self.list[:-1]
+            self.balance += self.position['Price'] * self.position['Amount']
+            self.position = {}
+
+        for i in range(0, len(self.list), 2):
+            profit = (self.list[i + 1]['Price'] - self.list[i]['Price']) * self.list[i]['Amount']
+            balance_copy += profit
+            transactions.append({
+
+                'Symbol': self.list[i]['Symbol'],
+                'BuyTime': date_helper.from_timestamp_to_date(int(self.list[i]['Time']) / 1000),
+                'SellTime': date_helper.from_timestamp_to_date(int(self.list[i+1]['Time']) / 1000),
+                'Amount': self.list[i]['Amount'],
+                'BuyPrice': self.list[i]['Price'],
+                'SellPrice': self.list[i + 1]['Price'],
+                'Profit': profit,
+                'Balance': balance_copy,
+                'Outcome': 'Win' if profit > 0 else 'Loss'
+            })
+        return transactions
 
     @staticmethod
     @abstractmethod
