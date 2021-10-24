@@ -29,6 +29,7 @@ class QuickStrategy(Strategy):
     def process_new_candlestick(self):
         # self.data_structure.reduce()
 
+        #print('Got new candlestick')
         # self.ADX.process_new_candlestick()
         # self.CandlestickType.process_new_candlestick()
         self.RSI.process_new_candlestick()
@@ -39,7 +40,7 @@ class QuickStrategy(Strategy):
 
             if self.start_counter:
                 self.counter +=1
-                if self.counter >= 15:
+                if self.counter >= 1500:
                     self.start_counter = False
                     self.counter = 0
                     self.firstStep = False
@@ -74,7 +75,7 @@ class QuickStrategy(Strategy):
                 self.thirdStep = False
 
     def process_new_tick(self):
-        # print('Got new tick in strat ', self.data_structure.get_tick())
+        #print('Got new tick in strat ', self.data_structure.get_tick())
         if self.transactions_allowed:
             if self.account.get_position() != {}:
                 # Sell logic

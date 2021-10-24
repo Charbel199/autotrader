@@ -87,6 +87,8 @@ class CandlestickType(Indicator):
     def get_plot(self):
         pass
 
+    def delete_data(self):
+        self.list = []
 # from data.data_structures.structure import TickStructure
 # import pandas as pd
 # from helper import data_structure_helper

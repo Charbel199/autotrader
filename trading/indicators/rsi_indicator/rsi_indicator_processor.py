@@ -44,6 +44,9 @@ class RSI(Indicator):
     def get_plot(self):
         return go.Scatter(x=[d['Time'] for d in self.list], y=[d['RSI'] for d in self.list if 'RSI' in d], name="RSI")
 
+    def delete_data(self):
+        self.list = []
+        self.gain_counter = 0
 # import pandas as pd
 # from data.data_structures.structure import TickStructure
 # import numpy as np

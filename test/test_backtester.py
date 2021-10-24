@@ -27,7 +27,7 @@ def get_info(backtester: BackTesterRunner, show_fig=False):
 
 start = time.time()
 
-start_date = "1 Oct, 2020"
+start_date = "1 Sep, 2021"
 end_date = "1 Oct, 2021"
 runner = BackTesterRunner()
 # backtester1 = runner.prepare_backtester(symbol="ADAUSDT", timeframe="5m", account_provider="testAccount",
@@ -48,7 +48,7 @@ backtester2 = runner.prepare_backtester(symbol="DOTUSDT", timeframe="5m", accoun
 runner.launch()
 
 # get_info(backtester1, show_fig=False)
-get_info(backtester2, show_fig=False)
+get_info(backtester2, show_fig=True)
 # get_info(backtester3, show_fig=False)
 # get_info(backtester4, show_fig=False)
 # get_info(backtester5, show_fig=False)

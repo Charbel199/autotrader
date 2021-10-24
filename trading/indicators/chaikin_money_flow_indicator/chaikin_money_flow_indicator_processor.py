@@ -38,6 +38,9 @@ class ChaikinMoneyFlow(Indicator):
     def get_plot(self):
         return go.Scatter(x=[d['Time'] for d in self.list], y=[d['ChaikinMoneyFlow'] for d in self.list if 'ChaikinMoneyFlow' in d], name="ChaikinMoneyFlow")
 
+    def delete_data(self):
+        self.list = []
+        self.money_flow_volume_counter = 0
 # import pandas as pd
 # from data.data_structures.structure import TickStructure
 # import numpy as np

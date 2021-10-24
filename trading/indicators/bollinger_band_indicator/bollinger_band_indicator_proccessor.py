@@ -35,6 +35,9 @@ class BollingerBand(Indicator):
                go.Scatter(x=[d['Time'] for d in self.list], y=[d['LowerBollingerBand'] for d in self.list if 'LowerBollingerBand' in d], name="LowerBollingerBand"), \
                go.Scatter(x=[d['Time'] for d in self.list], y=[d['SMA'] for d in self.list if 'SMA' in d], name="SMA")
 
+    def delete_data(self):
+        self.list = []
+        self.sma_counter = 0
 # import pandas as pd
 # from data.data_structures.structure import TickStructure
 # import numpy as np

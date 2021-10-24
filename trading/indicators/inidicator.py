@@ -20,8 +20,9 @@ class Indicator(ABC):
     def get_all_values(self):
         return self.list
 
+    @abstractmethod
     def delete_data(self):
-        self.list = []
+        pass
 
     @abstractmethod
     def get_plot(self):

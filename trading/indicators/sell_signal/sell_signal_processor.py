@@ -71,6 +71,11 @@ class SellSignal(Indicator):
                     coordinate = {}
         return coordinates
 
+    def delete_data(self):
+        self.list = []
+        self.target = sys.maxsize
+        self.max_price_reached_in_position = 0
+        self.in_sell_zone = False
 #
 # import pandas as pd
 # from data.data_structures.structure import TickStructure

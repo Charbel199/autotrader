@@ -18,8 +18,8 @@ class SimpleCandlestickProcessor(CandlestickProcessor):
                 self.data_structure.set_tick(candlestick)
         data = {
             'Ticks': self.data_structure.get_data(),
-            'ADX': self.ADX.df,
-            'RSI': self.RSI.df
+            'ADX': self.ADX.get_all_values(),
+            'RSI': self.RSI.get_all_values()
         }
 
         # Empty data

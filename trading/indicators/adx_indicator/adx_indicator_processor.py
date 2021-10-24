@@ -70,6 +70,12 @@ class ADX(Indicator):
     def get_plot(self):
         return go.Scatter(x=[d['Time'] for d in self.list], y=[d['ADX'] for d in self.list if 'ADX' in d], name="ADX")
 
+    def delete_data(self):
+        self.list = []
+        self.true_range_counter = 0
+        self.atr_counter = 0
+        self.dx_counter = 0
+        self.adx_counter = 0
 # import pandas as pd
 # from data.data_structures.structure import TickStructure
 # import numpy as np

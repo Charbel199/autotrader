@@ -12,7 +12,7 @@ from dash.dependencies import Input, Output
 start_date = "1 Oct, 2018"
 
 runner = CandlestickGeneratorRunner(symbols=['DOGEUSDT', 'BTCUSDT', 'ADAUSDT'], timeframe='5m', data_fetcher_provider='binance',
-                                    data_structure_provider='pandas', candlestick_processor_provider='simple', start_date=start_date)
+                                    data_structure_provider='list', candlestick_processor_provider='simple', start_date=start_date)
 runner.get_new_candlesticks()
 fig = runner.get_fig()
 app = dash.Dash()
