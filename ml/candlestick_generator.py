@@ -52,6 +52,7 @@ import plotly.graph_objects as go
 class CandlestickGeneratorRunner(object):
 
     def __init__(self, symbols, timeframe, data_fetcher_provider, data_structure_provider, candlestick_processor_provider, start_date):
+        self.data = {}
         self.fig = make_subplots(rows=1, cols=1)
         self.clicked_candlesticks = []
         self.start_date = start_date
@@ -107,3 +108,22 @@ class CandlestickGeneratorRunner(object):
 
     def get_fig(self):
         return self.fig
+
+
+class CandlestickGeneratorAutoRunner(object):
+
+    def __init__(self, symbols, timeframe, data_fetcher_provider, data_structure_provider, candlestick_auto_processor_provider, start_date):
+        self.data = {}
+        self.start_date = start_date
+        data_fetcher = get_fetcher(data_fetcher_provider)
+        data_structure = get_data_structure(data_structure_provider)
+        candlestick_generator_processor = get_candlestick_processor(candlestick_auto_processor_provider, data_structure)
+        self.generator = CandlestickGenerator(candlestick_generator_processor, data_fetcher, data_structure, symbols, timeframe)
+        self.generator.fetch_new_candlesticks(date_helper.get_random_timestamp(date_helper.from_binance_date_to_timestamp(start_date)), 8)
+
+    def get_new_candlesticks(self):
+
+        self.data = self.generator.get_new_candlesticks()
+        if self.data != {}:
+            candlesticks = self.data['Ticks']
+        self.generator.fetch_new_candlesticks(date_helper.get_random_timestamp(date_helper.from_binance_date_to_timestamp(self.start_date)), 8)
