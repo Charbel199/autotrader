@@ -9,14 +9,14 @@ class ADX(Indicator):
     period = 14
     data_structure: TickStructure
 
-    def __init__(self, data_structure):
+    def __init__(self, data_structure: TickStructure):
         super().__init__(data_structure)
         self.true_range_counter = 0
         self.atr_counter = 0
         self.dx_counter = 0
         self.adx_counter = 0
 
-    def process_new_candlestick(self):
+    def process_new_candlestick(self) -> None:
         # Create new row
         self.list.append({'Time': self.data_structure.get_last_time()})
 
@@ -70,6 +70,12 @@ class ADX(Indicator):
     def get_plot(self):
         return go.Scatter(x=[d['Time'] for d in self.list], y=[d['ADX'] for d in self.list if 'ADX' in d], name="ADX")
 
+    def delete_data(self) -> None:
+        self.list = []
+        self.true_range_counter = 0
+        self.atr_counter = 0
+        self.dx_counter = 0
+        self.adx_counter = 0
 # import pandas as pd
 # from data.data_structures.structure import TickStructure
 # import numpy as np

@@ -6,12 +6,12 @@ class CandlestickType(Indicator):
     # columns = ['Time', 'Type']
     data_structure: TickStructure
 
-    def __init__(self, data_structure):
+    def __init__(self, data_structure: TickStructure):
         super().__init__(data_structure)
         self.list = []
         self.data_structure = data_structure
 
-    def process_new_candlestick(self):
+    def process_new_candlestick(self) -> None:
 
         # Create new row
         self.list.append({'Time': self.data_structure.get_last_time()})
@@ -87,6 +87,8 @@ class CandlestickType(Indicator):
     def get_plot(self):
         pass
 
+    def delete_data(self) -> None:
+        self.list = []
 # from data.data_structures.structure import TickStructure
 # import pandas as pd
 # from helper import data_structure_helper

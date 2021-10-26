@@ -1,12 +1,13 @@
 import logging
 import sys
+from logging import Logger
 
 APP_LOGGER_NAME = 'AutoTrader2'
 
 
-def setup_applevel_logger(logger_name=APP_LOGGER_NAME,
-                          is_debug=True,
-                          file_name=None):
+def setup_applevel_logger(logger_name: str = APP_LOGGER_NAME,
+                          is_debug: bool = True,
+                          file_name: str = None) -> Logger:
     logger = logging.getLogger(logger_name)
     logger.setLevel(logging.DEBUG if is_debug else logging.INFO)
 
@@ -26,5 +27,5 @@ def setup_applevel_logger(logger_name=APP_LOGGER_NAME,
     return logger
 
 
-def get_logger(module_name):
+def get_logger(module_name: str) -> Logger:
     return logging.getLogger(APP_LOGGER_NAME).getChild(module_name)

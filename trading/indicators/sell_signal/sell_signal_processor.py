@@ -10,14 +10,14 @@ class SellSignal(Indicator):
     # columns = ['Time', 'SellSignal']
     data_structure: TickStructure
 
-    def __init__(self, data_structure, sell_below_max_percentage):
+    def __init__(self, data_structure: TickStructure, sell_below_max_percentage: float):
         super().__init__(data_structure)
         self.target = sys.maxsize
         self.max_price_reached_in_position = 0
         self.in_sell_zone = False
         self.sell_below_max_percentage = sell_below_max_percentage
 
-    def process_new_candlestick(self):
+    def process_new_candlestick(self) -> None:
         pass
 
     def process_new_tick(self):
@@ -49,11 +49,11 @@ class SellSignal(Indicator):
             self.list[-1]['SellSignal'] = sell_signal
             return sell_signal == 'Sell'
 
-    def set_sell_target(self, price):
+    def set_sell_target(self, price: float) -> None:
         self.target = price
         log.info(f"Target set to {price}")
 
-    def reset_target(self):
+    def reset_target(self) -> None:
         self.in_sell_zone = False
         self.target = sys.maxsize
         self.max_price_reached_in_position = 0
@@ -71,6 +71,11 @@ class SellSignal(Indicator):
                     coordinate = {}
         return coordinates
 
+    def delete_data(self) -> None:
+        self.list = []
+        self.target = sys.maxsize
+        self.max_price_reached_in_position = 0
+        self.in_sell_zone = False
 #
 # import pandas as pd
 # from data.data_structures.structure import TickStructure

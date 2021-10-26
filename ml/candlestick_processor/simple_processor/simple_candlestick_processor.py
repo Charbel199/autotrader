@@ -1,15 +1,16 @@
 from trading.indicators.adx_indicator.adx_indicator_processor import ADX
 from trading.indicators.rsi_indicator.rsi_indicator_processor import RSI
 from ml.candlestick_processor.candlestick_processor import CandlestickProcessor
+from data.data_structures.structure import TickStructure
 
 
 class SimpleCandlestickProcessor(CandlestickProcessor):
-    def __init__(self, data_structure):
+    def __init__(self, data_structure: TickStructure):
         super().__init__(data_structure)
         self.ADX = ADX(data_structure)
         self.RSI = RSI(data_structure)
 
-    def process_candlesticks(self, candlesticks):
+    def process_candlesticks(self, candlesticks: list) -> dict:
         for candlestick in candlesticks:
             if self.data_structure:
                 self.data_structure.add_row(candlestick)
@@ -18,8 +19,8 @@ class SimpleCandlestickProcessor(CandlestickProcessor):
                 self.data_structure.set_tick(candlestick)
         data = {
             'Ticks': self.data_structure.get_data(),
-            'ADX': self.ADX.df,
-            'RSI': self.RSI.df
+            'ADX': self.ADX.get_all_values(),
+            'RSI': self.RSI.get_all_values()
         }
 
         # Empty data
@@ -29,5 +30,5 @@ class SimpleCandlestickProcessor(CandlestickProcessor):
         return data
 
     @staticmethod
-    def condition(name):
+    def condition(name: str) -> bool:
         return name == 'simple'

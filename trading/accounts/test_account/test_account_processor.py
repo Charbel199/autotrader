@@ -7,13 +7,17 @@ log = logger.get_logger(__name__)
 
 class TestAccount(Account):
 
-    def __init__(self, balance):
+    def __init__(self, balance: float):
         super().__init__(balance)
 
-    def get_position(self):
+    def get_position(self) -> dict:
         return self.position
 
-    def buy(self, time, symbol, price, amount=0):
+    def buy(self,
+            time: int,
+            symbol: str,
+            price: float,
+            amount: float = 0) -> None:
         if amount == 0:
             amount = self.balance / price
         self.balance -= amount * price
@@ -33,7 +37,11 @@ class TestAccount(Account):
             'Price': price
         })
 
-    def sell(self, time, symbol, price, amount=0):
+    def sell(self,
+             time: int,
+             symbol: str,
+             price: float,
+             amount: float = 0) -> None:
         if self.position['Time'] != time:
             if amount == 0:
                 amount = self.position['Amount']
@@ -49,7 +57,7 @@ class TestAccount(Account):
                 'Price': price
             })
 
-    def get_plot(self):
+    def get_plot(self) -> go:
         buys = [d for d in self.list if d["Action"] == "Buy"]
         sells = [d for d in self.list if d["Action"] == "Sell"]
         return go.Scatter(
@@ -67,5 +75,5 @@ class TestAccount(Account):
         )
 
     @staticmethod
-    def condition(name):
+    def condition(name: str) -> bool:
         return name == "testAccount"

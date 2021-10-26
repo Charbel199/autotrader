@@ -10,11 +10,11 @@ class BollingerBand(Indicator):
     bollinger_band_multiplier = 2
     data_structure: TickStructure
 
-    def __init__(self, data_structure):
+    def __init__(self, data_structure: TickStructure):
         super().__init__(data_structure)
         self.sma_counter = 0
 
-    def process_new_candlestick(self):
+    def process_new_candlestick(self) -> None:
 
         # Create new row
         self.list.append({'Time': self.data_structure.get_last_time()})
@@ -35,6 +35,9 @@ class BollingerBand(Indicator):
                go.Scatter(x=[d['Time'] for d in self.list], y=[d['LowerBollingerBand'] for d in self.list if 'LowerBollingerBand' in d], name="LowerBollingerBand"), \
                go.Scatter(x=[d['Time'] for d in self.list], y=[d['SMA'] for d in self.list if 'SMA' in d], name="SMA")
 
+    def delete_data(self) -> None:
+        self.list = []
+        self.sma_counter = 0
 # import pandas as pd
 # from data.data_structures.structure import TickStructure
 # import numpy as np
