@@ -1,7 +1,8 @@
 from dotenv import load_dotenv
-from trading.live_trader import LiveTraderRunner
-from data.data_logger import logger
+from AutoTrader.trading.live_trader import LiveTraderRunner
+from AutoTrader.data.data_logger import logger
 import pandas as pd
+
 load_dotenv()
 log = logger.setup_applevel_logger(file_name='test_live_trader_debug.log')
 import time

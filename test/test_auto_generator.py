@@ -1,9 +1,9 @@
 from dotenv import load_dotenv
-from data.data_logger import logger
+from AutoTrader.data.data_logger import logger
 
 load_dotenv()
 log = logger.setup_applevel_logger(file_name='test_generator_debug.log')
-from ml.candlestick_generator import CandlestickGeneratorAutoRunner
+from AutoTrader.ml.candlestick_generator import CandlestickGeneratorAutoRunner
 
 start_date = "1 Oct, 2018"
 

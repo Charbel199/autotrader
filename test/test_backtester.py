@@ -2,11 +2,11 @@ import sys
 
 sys.path.append("..")
 from dotenv import load_dotenv
-from data.data_logger import logger
+from AutoTrader.data.data_logger import logger
 
 load_dotenv()
 log = logger.setup_applevel_logger(file_name='test_backtester_debug.log')
-from trading.backtester import BackTesterRunner
+from AutoTrader.trading.backtester import BackTesterRunner
 import time
 import pandas as pd
 
@@ -55,5 +55,3 @@ get_info(backtester2, show_fig=True)
 
 end = time.time()
 log.info(f"Total duration: {(end - start)}")
-
-

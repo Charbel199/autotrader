@@ -1,9 +1,9 @@
 from dotenv import load_dotenv
-from data.data_logger import logger
+from AutoTrader.data.data_logger import logger
 
 load_dotenv()
 log = logger.setup_applevel_logger(file_name='test_generator_debug.log')
-from ml.candlestick_generator import CandlestickGeneratorRunner
+from AutoTrader.ml.candlestick_generator import CandlestickGeneratorRunner
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
