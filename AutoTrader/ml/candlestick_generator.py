@@ -2,9 +2,8 @@ from AutoTrader.data.previous_data.data_fetcher import DataFetcher
 from AutoTrader.data.data_structures.structure import TickStructure
 import collections
 import random
-from AutoTrader.helper import date_helper
+from AutoTrader.helper import date_helper, logger
 from AutoTrader.ml.candlestick_processor.candlestick_processor import CandlestickProcessor
-from AutoTrader.data.data_logger import logger
 from plotly.graph_objs import Figure
 
 log = logger.get_logger(__name__)

@@ -2,11 +2,11 @@ import sys
 
 sys.path.append("..")
 from dotenv import load_dotenv
-from AutoTrader.data.data_logger import logger
+from AutoTrader.helper import logger
 
 load_dotenv()
 log = logger.setup_applevel_logger(file_name='test_backtester_debug.log')
-from AutoTrader.trading.backtester import BackTesterRunner
+from AutoTrader.trading.modes.backtester import BackTesterRunner
 import time
 import pandas as pd
 

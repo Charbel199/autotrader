@@ -3,7 +3,7 @@ from AutoTrader.trading.strategies.strategy import Strategy
 from AutoTrader.data.data_structures.structure import TickStructure
 from binance import ThreadedWebsocketManager
 from typing import Callable
-from AutoTrader.data.data_logger import logger
+from AutoTrader.helper import logger
 
 log = logger.get_logger(__name__)
 

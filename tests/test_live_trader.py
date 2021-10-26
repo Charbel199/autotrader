@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
-from AutoTrader.trading.live_trader import LiveTraderRunner
-from AutoTrader.data.data_logger import logger
+from AutoTrader.trading.modes.live_trader import LiveTraderRunner
+from AutoTrader.helper import logger
 import pandas as pd
 
 load_dotenv()

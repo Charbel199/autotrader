@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from AutoTrader.data.data_logger import logger
+from AutoTrader.helper import logger
 
 load_dotenv()
 log = logger.setup_applevel_logger(file_name='test_generator_debug.log')

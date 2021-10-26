@@ -1,6 +1,6 @@
 from AutoTrader.data.previous_data.data_fetcher import DataFetcher
 from binance.client import Client
-from AutoTrader.data.data_logger import logger
+from AutoTrader.helper import logger
 import pickle
 import os
 
