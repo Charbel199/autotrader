@@ -3,7 +3,7 @@ from AutoTrader.data.data_structures.structure import TickStructure
 from AutoTrader.data.previous_data.data_fetcher import DataFetcher
 from AutoTrader.trading.accounts.account import Account
 import time
-from AutoTrader.data.data_logger import logger
+from AutoTrader.helper import logger
 
 log = logger.get_logger(__name__)
 

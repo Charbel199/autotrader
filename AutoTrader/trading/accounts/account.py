@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
-from AutoTrader.data.data_logger import logger
-from AutoTrader.helper import date_helper
+from AutoTrader.helper import date_helper, logger
 import plotly.graph_objects as go
 
 log = logger.get_logger(__name__)

@@ -1,6 +1,6 @@
 from AutoTrader.trading.accounts.account import Account
 import plotly.graph_objects as go
-from AutoTrader.data.data_logger import logger
+from AutoTrader.helper import logger
 
 log = logger.get_logger(__name__)
 
