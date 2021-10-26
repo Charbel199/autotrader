@@ -9,11 +9,11 @@ class RSI(Indicator):
     period = 14
     data_structure: TickStructure
 
-    def __init__(self, data_structure):
+    def __init__(self, data_structure: TickStructure):
         super().__init__(data_structure)
         self.gain_counter = 0
 
-    def process_new_candlestick(self):
+    def process_new_candlestick(self) -> None:
         # Create new row
         self.list.append({'Time': self.data_structure.get_last_time()})
 
@@ -44,7 +44,7 @@ class RSI(Indicator):
     def get_plot(self):
         return go.Scatter(x=[d['Time'] for d in self.list], y=[d['RSI'] for d in self.list if 'RSI' in d], name="RSI")
 
-    def delete_data(self):
+    def delete_data(self) -> None:
         self.list = []
         self.gain_counter = 0
 # import pandas as pd

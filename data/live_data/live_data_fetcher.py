@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from typing import Callable
+
 
 class LiveDataFetcher(ABC):
 
@@ -6,22 +8,22 @@ class LiveDataFetcher(ABC):
         pass
 
     @abstractmethod
-    def run(self, symbol, timeframe, process_message):
+    def run(self, symbol: str, timeframe: str, process_message: Callable[[dict], None]) -> None:
         pass
 
     @abstractmethod
-    def stop(self):
+    def stop(self) -> None:
         pass
 
     @staticmethod
     @abstractmethod
-    def condition(name):
+    def condition(name: str) -> bool:
         pass
 
 
 # Get fetcher based on broker name
-def get_live_fetcher(name):
+def get_live_fetcher(name: str) -> LiveDataFetcher:
     for fetcher in LiveDataFetcher.__subclasses__():
         if fetcher.condition(name):
             return fetcher()
-    return None
+    raise Exception('Live fetcher not found.')

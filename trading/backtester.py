@@ -14,7 +14,15 @@ class BackTester(object):
     data_fetcher: DataFetcher
     account: Account
 
-    def __init__(self, symbol, timeframe, data_fetcher, data_structure, strategy, account, start_date, end_date=None):
+    def __init__(self,
+                 symbol: str,
+                 timeframe: str,
+                 data_fetcher: DataFetcher,
+                 data_structure: TickStructure,
+                 strategy: Strategy,
+                 account: Account,
+                 start_date: str,
+                 end_date: str = None):
         self.data_structure = data_structure
         self.strategy = strategy
         self.symbol = symbol
@@ -24,7 +32,7 @@ class BackTester(object):
         self.start_date = start_date
         self.end_date = end_date
 
-    def run_backtester(self):
+    def run_backtester(self) -> None:
         start = time.time()
         candlesticks = self.data_fetcher.get_candlesticks(self.symbol, self.timeframe, self.start_date, self.end_date)
         end = time.time()
@@ -38,9 +46,6 @@ class BackTester(object):
 
                 self.data_structure.add_row(candlestick)
                 self.strategy.process_new_candlestick()
-
-
-
 
         end = time.time()
         log.info(f"Candlestick processing duration: {(end - start)}")
@@ -59,19 +64,28 @@ class BackTesterRunner(object):
     def __init__(self):
         pass
 
-    def prepare_backtester(self, symbol, timeframe, account_provider, data_fetcher_provider, data_structure_provider, strategy_provider, start_date, balance=100, end_date=None):
+    def prepare_backtester(self,
+                           symbol: str,
+                           timeframe: str,
+                           account_provider: str,
+                           data_fetcher_provider: str,
+                           data_structure_provider: str,
+                           strategy_provider: str,
+                           start_date: str,
+                           balance: float = 100,
+                           end_date: str = None) -> BackTester:
         account = get_account(account_provider, balance)
         data_fetcher = get_fetcher(data_fetcher_provider)
         data_structure = get_data_structure(data_structure_provider)
         strategy = get_strategy(strategy_provider, data_structure, account, symbol)
         backtester_instance = BackTester(symbol, timeframe, data_fetcher, data_structure, strategy, account, start_date, end_date)
-        #backtester_instance.run_backtester()
+        # backtester_instance.run_backtester()
         thread = threading.Thread(target=backtester_instance.run_backtester)
         thread.start()
         self.threads.append(thread)
         return backtester_instance
 
-    def launch(self):
+    def launch(self) -> None:
         for thread in self.threads:
             thread.join()
-        #pass
+        # pass

@@ -5,6 +5,7 @@ import random
 from helper import date_helper
 from ml.candlestick_processor.candlestick_processor import CandlestickProcessor
 from data.data_logger import logger
+from plotly.graph_objs import Figure
 
 log = logger.get_logger(__name__)
 
@@ -14,7 +15,12 @@ class CandlestickGenerator(object):
     data_structure: TickStructure
     candlestick_processor: CandlestickProcessor
 
-    def __init__(self, candlestick_generator_processor, data_fetcher, data_structure, symbols, timeframe):
+    def __init__(self,
+                 candlestick_generator_processor: CandlestickProcessor,
+                 data_fetcher: DataFetcher,
+                 data_structure: TickStructure,
+                 symbols: str,
+                 timeframe: str):
         self.buffer = collections.deque()
         self.symbols = symbols
         self.data_fetcher = data_fetcher
@@ -22,22 +28,22 @@ class CandlestickGenerator(object):
         self.candlestick_generator_processor = candlestick_generator_processor
         self.timeframe = timeframe
 
-    def fetch_new_candlesticks(self, start_date, duration):
-        log.info(date_helper.from_timestamp_to_binance_date(start_date))
+    def fetch_new_candlesticks(self, start_timestamp: int, duration: int) -> None:
+        log.info(date_helper.from_timestamp_to_binance_date(start_timestamp))
         log.info(date_helper.from_timestamp_to_binance_date(
-            date_helper.get_next_timestamp(start_date, hours=duration)))
+            date_helper.get_next_timestamp(start_timestamp, hours=duration)))
 
         candlesticks = self.data_fetcher.get_candlesticks(
             random.choice(self.symbols),
             self.timeframe,
-            date_helper.from_timestamp_to_binance_date(start_date),
+            date_helper.from_timestamp_to_binance_date(start_timestamp),
             date_helper.from_timestamp_to_binance_date(
-                date_helper.get_next_timestamp(start_date, hours=duration))
+                date_helper.get_next_timestamp(start_timestamp, hours=duration))
         )
 
         self.buffer.append(self.candlestick_generator_processor.process_candlesticks(candlesticks))
 
-    def get_new_candlesticks(self):
+    def get_new_candlesticks(self) -> dict:
         return self.buffer.pop()
 
 
@@ -51,7 +57,13 @@ import plotly.graph_objects as go
 
 class CandlestickGeneratorRunner(object):
 
-    def __init__(self, symbols, timeframe, data_fetcher_provider, data_structure_provider, candlestick_processor_provider, start_date):
+    def __init__(self,
+                 symbols: list,
+                 timeframe: str,
+                 data_fetcher_provider: str,
+                 data_structure_provider: str,
+                 candlestick_processor_provider: str,
+                 start_date: str):
         self.data = {}
         self.fig = make_subplots(rows=1, cols=1)
         self.clicked_candlesticks = []
@@ -62,7 +74,7 @@ class CandlestickGeneratorRunner(object):
         self.generator = CandlestickGenerator(candlestick_generator_processor, data_fetcher, data_structure, symbols, timeframe)
         self.generator.fetch_new_candlesticks(date_helper.get_random_timestamp(date_helper.from_binance_date_to_timestamp(start_date)), 8)
 
-    def get_new_candlesticks(self):
+    def get_new_candlesticks(self) -> None:
         # Save old data
         if len(self.clicked_candlesticks) > 0:
             print('candlesticks ', self.clicked_candlesticks)
@@ -81,7 +93,7 @@ class CandlestickGeneratorRunner(object):
         self.fig.update_layout(xaxis_rangeslider_visible=False)
         self.generator.fetch_new_candlesticks(date_helper.get_random_timestamp(date_helper.from_binance_date_to_timestamp(self.start_date)), 8)
 
-    def click_candlestick(self, click):
+    def click_candlestick(self, click: dict) -> None:
         if len(self.clicked_candlesticks) < 2:
             log.info(f"Candlestick clicked {click}")
             time = click['x']
@@ -106,13 +118,19 @@ class CandlestickGeneratorRunner(object):
                     mode="markers",
                     name="Sell"), row=1, col=1)
 
-    def get_fig(self):
+    def get_fig(self) -> Figure:
         return self.fig
 
 
 class CandlestickGeneratorAutoRunner(object):
 
-    def __init__(self, symbols, timeframe, data_fetcher_provider, data_structure_provider, candlestick_auto_processor_provider, start_date):
+    def __init__(self,
+                 symbols: list,
+                 timeframe: str,
+                 data_fetcher_provider: str,
+                 data_structure_provider: str,
+                 candlestick_auto_processor_provider: str,
+                 start_date: str):
         self.data = {}
         self.start_date = start_date
         data_fetcher = get_fetcher(data_fetcher_provider)
@@ -121,8 +139,7 @@ class CandlestickGeneratorAutoRunner(object):
         self.generator = CandlestickGenerator(candlestick_generator_processor, data_fetcher, data_structure, symbols, timeframe)
         self.generator.fetch_new_candlesticks(date_helper.get_random_timestamp(date_helper.from_binance_date_to_timestamp(start_date)), 8)
 
-    def get_new_candlesticks(self):
-
+    def get_new_candlesticks(self) -> None:
         self.data = self.generator.get_new_candlesticks()
         if self.data != {}:
             candlesticks = self.data['Ticks']

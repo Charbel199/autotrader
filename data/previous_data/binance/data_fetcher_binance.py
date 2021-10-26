@@ -1,6 +1,5 @@
 from data.previous_data.data_fetcher import DataFetcher
 from binance.client import Client
-import os
 from data.data_logger import logger
 from helper import date_helper
 import pickle
@@ -21,7 +20,7 @@ class DataFetcherBinance(DataFetcher):
     def __init__(self):
         super().__init__()
 
-    def get_candlesticks(self, symbol, timeframe, start_date, end_date=None):
+    def get_candlesticks(self, symbol: str, timeframe: str, start_date: str, end_date: str = None) -> list:
         log.info(f'Fetching candlesticks for {symbol}, timeframe of {timeframe} and a start date of {start_date} and an end date of {end_date}')
         try:
             candlesticks = load_candlesticks(symbol, timeframe, start_date, end_date)
@@ -54,26 +53,26 @@ class DataFetcherBinance(DataFetcher):
             return []
 
     @staticmethod
-    def condition(name):
+    def condition(name: str) -> bool:
         return name == 'binance'
 
 
-def format_tick(tick):
+def format_tick(tick: list) -> dict:
     candlestick = {
         # "Time": date_helper.from_timestamp_to_date(int(tick[0])/1000),
-        "Time": tick[0],
+        "Time": int(tick[0]),
         "Open": float(tick[1]),
         "Close": float(tick[4]),
         "High": float(tick[2]),
         "Low": float(tick[3]),
         "Volume": float(tick[5]),
-        "OpenTime": tick[0],
-        "CloseTime": tick[6]
+        "OpenTime": int(tick[0]),
+        "CloseTime": int(tick[6])
     }
     return candlestick
 
 
-def load_candlesticks(symbol, timeframe, start_date, end_date):
+def load_candlesticks(symbol: str, timeframe: str, start_date: str, end_date: str) -> list:
     try:
         if end_date is not None:
             directory = "saved_data"
@@ -90,7 +89,7 @@ def load_candlesticks(symbol, timeframe, start_date, end_date):
         return []
 
 
-def save_candlesticks(symbol, timeframe, start_date, end_date, list):
+def save_candlesticks(symbol: str, timeframe: str, start_date: str, end_date: str, data: list) -> None:
     try:
         if end_date is not None:
             directory = "saved_data"
@@ -98,6 +97,6 @@ def save_candlesticks(symbol, timeframe, start_date, end_date, list):
             file_name = f"{symbol}_{timeframe}_{start_date}_{end_date}.pkl"
             if file_name not in existing_files:
                 with open(f"{directory}/{file_name}", 'wb') as f:
-                    pickle.dump(list, f)
+                    pickle.dump(data, f)
     except Exception:
         return

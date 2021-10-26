@@ -9,11 +9,11 @@ class ChaikinMoneyFlow(Indicator):
     period = 21
     data_structure: TickStructure
 
-    def __init__(self, data_structure):
+    def __init__(self, data_structure: TickStructure):
         super().__init__(data_structure)
         self.money_flow_volume_counter = 0
 
-    def process_new_candlestick(self):
+    def process_new_candlestick(self) -> None:
 
         # Create new row
         self.list.append({'Time': self.data_structure.get_last_time()})
@@ -38,7 +38,7 @@ class ChaikinMoneyFlow(Indicator):
     def get_plot(self):
         return go.Scatter(x=[d['Time'] for d in self.list], y=[d['ChaikinMoneyFlow'] for d in self.list if 'ChaikinMoneyFlow' in d], name="ChaikinMoneyFlow")
 
-    def delete_data(self):
+    def delete_data(self) -> None:
         self.list = []
         self.money_flow_volume_counter = 0
 # import pandas as pd

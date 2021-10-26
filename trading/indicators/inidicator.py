@@ -1,27 +1,29 @@
 from abc import ABC, abstractmethod
+from data.data_structures.structure import TickStructure
+import plotly.graph_objects as go
 
 
 class Indicator(ABC):
-    def __init__(self, data_structure):
+    def __init__(self, data_structure: TickStructure):
         self.list = []
         self.data_structure = data_structure
 
     @abstractmethod
-    def process_new_candlestick(self):
+    def process_new_candlestick(self) -> None:
         pass
 
     @abstractmethod
     def process_new_tick(self):
         pass
 
-    def get_last_values(self, n=1):
+    def get_last_values(self, n: int = 1) -> list:
         return self.list[-n:]
 
-    def get_all_values(self):
+    def get_all_values(self) -> list:
         return self.list
 
     @abstractmethod
-    def delete_data(self):
+    def delete_data(self) -> None:
         pass
 
     @abstractmethod
