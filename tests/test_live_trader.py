@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from AutoTrader.trading.modes.live_trader import LiveTraderRunner
+from AutoTrader.trading.modes.live_trader import LiveTraderRunner, LiveTrader
 from AutoTrader.helper import logger
 import pandas as pd
 
@@ -8,7 +8,7 @@ log = logger.setup_applevel_logger(file_name='test_live_trader_debug.log')
 import time
 
 
-def get_info(live_trader: LiveTraderRunner, show_fig=False):
+def get_info(live_trader: LiveTrader, show_fig=False):
     account = live_trader.account
     strategy = live_trader.strategy
     log.info(f"For: {strategy.symbol}")

@@ -6,12 +6,12 @@ from AutoTrader.helper import logger
 
 load_dotenv()
 log = logger.setup_applevel_logger(file_name='test_backtester_debug.log')
-from AutoTrader.trading.modes.backtester import BackTesterRunner
+from AutoTrader.trading.modes.backtester import BackTesterRunner, BackTester
 import time
 import pandas as pd
 
 
-def get_info(backtester: BackTesterRunner, show_fig=False):
+def get_info(backtester: BackTester, show_fig=False):
     account = backtester.account
     strategy = backtester.strategy
     log.info(f"For: {strategy.symbol}")
