@@ -48,7 +48,7 @@ backtester2 = runner.prepare_backtester(symbol="DOTUSDT", timeframe="5m", accoun
 runner.launch()
 
 # get_info(backtester1, show_fig=False)
-get_info(backtester2, show_fig=True)
+get_info(backtester2, show_fig=False)
 # get_info(backtester3, show_fig=False)
 # get_info(backtester4, show_fig=False)
 # get_info(backtester5, show_fig=False)
