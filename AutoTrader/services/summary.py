@@ -4,7 +4,6 @@ from AutoTrader.helper import date_helper
 
 
 def get_trades_summary(transactions: List[dict], initial_balance: float) -> dict:
-    # Get clean list of all trades
     trades = []
     balance = initial_balance
     number_of_trades = 0
@@ -66,14 +65,14 @@ def get_trades_summary(transactions: List[dict], initial_balance: float) -> dict
         })
 
     number_of_wins = number_of_trades - number_of_losses
-    total_profit = initial_balance - balance
-    average_profit = total_profit / number_of_trades
-    average_win = total_win / number_of_wins
-    average_loss = total_loss / number_of_losses
+    total_profit = balance - initial_balance
+    average_profit = total_profit / number_of_trades if number_of_trades > 0 else 0
+    average_win = total_win / number_of_wins if number_of_wins > 0 else 0
+    average_loss = total_loss / number_of_losses if number_of_losses > 0 else 0
     summary = {
         'InitialBalance': initial_balance,
         'EndBalance': balance,
-        'PercentageChange': ((balance - initial_balance) / initial_balance) * 100,
+        'PercentageChange': ((balance - initial_balance) / initial_balance) * 100 if initial_balance > 0 else 0,
         'NumberOfTrades': number_of_trades,
         'NumberOfWins': number_of_wins,
         'NumberOfLosses': number_of_losses,
@@ -81,9 +80,9 @@ def get_trades_summary(transactions: List[dict], initial_balance: float) -> dict
         'AverageProfit': average_profit,
         'AverageWin': average_win,
         'AverageLoss': average_loss,
-        'AverageHoldTime': date_helper.from_seconds_to_time(int(np.mean(hold_times))),
-        'AverageHoldTimeWin': date_helper.from_seconds_to_time(int(np.mean(hold_times_win))),
-        'AverageHoldTimeLoss': date_helper.from_seconds_to_time(int(np.mean(hold_times_loss))),
+        'AverageHoldTime': date_helper.from_seconds_to_time(int(np.mean(hold_times)) if len(hold_times) > 0 else 0),
+        'AverageHoldTimeWin': date_helper.from_seconds_to_time(int(np.mean(hold_times_win)) if len(hold_times_win) > 0 else 0),
+        'AverageHoldTimeLoss': date_helper.from_seconds_to_time(int(np.mean(hold_times_loss)) if len(hold_times_loss) > 0 else 0),
         'LongestWinningStreak': longest_winning_streak,
         'LongestLosingStreak': longest_losing_streak,
         'LargestWinningProfit': largest_winning_profit,
