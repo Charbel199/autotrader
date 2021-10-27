@@ -42,7 +42,7 @@ class RSI(Indicator):
         pass
 
     def get_plot(self):
-        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['RSI'] for d in self.list if 'RSI' in d], name="RSI")
+        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['RSI'] if 'RSI' in d else None for d in self.list], name="RSI")
 
     def delete_data(self) -> None:
         self.list = []

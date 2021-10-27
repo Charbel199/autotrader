@@ -31,9 +31,9 @@ class BollingerBand(Indicator):
         pass
 
     def get_plot(self):
-        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['UpperBollingerBand'] for d in self.list if 'UpperBollingerBand' in d], name="UpperBollingerBand"), \
-               go.Scatter(x=[d['Time'] for d in self.list], y=[d['LowerBollingerBand'] for d in self.list if 'LowerBollingerBand' in d], name="LowerBollingerBand"), \
-               go.Scatter(x=[d['Time'] for d in self.list], y=[d['SMA'] for d in self.list if 'SMA' in d], name="SMA")
+        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['UpperBollingerBand'] if 'UpperBollingerBand' in d else None for d in self.list], name="UpperBollingerBand"), \
+               go.Scatter(x=[d['Time'] for d in self.list], y=[d['LowerBollingerBand'] if 'UpperBollingerBand' in d else None for d in self.list], name="LowerBollingerBand"), \
+               go.Scatter(x=[d['Time'] for d in self.list], y=[d['SMA'] if 'SMA' in d else None for d in self.list], name="SMA")
 
     def delete_data(self) -> None:
         self.list = []

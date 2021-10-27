@@ -36,7 +36,7 @@ class ChaikinMoneyFlow(Indicator):
         pass
 
     def get_plot(self):
-        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['ChaikinMoneyFlow'] for d in self.list if 'ChaikinMoneyFlow' in d], name="ChaikinMoneyFlow")
+        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['ChaikinMoneyFlow'] if 'ChaikinMoneyFlow' in d else None for d in self.list], name="ChaikinMoneyFlow")
 
     def delete_data(self) -> None:
         self.list = []

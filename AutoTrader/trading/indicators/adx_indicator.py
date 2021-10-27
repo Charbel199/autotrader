@@ -68,7 +68,7 @@ class ADX(Indicator):
         pass
 
     def get_plot(self):
-        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['ADX'] for d in self.list if 'ADX' in d], name="ADX")
+        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['ADX'] if 'ADX' in d else None for d in self.list], name="ADX")
 
     def delete_data(self) -> None:
         self.list = []
