@@ -59,7 +59,7 @@ class DataFetcherBinance(DataFetcher):
 def format_tick(tick: list) -> dict:
     candlestick = {
         # "Time": date_helper.from_timestamp_to_date(int(tick[0])/1000),
-        "Time": int(tick[0]),
+        "Time": int(int(tick[0])/1000),
         "Open": float(tick[1]),
         "Close": float(tick[4]),
         "High": float(tick[2]),
