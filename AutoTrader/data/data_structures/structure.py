@@ -1,6 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 import plotly.graph_objects as go
+from AutoTrader.exceptions import DataStructureNotFound
 
 
 class TickStructure(ABC):
@@ -92,4 +93,4 @@ def get_data_structure(name) -> TickStructure:
     for data_structure in TickStructure.__subclasses__():
         if data_structure.condition(name):
             return data_structure()
-    raise Exception('Data structure not found.')
+    raise DataStructureNotFound(f"Data structure: {name} not found")

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from AutoTrader.exceptions import DataFetcherNotFound
 
 
 class DataFetcher(ABC):
@@ -21,4 +22,4 @@ def get_fetcher(name: str) -> DataFetcher:
     for fetcher in DataFetcher.__subclasses__():
         if fetcher.condition(name):
             return fetcher()
-    raise Exception('Data fetcher not found.')
+    raise DataFetcherNotFound(f"Data fetcher: {name} not found")

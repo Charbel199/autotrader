@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from AutoTrader.helper import date_helper, logger
 import plotly.graph_objects as go
+from AutoTrader.exceptions import AccountNotFound
 
 log = logger.get_logger(__name__)
 
@@ -99,4 +100,4 @@ def get_account(name: str, balance: float) -> Account:
     for account in Account.__subclasses__():
         if account.condition(name):
             return account(balance)
-    return None
+    raise AccountNotFound(f"Account type: {name} not found")

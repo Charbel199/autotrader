@@ -1,5 +1,6 @@
 from AutoTrader.data.data_structures.structure import TickStructure
 from abc import abstractmethod
+from AutoTrader.exceptions import CandlestickProcessorNotFound
 
 
 class CandlestickProcessor(object):
@@ -23,4 +24,4 @@ def get_candlestick_processor(name: str, data_structure: TickStructure) -> Candl
     for candlestick_processor in CandlestickProcessor.__subclasses__():
         if candlestick_processor.condition(name):
             return candlestick_processor(data_structure)
-    return None
+    raise CandlestickProcessorNotFound(f"Candlestick processor: {name} not found")

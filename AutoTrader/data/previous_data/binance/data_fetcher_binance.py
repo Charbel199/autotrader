@@ -49,7 +49,7 @@ class DataFetcherBinance(DataFetcher):
             return candlesticks
         except Exception:
             log.error('Ran into an error while fetching candlesticks')
-            return []
+            raise
 
     @staticmethod
     def condition(name: str) -> bool:
@@ -85,7 +85,8 @@ def load_candlesticks(symbol: str, timeframe: str, start_date: str, end_date: st
         else:
             return []
     except Exception:
-        return []
+        log.error('Ran into an error while loading candlesticks')
+        raise
 
 
 def save_candlesticks(symbol: str, timeframe: str, start_date: str, end_date: str, data: list) -> None:
@@ -98,4 +99,5 @@ def save_candlesticks(symbol: str, timeframe: str, start_date: str, end_date: st
                 with open(f"{directory}/{file_name}", 'wb') as f:
                     pickle.dump(data, f)
     except Exception:
-        return
+        log.error('Ran into an error while saving the candlesticks')
+        raise

@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Callable
+from AutoTrader.exceptions import LiveDataFetcherNotFound
 
 
 class LiveDataFetcher(ABC):
@@ -26,4 +27,4 @@ def get_live_fetcher(name: str) -> LiveDataFetcher:
     for fetcher in LiveDataFetcher.__subclasses__():
         if fetcher.condition(name):
             return fetcher()
-    raise Exception('Live fetcher not found.')
+    raise LiveDataFetcherNotFound(f"Live fetcher: {name} not found")

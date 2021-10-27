@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from AutoTrader.data.data_structures.structure import TickStructure
 from AutoTrader.trading.accounts.account import Account
 from plotly.graph_objs import Figure
+from AutoTrader.exceptions import StrategyNotFound
 
 
 class Strategy(ABC):
@@ -50,4 +51,4 @@ def get_strategy(name: str, data_structure: TickStructure, account: Account, sym
     for strategy in Strategy.__subclasses__():
         if strategy.condition(name):
             return strategy(data_structure, account, symbol)
-    return None
+    raise StrategyNotFound(f"Strategy: {name} not found")
