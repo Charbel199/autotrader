@@ -5,7 +5,7 @@ from AutoTrader.trading.indicators.inidicator import Indicator
 
 class VWAP(Indicator):
     # columns = ['Time', 'VolumeClose', 'VWAP']
-    period = 13
+    period = 288
     data_structure: TickStructure
 
     def __init__(self, data_structure: TickStructure):
@@ -17,7 +17,9 @@ class VWAP(Indicator):
 
         self.list[-1]['VolumeClose'] = self.data_structure.get_last_value('Close') * self.data_structure.get_last_value('Volume')
         if self.data_structure.get_number_of_rows() >= self.period:
-            self.list[-1]['VWAP'] = sum([d['VolumeClose'] for d in self.list[-self.period:]]) / sum(self.data_structure.get_last_rows(self.period, 'Volume'))
+            volume_sum = sum(self.data_structure.get_last_rows(self.period, 'Volume'))
+            if volume_sum >0:
+                self.list[-1]['VWAP'] = sum([d['VolumeClose'] for d in self.list[-self.period:]]) / volume_sum
 
     def process_new_tick(self):
         pass
