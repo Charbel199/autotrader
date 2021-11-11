@@ -27,7 +27,7 @@ def get_info(backtester: BackTester, show_fig=False):
 
 start = time.time()
 
-start_date = "2 Sep, 2021"
+start_date = "1 Sep, 2021"
 # start_date = "1 Oct, 2020"
 end_date = "1 Oct, 2021"
 runner = BackTesterRunner()

@@ -4,22 +4,27 @@ from AutoTrader.helper import date_helper
 
 
 def get_trades_summary(transactions: List[dict], initial_balance: float) -> dict:
+
     trades = []
+    hold_times = []
+    hold_times_win = []
+    hold_times_loss = []
+
     balance = initial_balance
+
     number_of_trades = 0
     number_of_losses = 0
     total_loss = 0
     total_win = 0
-    hold_times = []
-    hold_times_win = []
-    hold_times_loss = []
     longest_winning_streak = 0
     longest_losing_streak = 0
     winning_streak = 0
     losing_streak = 0
     largest_winning_profit = 0
     largest_losing_profit = 0
+
     total_duration = transactions[-1]['Time'] - transactions[0]['Time']
+
     for i in range(0, len(transactions), 2):
         profit = (transactions[i + 1]['Price'] - transactions[i]['Price']) * transactions[i]['Amount']
         buy_time = int(transactions[i]['Time'])
