@@ -19,19 +19,21 @@ class ADX(Indicator):
     def process_new_candlestick(self) -> None:
         # Create new row
         self.list.append({'Time': self.data_structure.get_last_time()})
+        last_candlestick = self.data_structure.get_last_candlestick()
+        before_last_candlestick = self.data_structure.get_before_last_candlestick()
 
         if self.data_structure.get_number_of_rows() >= 2:
             # Calculate true range
             self.list[-1]['TrueRange'] = max(
-                self.data_structure.get_last_value('High') - self.data_structure.get_last_value('Low'),
-                self.data_structure.get_last_value('High') - self.data_structure.get_before_last_value('Close'),
-                self.data_structure.get_before_last_value('Close') - self.data_structure.get_last_value('Low')
+                last_candlestick.High - last_candlestick.Low,
+                last_candlestick.High - before_last_candlestick.Close,
+                before_last_candlestick.Close - last_candlestick.Low
             )
             self.true_range_counter += 1
 
             # Calculate H-pH and pL-L
-            self.list[-1]['H-pH'] = self.data_structure.get_last_value('High') - self.data_structure.get_before_last_value('High')
-            self.list[-1]['pL-L'] = self.data_structure.get_before_last_value('Low') - self.data_structure.get_last_value('Low')
+            self.list[-1]['H-pH'] = last_candlestick.High - before_last_candlestick.High
+            self.list[-1]['pL-L'] = before_last_candlestick.Low - last_candlestick.Low
 
             # Calculate +DX and -DX
             self.list[-1]['+DX'] = self.list[-1]['H-pH'] if self.list[-1]['H-pH'] > self.list[-1]['pL-L'] and self.list[-1]['H-pH'] > 0 else 0

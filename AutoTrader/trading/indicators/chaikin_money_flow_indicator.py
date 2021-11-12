@@ -17,18 +17,18 @@ class ChaikinMoneyFlow(Indicator):
 
         # Create new row
         self.list.append({'Time': self.data_structure.get_last_time()})
-
+        last_candlestick = self.data_structure.get_last_candlestick()
         if self.data_structure.get_number_of_rows() >= 1:
-            if (self.data_structure.get_last_value('High') - self.data_structure.get_last_value('Low')) != 0:
-                self.list[-1]['ChaikinMultiplier'] = ((self.data_structure.get_last_value('Close') - self.data_structure.get_last_value('Low')) - (
-                        self.data_structure.get_last_value('High') - self.data_structure.get_last_value('Close'))) / (
-                                                             self.data_structure.get_last_value('High') - self.data_structure.get_last_value('Low'))
+            if (last_candlestick.High - last_candlestick.Low) != 0:
+                self.list[-1]['ChaikinMultiplier'] = ((last_candlestick.Close - last_candlestick.Low) - (
+                        last_candlestick.High - last_candlestick.Close)) / (
+                                                             last_candlestick.High - last_candlestick.Low)
             else:
                 self.list[-1]['ChaikinMultiplier'] = 0
-            self.list[-1]['MoneyFlowVolume'] = self.list[-1]['ChaikinMultiplier'] * self.data_structure.get_last_value('Volume')
+            self.list[-1]['MoneyFlowVolume'] = self.list[-1]['ChaikinMultiplier'] * last_candlestick.Volume
             self.money_flow_volume_counter += 1
         if self.money_flow_volume_counter >= self.period:
-            volume_average = np.mean(self.data_structure.get_last_rows(self.period, 'Volume'))
+            volume_average = np.mean([c.Volume for c in self.data_structure.get_last_candlesticks(self.period)])
             money_flow_average = np.mean([d['MoneyFlowVolume'] for d in self.list[-self.period:]])
             self.list[-1]['ChaikinMoneyFlow'] = money_flow_average / volume_average
 

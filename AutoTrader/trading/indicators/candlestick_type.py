@@ -16,20 +16,21 @@ class CandlestickType(Indicator):
         # Create new row
         self.list.append({'Time': self.data_structure.get_last_time()})
         candlestick_type = ''
+        last_candlestick = self.data_structure.get_last_candlestick()
+        last_close = last_candlestick.Close
+        last_open = last_candlestick.Open
+        last_high = last_candlestick.High
+        last_low = last_candlestick.Low
 
-        last_close = self.data_structure.get_last_value('Close')
-        last_open = self.data_structure.get_last_value('Open')
-        last_high = self.data_structure.get_last_value('High')
-        last_low = self.data_structure.get_last_value('Low')
         # Get candlestick info
         real_body = abs(last_close - last_open)
         candle_range = last_high - last_low
 
         # Get type
         if self.data_structure.get_number_of_rows() >= 2:
-
-            before_last_high = self.data_structure.get_before_last_value('High')
-            before_last_low = self.data_structure.get_before_last_value('Low')
+            before_last_candlestick = self.data_structure.get_last_candlestick()
+            before_last_high = before_last_candlestick.High
+            before_last_low = before_last_candlestick.Low
 
             # Bullish pinbar
             if real_body <= candle_range / 3 and \

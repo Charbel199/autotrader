@@ -88,13 +88,13 @@ class QuickStrategy(Strategy):
                 # print(f"Close {self.data_structure.get_last_value('Close')} Middle {self.BollingerBand.get_last_values()[-1]['LowerBollingerBand']}  Open {self.data_structure.get_last_value('Open')} Time of close {self.data_structure.get_last_time()} Time of bolinger {self.BollingerBand.get_last_values()[-1]['Time']}")
                 # if self.CandlestickType.get_last_values(2)[-2]['Type'] in ['BullishEngulfing', 'BullishSwing', 'BullishPinbar'] and self.CandlestickType.get_last_values()[-1]['Type'] in ['BullishEngulfing', 'BullishSwing', 'BullishPinbar']:
                 #     print('bought')
-                if self.VWAP.get_last_values()[-1]['VWAP'] < self.data_structure.get_last_value('Close') \
+                if self.VWAP.get_last_values()[-1]['VWAP'] < self.data_structure.get_last_candlestick().Close \
                         and self.RSI.get_last_values()[-1]['RSI'] < 40 \
-                        and (self.data_structure.get_last_value('Close') - self.VWAP.get_last_values()[-1]['VWAP']) / self.data_structure.get_last_value('Close') <= 0.01:
+                        and (self.data_structure.get_last_candlestick().Close - self.VWAP.get_last_values()[-1]['VWAP']) / self.data_structure.get_last_candlestick().Close <= 0.01:
                     last_vwaps = np.array([d['VWAP'] for d in self.VWAP.get_last_values()[-14:]])
-                    last_closes = np.array(self.data_structure.get_last_rows(14, 'Close'))
+                    last_closes = np.array([c.Close for c in self.data_structure.get_last_candlesticks(14)])
                     if (last_closes>last_vwaps).all():
-                        self.account.buy(self.data_structure.get_tick()['Time'], self.symbol, self.data_structure.get_tick_close())
+                        self.account.buy(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick_close())
                         self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.015)
 
     def process_new_tick(self) -> None:
@@ -104,13 +104,13 @@ class QuickStrategy(Strategy):
                 # Sell logic
                 if self.SellSignal.process_new_tick():
                     self.number_of_trades += 1
-                    self.account.sell(self.data_structure.get_tick()['Time'], self.symbol, self.data_structure.get_tick_close())
+                    self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick_close())
                 # Stop loss
                 elif float(self.account.get_position()['Price']) * 0.98 >= self.data_structure.get_tick_close():
                     self.number_of_trades += 1
                     self.number_of_stop_losses += 1
                     log.warning(f"Hit stoploss of {float(self.account.get_position()['Price']) * 0.98}  at {self.data_structure.get_tick_close()}")
-                    self.account.sell(self.data_structure.get_tick()['Time'], self.symbol, self.data_structure.get_tick_close())
+                    self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick_close())
 
     def get_figure(self) -> Figure:
         fig = make_subplots(rows=3, cols=1)

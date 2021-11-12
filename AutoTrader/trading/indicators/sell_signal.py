@@ -25,7 +25,7 @@ class SellSignal(Indicator):
         last_tick = self.data_structure.get_tick()
         if last_tick == {}:
             return
-        last_tick_price = last_tick['Close']
+        last_tick_price = last_tick.Close
 
         # Check if reached sell zone
         if last_tick_price >= self.target:

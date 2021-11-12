@@ -15,10 +15,10 @@ class VWAP(Indicator):
         # Create new row
         self.list.append({'Time': self.data_structure.get_last_time()})
 
-        self.list[-1]['VolumeClose'] = self.data_structure.get_last_value('Close') * self.data_structure.get_last_value('Volume')
+        self.list[-1]['VolumeClose'] = self.data_structure.get_last_candlestick().Close * self.data_structure.get_last_candlestick().Volume
         if self.data_structure.get_number_of_rows() >= self.period:
-            volume_sum = sum(self.data_structure.get_last_rows(self.period, 'Volume'))
-            if volume_sum >0:
+            volume_sum = sum([c.Volume for c in self.data_structure.get_last_candlesticks(self.period)])
+            if volume_sum > 0:
                 self.list[-1]['VWAP'] = sum([d['VolumeClose'] for d in self.list[-self.period:]]) / volume_sum
 
     def process_new_tick(self):

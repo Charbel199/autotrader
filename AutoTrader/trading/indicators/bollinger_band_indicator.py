@@ -20,10 +20,11 @@ class BollingerBand(Indicator):
         self.list.append({'Time': self.data_structure.get_last_time()})
 
         if self.data_structure.get_number_of_rows() >= self.period:
-            self.list[-1]['SMA'] = np.mean(self.data_structure.get_last_rows(self.period, 'Close'))
+            last_closes = [c.Close for c in self.data_structure.get_last_candlesticks(self.period)]
+            self.list[-1]['SMA'] = np.mean(last_closes)
             self.sma_counter += 1
         if self.sma_counter >= 1:
-            deviation = np.std(self.data_structure.get_last_rows(self.period, 'Close'))
+            deviation = np.std(last_closes)
             self.list[-1]['UpperBollingerBand'] = self.list[-1]['SMA'] + deviation * self.bollinger_band_multiplier
             self.list[-1]['LowerBollingerBand'] = self.list[-1]['SMA'] - deviation * self.bollinger_band_multiplier
 

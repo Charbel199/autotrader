@@ -19,7 +19,7 @@ class RSI(Indicator):
 
         # Compute gain and loss
         if self.data_structure.get_number_of_rows() >= 2:
-            change = self.data_structure.get_last_value('Close') - self.data_structure.get_before_last_value('Close')
+            change = self.data_structure.get_last_candlestick().Close - self.data_structure.get_before_last_candlestick().Close
             if change > 0:
                 self.list[-1]['Gain'] = change
                 self.list[-1]['Loss'] = 0
