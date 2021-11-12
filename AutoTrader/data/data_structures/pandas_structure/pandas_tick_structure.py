@@ -2,6 +2,10 @@ from AutoTrader.data.data_structures.structure import TickStructure
 import pandas as pd
 import plotly.graph_objects as go
 
+"""
+Deprecated
+"""
+
 
 class PandasTickStructure(TickStructure):
 

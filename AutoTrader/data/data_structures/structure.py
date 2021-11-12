@@ -2,7 +2,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 import plotly.graph_objects as go
 from AutoTrader.exceptions import DataStructureNotFound
-
+from AutoTrader.data.models import Tick
+from typing import List
 
 class TickStructure(ABC):
     columns = ['Time', 'Open', 'Close', 'High', 'Low', 'Volume', 'OpenTime', 'CloseTime']
@@ -11,15 +12,15 @@ class TickStructure(ABC):
         pass
 
     @abstractmethod
-    def add_row(self, row: dict) -> None:
+    def add_row(self, row: Tick) -> None:
         pass
 
     @abstractmethod
-    def add_bulk_rows(self, rows: list) -> None:
+    def add_bulk_rows(self, rows: List[Tick]) -> None:
         pass
 
     @abstractmethod
-    def set_tick(self, tick: dict) -> None:
+    def set_tick(self, tick: Tick) -> None:
         pass
 
     @abstractmethod
@@ -27,11 +28,11 @@ class TickStructure(ABC):
         pass
 
     @abstractmethod
-    def get_specific_value(self, column_name: str, n: int):
+    def get_specific_candlestick(self, n: int) -> Tick:
         pass
 
     @abstractmethod
-    def get_tick(self) -> dict:
+    def get_tick(self) -> Tick:
         pass
 
     @abstractmethod
@@ -39,15 +40,15 @@ class TickStructure(ABC):
         pass
 
     @abstractmethod
-    def get_last_rows(self, n: int, column_name: str) -> list:
+    def get_last_candlesticks(self, n: int) -> List[Tick]:
         pass
 
     @abstractmethod
-    def get_last_value(self, column_name: str) -> float:
+    def get_last_candlestick(self) -> Tick:
         pass
 
     @abstractmethod
-    def get_before_last_value(self, column_name: str) -> float:
+    def get_before_last_candlestick(self) -> Tick:
         pass
 
     @abstractmethod
@@ -55,7 +56,7 @@ class TickStructure(ABC):
         pass
 
     @abstractmethod
-    def set_data_structure_content(self, data_structure_content: list) -> None:
+    def set_data_structure_content(self, data_structure_content: List[Tick]) -> None:
         pass
 
     @abstractmethod
