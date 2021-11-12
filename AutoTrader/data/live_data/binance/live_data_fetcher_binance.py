@@ -4,13 +4,12 @@ from AutoTrader.data.data_structures.structure import TickStructure
 from binance import ThreadedWebsocketManager
 from typing import Callable
 from AutoTrader.helper import logger
+from AutoTrader.data.models import Tick
 
 log = logger.get_logger(__name__)
 
 
 class LiveDataFetcherBinance(LiveDataFetcher):
-    strategy: Strategy
-    data_structure: TickStructure
 
     def __init__(self):
         super().__init__()
@@ -28,16 +27,16 @@ class LiveDataFetcherBinance(LiveDataFetcher):
         self.twm.stop()
 
     def map_message(self, message) -> None:
-        tick = {
-            "Time": int(int(message["E"])/1000),
-            "Open": float(message["k"]["o"]),
-            "Close": float(message["k"]["c"]),
-            "High": float(message["k"]["h"]),
-            "Low": float(message["k"]["l"]),
-            "Volume": float(message["k"]["v"]),
-            "OpenTime": int(message["k"]["t"]),
-            "CloseTime": int(message["k"]["T"])
-        }
+        tick = Tick(
+            Time=int(int(message["E"]) / 1000),
+            Open=float(message["k"]["o"]),
+            Close=float(message["k"]["c"]),
+            High=float(message["k"]["h"]),
+            Low=float(message["k"]["l"]),
+            Volume=float(message["k"]["v"]),
+            OpenTime=int(message["k"]["t"]),
+            CloseTime=int(message["k"]["T"])
+        )
         self.process_message(tick)
 
     @staticmethod

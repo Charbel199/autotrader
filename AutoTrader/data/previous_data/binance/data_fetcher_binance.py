@@ -1,9 +1,10 @@
 from AutoTrader.data.previous_data.data_fetcher import DataFetcher
 from binance.client import Client
 from AutoTrader.helper import logger
+from AutoTrader.data.models import Tick
 import pickle
 import os
-
+from typing import List
 log = logger.get_logger(__name__)
 
 
@@ -19,7 +20,7 @@ class DataFetcherBinance(DataFetcher):
     def __init__(self):
         super().__init__()
 
-    def get_candlesticks(self, symbol: str, timeframe: str, start_date: str, end_date: str = None) -> list:
+    def get_candlesticks(self, symbol: str, timeframe: str, start_date: str, end_date: str = None) -> List[Tick]:
         log.info(f'Fetching candlesticks for {symbol}, timeframe of {timeframe} and a start date of {start_date} and an end date of {end_date}')
         try:
             candlesticks = load_candlesticks(symbol, timeframe, start_date, end_date)
@@ -56,18 +57,19 @@ class DataFetcherBinance(DataFetcher):
         return name == 'binance'
 
 
-def format_tick(tick: list) -> dict:
-    candlestick = {
+def format_tick(tick: list) -> Tick:
+    candlestick = Tick(
         # "Time": date_helper.from_timestamp_to_date(int(tick[0])/1000),
-        "Time": int(int(tick[0])/1000),
-        "Open": float(tick[1]),
-        "Close": float(tick[4]),
-        "High": float(tick[2]),
-        "Low": float(tick[3]),
-        "Volume": float(tick[5]),
-        "OpenTime": int(tick[0]),
-        "CloseTime": int(tick[6])
-    }
+        Time=int(int(tick[0]) / 1000),
+        Open=float(tick[1]),
+        Close=float(tick[4]),
+        High=float(tick[2]),
+        Low=float(tick[3]),
+        Volume=float(tick[5]),
+        OpenTime=int(tick[0]),
+        CloseTime=int(tick[6])
+    )
+
     return candlestick
 
 
