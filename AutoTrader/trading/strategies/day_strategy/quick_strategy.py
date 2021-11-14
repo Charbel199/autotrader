@@ -45,7 +45,7 @@ class QuickStrategy(Strategy):
         self.VWAP.process_new_candlestick()
         # self.ChaikinMoneyFlow.process_new_candlestick()
 
-        if self.transactions_allowed and self.account.get_position() == {} and self.data_structure.get_number_of_rows() > 330:
+        if self.transactions_allowed and not self.account.get_position().is_valid() and self.data_structure.get_number_of_rows() > 330:
 
             if self.start_counter:
                 self.counter += 1
@@ -100,16 +100,16 @@ class QuickStrategy(Strategy):
     def process_new_tick(self) -> None:
         # print('Got new tick in strat ', self.data_structure.get_tick())
         if self.transactions_allowed:
-            if self.account.get_position() != {}:
+            if self.account.get_position().is_valid():
                 # Sell logic
                 if self.SellSignal.process_new_tick():
                     self.number_of_trades += 1
                     self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick_close())
                 # Stop loss
-                elif float(self.account.get_position()['Price']) * 0.98 >= self.data_structure.get_tick_close():
+                elif float(self.account.get_position().Price) * 0.98 >= self.data_structure.get_tick_close():
                     self.number_of_trades += 1
                     self.number_of_stop_losses += 1
-                    log.warning(f"Hit stoploss of {float(self.account.get_position()['Price']) * 0.98}  at {self.data_structure.get_tick_close()}")
+                    log.warning(f"Hit stoploss of {float(self.account.get_position().Price) * 0.98}  at {self.data_structure.get_tick_close()}")
                     self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick_close())
 
     def get_figure(self) -> Figure:

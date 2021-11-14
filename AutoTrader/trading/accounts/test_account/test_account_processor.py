@@ -1,6 +1,7 @@
 from AutoTrader.trading.accounts.account import Account
 import plotly.graph_objects as go
 from AutoTrader.helper import logger
+from AutoTrader.data.models import Position
 
 log = logger.get_logger(__name__)
 
@@ -10,7 +11,7 @@ class TestAccount(Account):
     def __init__(self, balance: float):
         super().__init__(balance)
 
-    def get_position(self) -> dict:
+    def get_position(self) -> Position:
         return self.position
 
     def buy(self,
@@ -18,16 +19,18 @@ class TestAccount(Account):
             symbol: str,
             price: float,
             amount: float = 0) -> None:
+
         if amount == 0:
             amount = self.balance / price
+
         self.balance -= amount * price
         log.info(f"{time} - Bought - {amount} of {symbol} at {price}")
-        self.position = {
-            "Time": time,
-            "Symbol": symbol,
-            "Amount": amount,
-            "Price": price
-        }
+        self.position = Position(
+            Time=time,
+            Symbol=symbol,
+            Amount=amount,
+            Price=price
+        )
         log.info(f"New position {self.position}")
         self.list.append({
             'Time': time,
@@ -42,13 +45,13 @@ class TestAccount(Account):
              symbol: str,
              price: float,
              amount: float = 0) -> None:
-        if self.position['Time'] != time:
+        if self.position.Time != time:
             if amount == 0:
-                amount = self.position['Amount']
+                amount = self.position.Amount
             self.balance += amount * price
             log.info(f"{time} - Sold - {amount} of {symbol} at {price}")
             log.info(f"New balance: {self.balance}")
-            self.position = {}
+            self.position = Position()
             self.list.append({
                 'Time': time,
                 'Action': 'Sell',

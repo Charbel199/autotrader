@@ -1,8 +1,10 @@
 from abc import ABC, abstractmethod
-from AutoTrader.helper import date_helper, logger
+from AutoTrader.helper import logger
+from AutoTrader.data.models import Position
 import plotly.graph_objects as go
 from AutoTrader.exceptions import AccountNotFound
-from AutoTrader.services.summary import get_trades_summary,print_summary
+from AutoTrader.services.summary import get_trades_summary, print_summary
+
 log = logger.get_logger(__name__)
 
 
@@ -10,13 +12,13 @@ class Account(ABC):
     columns = ['Time', 'Action', 'Amount', 'Symbol', 'Price']
 
     def __init__(self, balance: float):
-        self.position = {}
+        self.position = Position()
         self.initial_balance = balance
         self.balance = balance
         self.list = []
 
     @abstractmethod
-    def get_position(self) -> dict:
+    def get_position(self) -> Position:
         return self.position
 
     @abstractmethod
@@ -37,10 +39,10 @@ class Account(ABC):
 
     def get_profit(self) -> float:
         # If in position when calculating profit, revert last buy
-        if self.position != {}:
+        if self.position.is_valid():
             self.list = self.list[:-1]
-            self.balance += self.position['Price'] * self.position['Amount']
-            self.position = {}
+            self.balance += self.position.Price * self.position.Amount
+            self.position = Position()
         summary = get_trades_summary(self.list, self.initial_balance)
         log.info(print_summary(summary))
         return summary['PercentageChange']
@@ -50,10 +52,10 @@ class Account(ABC):
         pass
 
     def get_all_trades(self) -> list:
-        if self.position != {}:
+        if self.position.is_valid():
             self.list = self.list[:-1]
-            self.balance += self.position['Price'] * self.position['Amount']
-            self.position = {}
+            self.balance += self.position.Price * self.position.Amount
+            self.position = Position()
         summary = get_trades_summary(self.list, self.initial_balance)
         return summary['AllTrades']
 
