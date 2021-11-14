@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Callable
 from AutoTrader.exceptions import LiveDataFetcherNotFound
-
+from AutoTrader.data.models import Tick
 
 class LiveDataFetcher(ABC):
 
@@ -9,7 +9,7 @@ class LiveDataFetcher(ABC):
         pass
 
     @abstractmethod
-    def run(self, symbol: str, timeframe: str, process_message: Callable[[dict], None]) -> None:
+    def run(self, symbol: str, timeframe: str, process_message: Callable[[Tick], None]) -> None:
         pass
 
     @abstractmethod

@@ -4,7 +4,6 @@ from AutoTrader.helper import date_helper
 
 
 def get_trades_summary(transactions: List[dict], initial_balance: float) -> dict:
-
     trades = []
     hold_times = []
     hold_times_win = []
@@ -22,6 +21,9 @@ def get_trades_summary(transactions: List[dict], initial_balance: float) -> dict
     losing_streak = 0
     largest_winning_profit = 0
     largest_losing_profit = 0
+
+    if len(transactions) < 2:
+        return {}
 
     total_duration = transactions[-1]['Time'] - transactions[0]['Time']
 

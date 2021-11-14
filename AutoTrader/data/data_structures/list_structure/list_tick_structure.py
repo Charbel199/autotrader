@@ -9,7 +9,7 @@ class ListTickStructure(TickStructure):
     def __init__(self):
         super().__init__()
         self.list: List[Tick] = []
-        self.tick: Tick
+        self.tick: Tick = Tick()
 
     def add_row(self, row: Tick) -> None:
         self.list.append(row)
@@ -43,7 +43,7 @@ class ListTickStructure(TickStructure):
     def get_tick(self) -> Tick:
         if self.tick:
             return self.tick
-        return {}
+        return Tick()
 
     def get_last_candlesticks(self, n: int) -> List[Tick]:
         return self.list[-n:]

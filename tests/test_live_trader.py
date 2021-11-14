@@ -22,7 +22,7 @@ def get_info(live_trader: LiveTrader, show_fig=False):
         fig.write_html("test.html")
 
 
-start_date = "27 Oct, 2021"
+start_date = "10 Nov, 2021"
 live_runner = LiveTraderRunner('binance')
 
 live_trader1 = live_runner.prepare_live_trader(symbol="BTCUSDT", timeframe="1m", account_provider="testAccount",
@@ -36,7 +36,7 @@ live_trader3 = live_runner.prepare_live_trader(symbol="LTCUSDT", timeframe="1m",
                                                back_date=start_date)
 live_runner.start_all_live_traders()
 print('start')
-time.sleep(3600)
+time.sleep(1800)
 live_runner.stop_all_live_traders()
 print('stop')
 

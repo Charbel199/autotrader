@@ -3,6 +3,7 @@ from AutoTrader.data.data_structures.structure import TickStructure
 from AutoTrader.data.previous_data.data_fetcher import DataFetcher
 from AutoTrader.data.live_data.live_data_fetcher import LiveDataFetcher
 from AutoTrader.trading.accounts.account import Account
+from AutoTrader.data.models import Tick
 
 
 class LiveTrader(object):
@@ -47,10 +48,10 @@ class LiveTrader(object):
     def stop_live_trader(self) -> None:
         self.live_data_fetcher.stop()
 
-    def process_message(self, tick: dict) -> None:
+    def process_message(self, tick: Tick) -> None:
         if self.data_structure:
             # Only add to rows if it's a new candlestick
-            if self.data_structure.get_tick() != {} and tick["CloseTime"] != self.data_structure.get_tick()["CloseTime"]:
+            if self.data_structure.get_tick().is_valid() and tick.CloseTime != self.data_structure.get_tick().CloseTime:
                 self.data_structure.add_row(self.data_structure.get_tick())
                 self.strategy.process_new_candlestick()
 
