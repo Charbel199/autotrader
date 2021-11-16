@@ -36,12 +36,6 @@ def get_trades_summary(transactions: List[dict], initial_balance: float) -> dict
         number_of_trades += 1
         hold_times.append(hold_time)
 
-        if winning_streak > longest_winning_streak:
-            longest_winning_streak = winning_streak
-
-        if losing_streak > longest_losing_streak:
-            longest_losing_streak = losing_streak
-
         if profit < 0:
             winning_streak = 0
             total_loss += profit
@@ -57,6 +51,12 @@ def get_trades_summary(transactions: List[dict], initial_balance: float) -> dict
             winning_streak += 1
             if profit > largest_winning_profit:
                 largest_winning_profit = profit
+
+        if winning_streak > longest_winning_streak:
+            longest_winning_streak = winning_streak
+
+        if losing_streak > longest_losing_streak:
+            longest_losing_streak = losing_streak
 
         balance += profit
         trades.append({

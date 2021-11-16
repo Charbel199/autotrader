@@ -50,13 +50,14 @@ class LiveTrader(object):
 
     def process_message(self, tick: Tick) -> None:
         if self.data_structure:
-            # Only add to rows if it's a new candlestick
-            if self.data_structure.get_tick().is_valid() and tick.CloseTime != self.data_structure.get_tick().CloseTime:
-                self.data_structure.add_row(self.data_structure.get_tick())
-                self.strategy.process_new_candlestick()
-
+            previous_tick = self.data_structure.get_tick()
             self.data_structure.set_tick(tick)
             self.strategy.process_new_tick()
+
+            # Only add to rows if it's a new candlestick
+            if previous_tick.is_valid() and tick.CloseTime != previous_tick.CloseTime:
+                self.data_structure.add_row(previous_tick)
+                self.strategy.process_new_candlestick()
 
 
 from AutoTrader.data.previous_data.data_fetcher import get_fetcher
