@@ -20,9 +20,10 @@ class ADX(Indicator):
         # Create new row
         self.list.append({'Time': self.data_structure.get_last_time()})
         last_candlestick = self.data_structure.get_last_candlestick()
-        before_last_candlestick = self.data_structure.get_before_last_candlestick()
+
 
         if self.data_structure.get_number_of_rows() >= 2:
+            before_last_candlestick = self.data_structure.get_before_last_candlestick()
             # Calculate true range
             self.list[-1]['TrueRange'] = max(
                 last_candlestick.High - last_candlestick.Low,
