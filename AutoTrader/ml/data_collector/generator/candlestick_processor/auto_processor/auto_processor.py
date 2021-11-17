@@ -1,6 +1,6 @@
 from AutoTrader.trading.indicators.adx_indicator import ADX
 from AutoTrader.trading.indicators.rsi_indicator import RSI
-from AutoTrader.ml.generator.candlestick_processor.candlestick_processor import CandlestickProcessor
+from AutoTrader.ml.data_collector.generator.candlestick_processor.candlestick_processor import CandlestickProcessor
 from AutoTrader.data.data_structures.structure import TickStructure
 
 
@@ -23,7 +23,7 @@ class AutoCandlestickProcessor(CandlestickProcessor):
                 'ADX': self.ADX.get_all_values(),
                 'RSI': self.RSI.get_all_values()
             }
-            closes = self.data_structure.get_last_rows(self.data_structure.get_number_of_rows(), 'Close')
+            closes = [d.Close for d in self.data_structure.get_last_candlesticks(self.data_structure.get_number_of_rows())]
             print(max(closes))
             # Empty data
             self.data_structure.delete_data()
