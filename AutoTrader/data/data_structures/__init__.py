@@ -1,2 +1,2 @@
-from .pandas_structure.pandas_tick_structure import PandasTickStructure
-from .list_structure.list_tick_structure import ListTickStructure
+from AutoTrader.data.data_structures.pandas_tick_structure import PandasTickStructure
+from AutoTrader.data.data_structures.list_tick_structure import ListTickStructure

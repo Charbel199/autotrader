@@ -1,1 +1,1 @@
-from .binance.data_fetcher_binance import DataFetcherBinance
+from AutoTrader.data.previous_data.data_fetcher_binance import DataFetcherBinance

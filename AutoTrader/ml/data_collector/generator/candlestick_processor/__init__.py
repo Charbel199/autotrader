@@ -1,2 +1,0 @@
-from .simple_processor.simple_candlestick_processor import SimpleCandlestickProcessor
-from .auto_processor.auto_processor import AutoCandlestickProcessor

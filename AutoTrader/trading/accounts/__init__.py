@@ -1,1 +1,1 @@
-from .test_account.test_account_processor import TestAccount
+from AutoTrader.trading.accounts.test_account_processor import TestAccount

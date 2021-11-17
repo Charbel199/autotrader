@@ -3,12 +3,12 @@ from AutoTrader.data.data_structures.structure import TickStructure
 import collections
 import random
 from AutoTrader.helper import date_helper, logger
-from AutoTrader.ml.data_collector.generator.candlestick_processor.candlestick_processor import CandlestickProcessor
+from AutoTrader.ml.data_collector.processor.candlestick_processor import CandlestickProcessor
 
 log = logger.get_logger(__name__)
 
 
-class CandlestickGenerator(object):
+class CandlestickContinuousGenerator(object):
     data_fetcher: DataFetcher
     data_structure: TickStructure
     candlestick_processor: CandlestickProcessor
