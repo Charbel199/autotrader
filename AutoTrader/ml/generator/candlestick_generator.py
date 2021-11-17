@@ -3,7 +3,7 @@ from AutoTrader.data.data_structures.structure import TickStructure
 import collections
 import random
 from AutoTrader.helper import date_helper, logger
-from AutoTrader.ml.candlestick_processor.candlestick_processor import CandlestickProcessor
+from AutoTrader.ml.generator.candlestick_processor.candlestick_processor import CandlestickProcessor
 from plotly.graph_objs import Figure
 
 log = logger.get_logger(__name__)
@@ -46,7 +46,7 @@ class CandlestickGenerator(object):
         return self.buffer.pop()
 
 
-from AutoTrader.ml.candlestick_processor.candlestick_processor import get_candlestick_processor
+from AutoTrader.ml.generator.candlestick_processor.candlestick_processor import get_candlestick_processor
 from AutoTrader.data.previous_data.data_fetcher import get_fetcher
 import pandas as pd
 from AutoTrader.data.data_structures.structure import get_data_structure

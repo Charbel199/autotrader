@@ -1,6 +1,6 @@
 from AutoTrader.trading.indicators.adx_indicator import ADX
 from AutoTrader.trading.indicators.rsi_indicator import RSI
-from AutoTrader.ml.candlestick_processor.candlestick_processor import CandlestickProcessor
+from AutoTrader.ml.generator.candlestick_processor.candlestick_processor import CandlestickProcessor
 from AutoTrader.data.data_structures.structure import TickStructure
 
 
