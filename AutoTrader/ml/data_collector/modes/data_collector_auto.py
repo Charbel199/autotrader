@@ -13,13 +13,13 @@ class DataCollectorAuto(object):
                  timeframe: str,
                  data_fetcher_provider: str,
                  data_structure_provider: str,
-                 candlestick_auto_processor_provider: str,
+                 candlestick_processor_provider: str,
                  start_date: str):
         self.data = {}
         self.start_date = start_date
         data_fetcher = get_fetcher(data_fetcher_provider)
         data_structure = get_data_structure(data_structure_provider)
-        candlestick_generator_processor = get_candlestick_processor(candlestick_auto_processor_provider, data_structure)
+        candlestick_generator_processor = get_candlestick_processor(candlestick_processor_provider, data_structure)
         self.generator = CandlestickContinuousGenerator(candlestick_generator_processor, data_fetcher, data_structure, symbols, timeframe)
         self.generator.fetch_new_candlesticks(date_helper.get_random_timestamp(date_helper.from_binance_date_to_timestamp(start_date)), 8)
 
