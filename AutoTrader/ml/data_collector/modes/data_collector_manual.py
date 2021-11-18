@@ -5,7 +5,7 @@ from AutoTrader.data.data_structures.structure import get_data_structure
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 from AutoTrader.helper import date_helper, logger
-from AutoTrader.ml.data_collector.generator.candlestick_generator import CandlestickContinuousGenerator
+from AutoTrader.ml.data_collector.generator.candlestick_generator import get_candlestick_generator
 from plotly.graph_objs import Figure
 import dash
 import dash_core_components as dcc
@@ -22,7 +22,8 @@ class DataCollectorManual(object):
                  timeframe: str,
                  data_fetcher_provider: str,
                  data_structure_provider: str,
-                 candlestick_processor_provider: str,
+                 features_generator_provider: str,
+                 candlestick_generator_processor_provider: str,
                  start_date: str):
         self.data = {}
         self.fig = make_subplots(rows=1, cols=1)
@@ -30,8 +31,8 @@ class DataCollectorManual(object):
         self.start_date = start_date
         data_fetcher = get_fetcher(data_fetcher_provider)
         data_structure = get_data_structure(data_structure_provider)
-        candlestick_generator_processor = get_features_generator(candlestick_processor_provider, data_structure)
-        self.generator = CandlestickContinuousGenerator(candlestick_generator_processor, data_fetcher, data_structure, symbols, timeframe)
+        features_generator = get_features_generator(features_generator_provider, data_structure)
+        self.generator = get_candlestick_generator(candlestick_generator_processor_provider, features_generator, data_fetcher, data_structure, symbols, timeframe)
         self.generator.fetch_new_candlesticks(date_helper.get_random_timestamp(date_helper.from_binance_date_to_timestamp(start_date)), 8)
 
     def get_new_candlesticks(self) -> None:
