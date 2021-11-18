@@ -1,10 +1,10 @@
 from AutoTrader.trading.indicators.adx_indicator import ADX
 from AutoTrader.trading.indicators.rsi_indicator import RSI
-from AutoTrader.ml.data_collector.processor.candlestick_processor import CandlestickProcessor
+from AutoTrader.ml.data_collector.features_generator.features_generator import FeaturesGenerator
 from AutoTrader.data.data_structures.structure import TickStructure
 
 
-class SimpleCandlestickProcessor(CandlestickProcessor):
+class SimpleFeaturesGenerator(FeaturesGenerator):
     def __init__(self, data_structure: TickStructure):
         super().__init__(data_structure)
         self.ADX = ADX(data_structure)

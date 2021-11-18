@@ -1,4 +1,4 @@
-from AutoTrader.ml.data_collector.processor.candlestick_processor import get_candlestick_processor
+from AutoTrader.ml.data_collector.features_generator.features_generator import get_features_generator
 from AutoTrader.data.previous_data.data_fetcher import get_fetcher
 import pandas as pd
 from AutoTrader.data.data_structures.structure import get_data_structure
@@ -30,7 +30,7 @@ class DataCollectorManual(object):
         self.start_date = start_date
         data_fetcher = get_fetcher(data_fetcher_provider)
         data_structure = get_data_structure(data_structure_provider)
-        candlestick_generator_processor = get_candlestick_processor(candlestick_processor_provider, data_structure)
+        candlestick_generator_processor = get_features_generator(candlestick_processor_provider, data_structure)
         self.generator = CandlestickContinuousGenerator(candlestick_generator_processor, data_fetcher, data_structure, symbols, timeframe)
         self.generator.fetch_new_candlesticks(date_helper.get_random_timestamp(date_helper.from_binance_date_to_timestamp(start_date)), 8)
 

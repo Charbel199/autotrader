@@ -10,7 +10,7 @@ class AccountNotFound(Exception):
     pass
 
 
-class CandlestickProcessorNotFound(Exception):
+class FeaturesGeneratorNotFound(Exception):
     pass
 
 

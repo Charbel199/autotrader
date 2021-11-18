@@ -1,4 +1,4 @@
-from AutoTrader.ml.data_collector.processor.candlestick_processor import get_candlestick_processor
+from AutoTrader.ml.data_collector.features_generator.candlestick_processor import get_candlestick_processor
 from AutoTrader.data.previous_data.data_fetcher import get_fetcher
 from AutoTrader.data.data_structures.structure import get_data_structure
 from AutoTrader.helper import date_helper, logger

@@ -1,9 +1,9 @@
 from AutoTrader.data.data_structures.structure import TickStructure
 from abc import abstractmethod
-from AutoTrader.exceptions import CandlestickProcessorNotFound
+from AutoTrader.exceptions import FeaturesGeneratorNotFound
 
 
-class CandlestickProcessor(object):
+class FeaturesGenerator(object):
     data_structure: TickStructure
 
     def __init__(self, data_structure: TickStructure):
@@ -20,8 +20,8 @@ class CandlestickProcessor(object):
 
 
 # Get fetcher based on broker name
-def get_candlestick_processor(name: str, data_structure: TickStructure) -> CandlestickProcessor:
-    for candlestick_processor in CandlestickProcessor.__subclasses__():
-        if candlestick_processor.condition(name):
-            return candlestick_processor(data_structure)
-    raise CandlestickProcessorNotFound(f"Candlestick processor: {name} not found")
+def get_features_generator(name: str, data_structure: TickStructure) -> FeaturesGenerator:
+    for features_generator in FeaturesGenerator.__subclasses__():
+        if features_generator.condition(name):
+            return features_generator(data_structure)
+    raise FeaturesGeneratorNotFound(f"Features generator: {name} not found")

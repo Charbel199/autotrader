@@ -1,2 +1,0 @@
-from AutoTrader.ml.data_collector.processor.auto_candlestick_processor import AutoCandlestickProcessor
-from AutoTrader.ml.data_collector.processor.simple_candlestick_processor import SimpleCandlestickProcessor
