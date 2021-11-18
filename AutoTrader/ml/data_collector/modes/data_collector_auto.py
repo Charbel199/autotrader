@@ -24,6 +24,10 @@ class DataCollectorAuto(object):
         self.generator = get_candlestick_generator(candlestick_generator_processor_provider, candlestick_generator_processor, data_fetcher, data_structure, symbols, timeframe)
         self.generator.fetch_new_candlesticks(date_helper.get_random_timestamp(date_helper.from_binance_date_to_timestamp(start_date)), 8)
 
+    def process_collected_data(self) -> None:
+        # Save old data
+        pass
+
     def get_new_candlesticks(self) -> None:
         self.data = self.generator.get_new_candlesticks()
         if self.data != {}:

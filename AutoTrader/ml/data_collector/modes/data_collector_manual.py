@@ -35,12 +35,13 @@ class DataCollectorManual(object):
         self.generator = get_candlestick_generator(candlestick_generator_processor_provider, features_generator, data_fetcher, data_structure, symbols, timeframe)
         self.generator.fetch_new_candlesticks(date_helper.get_random_timestamp(date_helper.from_binance_date_to_timestamp(start_date)), 8)
 
-    def get_new_candlesticks(self) -> None:
+    def process_collected_data(self) -> None:
         # Save old data
         if len(self.clicked_candlesticks) > 0:
             print('candlesticks ', self.clicked_candlesticks)
-            # print(self.data['ADX'].to_string())
+            # print(self.data['ADX'].to_string()
 
+    def get_new_candlesticks(self) -> None:
         self.clicked_candlesticks = []
         self.data = self.generator.get_new_candlesticks()
         candlesticks = self.data['Ticks']
@@ -118,7 +119,8 @@ class DataCollectorManual(object):
         def retrieve_data(n_clicks):
             if n_clicks <= 0:
                 return
-            log.info('Getting new candlesticks')
+            log.info('Processing collected data and getting new candlesticks')
+            self.process_collected_data()
             self.get_new_candlesticks()
             return
 
