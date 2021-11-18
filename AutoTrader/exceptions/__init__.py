@@ -24,3 +24,6 @@ class StrategyNotFound(Exception):
 
 class DataStructureNotFound(Exception):
     pass
+
+class CandlestickGeneratorException(Exception):
+    pass

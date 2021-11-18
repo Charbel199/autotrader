@@ -1,0 +1,1 @@
+from .continuous_candlestick_generator import CandlestickContinuousGenerator
