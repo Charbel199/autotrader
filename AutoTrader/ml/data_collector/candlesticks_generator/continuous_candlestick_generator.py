@@ -4,7 +4,7 @@ import collections
 import random
 from AutoTrader.helper import date_helper, logger
 from AutoTrader.ml.data_collector.features_generator.features_generator import FeaturesGenerator
-from AutoTrader.ml.data_collector.generator.candlestick_generator import CandlestickGenerator
+from AutoTrader.ml.data_collector.candlesticks_generator.candlestick_generator import CandlestickGenerator
 
 log = logger.get_logger(__name__)
 

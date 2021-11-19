@@ -5,7 +5,7 @@ from AutoTrader.data.data_structures.structure import get_data_structure
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 from AutoTrader.helper import date_helper, logger
-from AutoTrader.ml.data_collector.generator.candlestick_generator import get_candlestick_generator
+from AutoTrader.ml.data_collector.candlesticks_generator.candlestick_generator import get_candlestick_generator
 from plotly.graph_objs import Figure
 import dash
 import dash_core_components as dcc

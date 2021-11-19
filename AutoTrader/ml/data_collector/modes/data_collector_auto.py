@@ -2,7 +2,7 @@ from AutoTrader.ml.data_collector.features_generator.features_generator import g
 from AutoTrader.data.previous_data.data_fetcher import get_fetcher
 from AutoTrader.data.data_structures.structure import get_data_structure
 from AutoTrader.helper import date_helper, logger
-from AutoTrader.ml.data_collector.generator.candlestick_generator import get_candlestick_generator
+from AutoTrader.ml.data_collector.candlesticks_generator.candlestick_generator import get_candlestick_generator
 
 log = logger.get_logger(__name__)
 
