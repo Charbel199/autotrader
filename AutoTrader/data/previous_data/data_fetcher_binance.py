@@ -5,6 +5,7 @@ from AutoTrader.data.models import Tick
 import pickle
 import os
 from typing import List
+
 log = logger.get_logger(__name__)
 
 
@@ -21,7 +22,8 @@ class DataFetcherBinance(DataFetcher):
         super().__init__()
 
     def get_candlesticks(self, symbol: str, timeframe: str, start_date: str, end_date: str = None) -> List[Tick]:
-        log.info(f'Fetching candlesticks for {symbol}, timeframe of {timeframe} and a start date of {start_date} and an end date of {end_date}')
+        log.info(
+            f'Fetching candlesticks for {symbol}, timeframe of {timeframe} and a start date of {start_date} and an end date of {end_date}')
         try:
             candlesticks = load_candlesticks(symbol, timeframe, start_date, end_date)
             if len(candlesticks) == 0:
@@ -77,6 +79,8 @@ def load_candlesticks(symbol: str, timeframe: str, start_date: str, end_date: st
     try:
         if end_date is not None:
             directory = "saved_data"
+            check_dir(directory)
+
             existing_files = [f for f in os.listdir(directory) if f.endswith('.pkl')]
             file_name = f"{symbol}_{timeframe}_{start_date}_{end_date}.pkl"
             if file_name in existing_files:
@@ -95,6 +99,7 @@ def save_candlesticks(symbol: str, timeframe: str, start_date: str, end_date: st
     try:
         if end_date is not None:
             directory = "saved_data"
+            check_dir(directory)
             existing_files = [f for f in os.listdir(directory) if f.endswith('.pkl')]
             file_name = f"{symbol}_{timeframe}_{start_date}_{end_date}.pkl"
             if file_name not in existing_files:
@@ -103,3 +108,10 @@ def save_candlesticks(symbol: str, timeframe: str, start_date: str, end_date: st
     except Exception:
         log.error('Ran into an error while saving the candlesticks')
         raise
+
+
+def check_dir(dir):
+    check_directory = os.path.isdir(dir)
+    # If folder doesn't exist, then create it.
+    if not check_directory:
+        os.makedirs(dir)
