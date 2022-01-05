@@ -18,9 +18,9 @@ class Ichimoku(Indicator):
     def process_new_candlestick(self) -> None:
         # Create new row
         self.list.append({'Time': self.data_structure.get_last_time()})
-        last_candlestick = self.data_structure.get_last_candlestick()
+        number_of_rows = self.data_structure.get_number_of_rows()
 
-        if self.data_structure.get_number_of_rows() >= self.period_1:
+        if number_of_rows >= self.period_1:
             # Calculate highest high and lowest low
             self.list[-1]['HighestHigh1'] = max(
                 [c.Close for c in self.data_structure.get_last_candlesticks(self.period_1)])
@@ -29,7 +29,7 @@ class Ichimoku(Indicator):
 
             # Calculate TekanSen
             self.list[-1]['TenkanSen'] = (self.list[-1]['HighestHigh1'] + self.list[-1]['LowestLow1']) / 2
-        if self.data_structure.get_number_of_rows() >= self.period_2:
+        if number_of_rows >= self.period_2:
             # Calculate highest high and lowest low
             self.list[-1]['HighestHigh2'] = max(
                 [c.Close for c in self.data_structure.get_last_candlesticks(self.period_2)])
@@ -43,22 +43,24 @@ class Ichimoku(Indicator):
             if len(self.list) >= self.period_2:
                 self.list[-self.period_2]['ChikouSpan'] = self.data_structure.get_last_candlestick().Close
 
-        if self.data_structure.get_number_of_rows() >= self.period_2 + self.shift_period1:
+        if number_of_rows >= self.period_2 + self.shift_period1:
             # Calculate SenkouSpanA
-            self.list[-1]['SenkouSpanA'] = (self.list[-self.shift_period1]['TenkanSen'] + self.list[-self.shift_period1][
-                'KijunSen']) / 2
+            self.list[-1]['SenkouSpanA'] = (self.list[-self.shift_period1]['TenkanSen'] +
+                                            self.list[-self.shift_period1][
+                                                'KijunSen']) / 2
 
-        if self.data_structure.get_number_of_rows() >= self.period_3:
+        if number_of_rows >= self.period_3:
             # Calculate highest high and lowest low
             self.list[-1]['HighestHigh3'] = max(
                 [c.Close for c in self.data_structure.get_last_candlesticks(self.period_3)])
             self.list[-1]['LowestLow3'] = min(
                 [c.Close for c in self.data_structure.get_last_candlesticks(self.period_3)])
 
-        if self.data_structure.get_number_of_rows() >= self.period_3 + self.shift_period2:
+        if number_of_rows >= self.period_3 + self.shift_period2:
             # Calculate SenkouSpanB
-            self.list[-1]['SenkouSpanB'] = (self.list[-self.shift_period2]['HighestHigh3'] + self.list[-self.shift_period2][
-                'LowestLow3']) / 2
+            self.list[-1]['SenkouSpanB'] = (self.list[-self.shift_period2]['HighestHigh3'] +
+                                            self.list[-self.shift_period2][
+                                                'LowestLow3']) / 2
 
     def process_new_tick(self):
         pass
@@ -78,7 +80,7 @@ class Ichimoku(Indicator):
                           name="SenkouSpanA"), \
                go.Scatter(x=[d['Time'] for d in self.list],
                           y=[d['SenkouSpanB'] if 'SenkouSpanB' in d else None for d in self.list],
-                          name="SenkouSpanB",fill='tonexty')
+                          name="SenkouSpanB", fill='tonexty')
 
     def delete_data(self) -> None:
         self.list = []
