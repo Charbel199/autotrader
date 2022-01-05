@@ -5,7 +5,7 @@ from AutoTrader.data.models import Tick
 import pickle
 import os
 from typing import List
-
+from AutoTrader.helper.utils import check_dir
 log = logger.get_logger(__name__)
 
 
@@ -110,8 +110,4 @@ def save_candlesticks(symbol: str, timeframe: str, start_date: str, end_date: st
         raise
 
 
-def check_dir(dir):
-    check_directory = os.path.isdir(dir)
-    # If folder doesn't exist, then create it.
-    if not check_directory:
-        os.makedirs(dir)
+
