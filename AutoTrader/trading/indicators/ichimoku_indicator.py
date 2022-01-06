@@ -4,7 +4,7 @@ from AutoTrader.trading.indicators.inidicator import Indicator
 
 
 class Ichimoku(Indicator):
-    # columns = ['Time', 'HighestHigh1', 'LowestLow1', 'TenkanSen', 'HighestHigh2', 'LowestLow2', 'KijunSen', 'ChikouSpan', 'SenkouSpanA', 'HighestHigh3', 'LowestLow3', 'SenkouSpanB']
+    # columns = ['Time', 'HighestHigh1', 'LowestLow1', 'TenkanSen(Conversion)', 'HighestHigh2', 'LowestLow2', 'KijunSen(BaseLine)', 'ChikouSpan', 'SenkouSpanA', 'HighestHigh3', 'LowestLow3', 'SenkouSpanB']
     period_1 = 9
     period_2 = 26
     period_3 = 52
