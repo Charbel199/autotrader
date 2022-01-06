@@ -21,15 +21,10 @@ class ADX(Indicator):
         self.list.append({'Time': self.data_structure.get_last_time()})
         last_candlestick = self.data_structure.get_last_candlestick()
 
-
         if self.data_structure.get_number_of_rows() >= 2:
             before_last_candlestick = self.data_structure.get_before_last_candlestick()
             # Calculate true range
-            self.list[-1]['TrueRange'] = max(
-                last_candlestick.High - last_candlestick.Low,
-                last_candlestick.High - before_last_candlestick.Close,
-                before_last_candlestick.Close - last_candlestick.Low
-            )
+            self.list[-1]['TrueRange'] = max(last_candlestick.High - last_candlestick.Low, last_candlestick.High - before_last_candlestick.Close, before_last_candlestick.Close - last_candlestick.Low)
             self.true_range_counter += 1
 
             # Calculate H-pH and pL-L

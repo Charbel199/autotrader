@@ -55,8 +55,8 @@ class FibonacciRetracement(Indicator):
         for percentage in self.percentages:
             percentage_text = str(round(percentage, 3))
             plot_list.append(go.Scatter(x=[d['Time'] for d in self.list],
-                          y=[d[percentage_text] if percentage_text in d else None for d in self.list],
-                          name=percentage_text))
+                                        y=[d[percentage_text] if percentage_text in d else None for d in self.list],
+                                        name=percentage_text))
         return plot_list
 
     def delete_data(self) -> None:

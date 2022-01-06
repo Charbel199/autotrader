@@ -21,8 +21,7 @@ class ChaikinMoneyFlow(Indicator):
         if self.data_structure.get_number_of_rows() >= 1:
             if (last_candlestick.High - last_candlestick.Low) != 0:
                 self.list[-1]['ChaikinMultiplier'] = ((last_candlestick.Close - last_candlestick.Low) - (
-                        last_candlestick.High - last_candlestick.Close)) / (
-                                                             last_candlestick.High - last_candlestick.Low)
+                        last_candlestick.High - last_candlestick.Close)) / (last_candlestick.High - last_candlestick.Low)
             else:
                 self.list[-1]['ChaikinMultiplier'] = 0
             self.list[-1]['MoneyFlowVolume'] = self.list[-1]['ChaikinMultiplier'] * last_candlestick.Volume
