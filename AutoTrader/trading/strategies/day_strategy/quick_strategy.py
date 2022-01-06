@@ -7,12 +7,15 @@ from AutoTrader.trading.indicators.bollinger_band_indicator import BollingerBand
 from AutoTrader.trading.indicators.ichimoku_indicator import Ichimoku
 from AutoTrader.trading.indicators.chaikin_money_flow_indicator import ChaikinMoneyFlow
 from AutoTrader.trading.indicators.macd_indicator import MACD
+from AutoTrader.trading.indicators.fibonacci_retracement_indicator import FibonacciRetracement
+from AutoTrader.trading.indicators.atr_indicator import ATR
 from plotly.subplots import make_subplots
 from AutoTrader.helper import logger
 from AutoTrader.data.data_structures.structure import TickStructure
 from AutoTrader.trading.accounts.account import Account
 from plotly.graph_objs import Figure
 import numpy as np
+
 log = logger.get_logger(__name__)
 
 
@@ -30,6 +33,8 @@ class QuickStrategy(Strategy):
         self.BollingerBand = BollingerBand(data_structure)
         self.ChaikinMoneyFlow = ChaikinMoneyFlow(data_structure)
         self.MACD = MACD(data_structure)
+        self.ATR = ATR(data_structure)
+        self.FibonacciRetracement = FibonacciRetracement(data_structure)
         self.SellSignal = SellSignal(data_structure, sell_below_max_percentage=0.997)
         self.firstStep = False
         self.secondStep = False
@@ -49,20 +54,19 @@ class QuickStrategy(Strategy):
         self.VWAP.process_new_candlestick()
         self.Ichimoku.process_new_candlestick()
         self.MACD.process_new_candlestick()
+        self.FibonacciRetracement.process_new_candlestick()
+        self.ATR.process_new_candlestick()
         # print(self.Ichimoku.get_last_values())
         # self.ChaikinMoneyFlow.process_new_candlestick()
 
         if self.start_counter:
-            self.counter +=1
-            if self.counter >=10:
+            self.counter += 1
+            if self.counter >= 10:
                 self.firstStep = False
                 self.start_counter = False
                 self.counter = 0
 
-
-
         if self.transactions_allowed and not self.account.get_position().is_valid() and self.data_structure.get_number_of_rows() > 330:
-
 
             # TEST STRAT
 
@@ -76,11 +80,12 @@ class QuickStrategy(Strategy):
             #         self.account.buy(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick_close())
             #         self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.015)
 
-
             # Test STRAT 2
 
-            if self.data_structure.get_last_candlestick().Close > self.Ichimoku.get_last_values()[-1]['SenkouSpanA'] and self.data_structure.get_last_candlestick().Close > self.Ichimoku.get_last_values()[-1]['SenkouSpanB'] \
-                and  self.data_structure.get_last_candlestick().Open < self.Ichimoku.get_last_values()[-1]['SenkouSpanA'] and self.data_structure.get_last_candlestick().Open > self.Ichimoku.get_last_values()[-1]['SenkouSpanB']:
+            if self.data_structure.get_last_candlestick().Close > self.Ichimoku.get_last_values()[-1]['SenkouSpanA'] and self.data_structure.get_last_candlestick().Close > \
+                    self.Ichimoku.get_last_values()[-1]['SenkouSpanB'] \
+                    and self.data_structure.get_last_candlestick().Open < self.Ichimoku.get_last_values()[-1]['SenkouSpanA'] and self.data_structure.get_last_candlestick().Open > \
+                    self.Ichimoku.get_last_values()[-1]['SenkouSpanB']:
                 self.firstStep = True
                 self.start_counter = True
 
@@ -104,7 +109,7 @@ class QuickStrategy(Strategy):
                 elif float(self.account.get_position().Price) * 0.98 >= self.data_structure.get_tick_close():
                     self.number_of_trades += 1
                     self.number_of_stop_losses += 1
-                    log.warning(f"Hit stoploss of {float(self.account.get_position().Price) * 0.99}  at {self.data_structure.get_tick_close()}")
+                    log.warning(f"Hit stop-loss of {float(self.account.get_position().Price) * 0.99}  at {self.data_structure.get_tick_close()}")
                     self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick_close())
 
     def get_figure(self) -> Figure:
@@ -122,16 +127,23 @@ class QuickStrategy(Strategy):
         # fig.append_trace(self.Ichimoku.get_plot()[3], row=1, col=1)
         # fig.append_trace(self.Ichimoku.get_plot()[4], row=1, col=1)
 
-        fig.append_trace(self.MACD.get_plot()[0], row=2, col=1)
-        fig.append_trace(self.MACD.get_plot()[1], row=2, col=1)
+        # fig.append_trace(self.MACD.get_plot()[0], row=2, col=1)
+        # fig.append_trace(self.MACD.get_plot()[1], row=2, col=1)
 
+        # fig.append_trace(self.ADX.get_plot(), row=2, col=1)
 
+        # fig.append_trace(self.RSI.get_plot(), row=2, col=1)
 
+        fig.append_trace(self.ATR.get_plot(), row=2, col=1)
+
+        # Fibonacci retracements
+        for plot in self.FibonacciRetracement.get_plot():
+            fig.append_trace(plot, row=1, col=1)
+
+        # Buy and sell
         buy_plot, sell_plot = self.account.get_plot()
         fig.append_trace(buy_plot, row=1, col=1)
         fig.append_trace(sell_plot, row=1, col=1)
-        # fig.append_trace(self.ADX.get_plot(), row=2, col=1)
-        # fig.append_trace(self.RSI.get_plot(), row=2, col=1)
         coordinates = self.SellSignal.get_plot()
         for coordinate in coordinates:
             fig.add_vrect(
