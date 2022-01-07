@@ -7,3 +7,6 @@ plotly==4.14.3
 python-dotenv~=0.19.0
 setuptools~=52.0.0
 binance~=0.3
+pymitter~=0.3.1
+python-binance~=1.0.15
+requests~=2.27.1
