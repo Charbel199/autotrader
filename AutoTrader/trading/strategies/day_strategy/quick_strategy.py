@@ -49,7 +49,7 @@ class QuickStrategy(Strategy):
     def process_new_candlestick(self) -> None:
         # self.data_structure.reduce()
 
-        print('Got new candlestick')
+        # print('Got new candlestick')
         # self.ADX.process_new_candlestick()
         # self.CandlestickType.process_new_candlestick()
         self.RSI.process_new_candlestick()
@@ -85,40 +85,31 @@ class QuickStrategy(Strategy):
 
             # Test STRAT 2
 
-            # if self.data_structure.get_last_candlestick().Close > self.Ichimoku.get_last_values()[-1][
-            #     'SenkouSpanA'] > self.data_structure.get_last_candlestick().Open > self.Ichimoku.get_last_values()[-1]['SenkouSpanB'] and self.data_structure.get_last_candlestick().Close > \
-            #         self.Ichimoku.get_last_values()[-1]['SenkouSpanB']:
-            #     self.firstStep = True
-            #     self.start_counter = True
-            #
-            # if self.firstStep:
-            #     if self.Ichimoku.get_last_values()[-1]['TenkanSen'] > self.Ichimoku.get_last_values()[-1]['KijunSen'] and \
-            #             self.Ichimoku.get_last_values(n=2)[-2]['TenkanSen'] < self.Ichimoku.get_last_values(n=2)[-2]['KijunSen'] and \
-            #             self.data_structure.get_last_candlestick().Close > self.Ichimoku.get_last_values()[-1]['SenkouSpanA']:
-            #         # self.account.buy(self.data_structure.get_tick().Time, self.symbol,
-            #         #                  self.data_structure.get_tick_close())
-            #         self.account.transaction(
-            #             time=self.data_structure.get_tick().Time,
-            #             symbol=self.symbol,
-            #             source_symbol=self.primary_symbol,
-            #             destination_symbol=self.secondary_symbol,
-            #             source_symbol_amount=self.data_structure.get_tick_close(),
-            #             transaction_type='buy'
-            #         )
-            #         self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.012)
-            if self.data_structure.get_last_candlestick().Close>20:
-                self.account.transaction(
-                    time=self.data_structure.get_tick().Time,
-                    symbol=self.symbol,
-                    source_symbol=self.primary_symbol,
-                    destination_symbol=self.secondary_symbol,
-                    source_symbol_amount=self.data_structure.get_tick_close(),
-                    transaction_type='buy'
-                )
-                self.SellSignal.set_sell_target(41887)
+            if self.data_structure.get_last_candlestick().Close > self.Ichimoku.get_last_values()[-1][
+                'SenkouSpanA'] > self.data_structure.get_last_candlestick().Open > self.Ichimoku.get_last_values()[-1]['SenkouSpanB'] and self.data_structure.get_last_candlestick().Close > \
+                    self.Ichimoku.get_last_values()[-1]['SenkouSpanB']:
+                self.firstStep = True
+                self.start_counter = True
+
+            if self.firstStep:
+                if self.Ichimoku.get_last_values()[-1]['TenkanSen'] > self.Ichimoku.get_last_values()[-1]['KijunSen'] and \
+                        self.Ichimoku.get_last_values(n=2)[-2]['TenkanSen'] < self.Ichimoku.get_last_values(n=2)[-2]['KijunSen'] and \
+                        self.data_structure.get_last_candlestick().Close > self.Ichimoku.get_last_values()[-1]['SenkouSpanA']:
+                    # self.account.buy(self.data_structure.get_tick().Time, self.symbol,
+                    #                  self.data_structure.get_tick_close())
+                    self.account.transaction(
+                        time=self.data_structure.get_tick().Time,
+                        symbol=self.symbol,
+                        source_symbol=self.primary_symbol,
+                        destination_symbol=self.secondary_symbol,
+                        source_symbol_amount=self.data_structure.get_tick_close(),
+                        transaction_type='buy'
+                    )
+                    self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.012)
+
 
     def process_new_tick(self) -> None:
-        print('Got new tick in strat ', self.data_structure.get_tick())
+        # print('Got new tick in strat ', self.data_structure.get_tick())
         if self.transactions_allowed:
             if self.account.get_position(symbol=self.secondary_symbol).is_valid():
                 # Sell logic

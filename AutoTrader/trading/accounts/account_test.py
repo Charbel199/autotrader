@@ -1,13 +1,13 @@
 from AutoTrader.trading.accounts.account import Account
 import plotly.graph_objects as go
 from AutoTrader.helper import logger
-from AutoTrader.data.models import Position
+from AutoTrader.models import Position, Transaction
 from typing import Dict
 
 log = logger.get_logger(__name__)
 
 
-class TestAccount(Account):
+class AccountTest(Account):
     transaction_percentage = 0.1 / 100
     transaction_fee = 0
 
@@ -40,14 +40,15 @@ class TestAccount(Account):
                 Price=source_symbol_amount
             )
             log.info(f"New position {self.positions[destination_symbol]}")
-            self.lists[symbol] = [] if symbol not in self.lists else self.lists[symbol]
-            self.lists[symbol].append({
-                'Time': time,
-                'Action': 'Buy',
-                'Amount': destination_symbol_amount,
-                'Symbol': destination_symbol,
-                'Price': source_symbol_amount
-            })
+            self.transactions[symbol] = [] if symbol not in self.transactions else self.transactions[symbol]
+            self.transactions[symbol].append(Transaction(
+                Time=time,
+                Side='Buy',
+                Quantity=destination_symbol_amount,
+                Symbol=destination_symbol,
+                Type='LIMIT',
+                Price=source_symbol_amount
+            ))
         if transaction_type == 'sell':
             if self.positions[destination_symbol].Time != time:
                 if destination_symbol_amount == 0:
@@ -56,28 +57,29 @@ class TestAccount(Account):
                 log.info(f"{time} - Sold - {destination_symbol_amount} of {destination_symbol} at {source_symbol_amount} of {source_symbol}")
                 log.info(f"New balance: {self.balance[source_symbol]}")
                 self.positions[destination_symbol] = Position()
-                self.lists[symbol] = [] if symbol not in self.lists else self.lists[symbol]
+                self.transactions[symbol] = [] if symbol not in self.transactions else self.transactions[symbol]
 
-                self.lists[symbol].append({
-                    'Time': time,
-                    'Action': 'Sell',
-                    'Amount': destination_symbol_amount,
-                    'Symbol': destination_symbol,
-                    'Price': source_symbol_amount
-                })
+                self.transactions[symbol].append(Transaction(
+                    Time=time,
+                    Side='Sell',
+                    Quantity=destination_symbol_amount,
+                    Symbol=destination_symbol,
+                    Type='LIMIT',
+                    Price=source_symbol_amount
+                ))
 
     def get_plot(self, symbol: str) -> go:
-        buys = [d for d in self.lists[symbol] if d["Action"] == "Buy"]
-        sells = [d for d in self.lists[symbol] if d["Action"] == "Sell"]
+        buys = [d for d in self.transactions[symbol] if d.Side == "Buy"]
+        sells = [d for d in self.transactions[symbol] if d.Side == "Sell"]
         return go.Scatter(
-            x=[d["Time"] for d in buys],
-            y=[d["Price"] for d in buys],
+            x=[d.Time for d in buys],
+            y=[d.Price for d in buys],
             marker=dict(color="gold", size=13, symbol=46),
             mode="markers",
             name="Buy"
         ), go.Scatter(
-            x=[d["Time"] for d in sells],
-            y=[d["Price"] for d in sells],
+            x=[d.Time for d in sells],
+            y=[d.Price for d in sells],
             marker=dict(color="silver", size=13, symbol=45),
             mode="markers",
             name="Sell"

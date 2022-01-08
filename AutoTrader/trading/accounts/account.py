@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from AutoTrader.helper import logger
-from AutoTrader.data.models import Position
 import plotly.graph_objects as go
 from AutoTrader.exceptions import AccountNotFound
 from AutoTrader.services.summary import get_trades_summary, print_summary
 from typing import Dict, List
+from AutoTrader.models import Transaction, Position
 import copy
 
 log = logger.get_logger(__name__)
@@ -20,7 +20,7 @@ class Account(ABC):
         balance = self._get_balance()
         self.balance: Dict[str, float] = balance
         self.initial_balance: Dict[str, float] = copy.deepcopy(balance)
-        self.lists: Dict[str, List[dict]] = {}
+        self.transactions: Dict[str, List[Transaction]] = {}
 
     def get_position(self, symbol: str) -> Position:
         return self.positions[symbol] if symbol in self.positions else Position()
@@ -40,7 +40,7 @@ class Account(ABC):
         # If in position when calculating profit, revert last buy
         self._undo_last_position(symbol, primary_symbol, secondary_symbol)
 
-        summary = get_trades_summary(self.lists[symbol], self.initial_balance[primary_symbol])
+        summary = get_trades_summary(self.transactions[symbol], self.initial_balance[primary_symbol])
         log.info(print_summary(summary))
         return summary['PercentageChange'] if summary != {} else 0
 
@@ -55,7 +55,7 @@ class Account(ABC):
     def _undo_last_position(self, symbol: str, primary_symbol: str, secondary_symbol: str) -> None:
         self.positions[secondary_symbol] = Position() if secondary_symbol not in self.positions else self.positions[secondary_symbol]
         if self.positions[secondary_symbol].is_valid():
-            self.lists[symbol] = self.lists[symbol][:-1]
+            self.transactions[symbol] = self.transactions[symbol][:-1]
             self.balance[primary_symbol] += self.positions[secondary_symbol].Price * self.positions[secondary_symbol].Amount
             self.positions[secondary_symbol] = Position()
 
@@ -63,7 +63,7 @@ class Account(ABC):
         # If in position when getting all trades, revert last buy
         self._undo_last_position(symbol, primary_symbol, secondary_symbol)
 
-        summary = get_trades_summary(self.lists[symbol], self.initial_balance[primary_symbol])
+        summary = get_trades_summary(self.transactions[symbol], self.initial_balance[primary_symbol])
         return summary['AllTrades']
 
     @staticmethod
