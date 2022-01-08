@@ -2,7 +2,7 @@ from AutoTrader.data.live_data.live_data_fetcher import LiveDataFetcher
 from binance import ThreadedWebsocketManager
 from typing import Callable
 from AutoTrader.helper import logger
-from AutoTrader.data import Tick
+from AutoTrader.models import Tick
 
 log = logger.get_logger(__name__)
 

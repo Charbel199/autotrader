@@ -13,7 +13,7 @@ def get_info(live_trader: LiveTrader, show_fig=False):
     strategy = live_trader.strategy
     log.info(f"For: {strategy.symbol}")
     account.get_profit(symbol=live_trader.symbol, primary_symbol=live_trader.primary_symbol, secondary_symbol=live_trader.secondary_symbol)
-    trades = pd.DataFrame(account.lists[live_trader.symbol])
+    trades = pd.DataFrame(account.transactions[live_trader.symbol])
     log.info(f"Trades: \n{trades.to_string()}")
     log.info(f"Number of trades {strategy.number_of_trades} and number of stop losses {strategy.number_of_stop_losses}")
     if show_fig:
