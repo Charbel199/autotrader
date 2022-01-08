@@ -1,9 +1,11 @@
 from AutoTrader.data.previous_data.data_fetcher import DataFetcher
 from binance.client import Client
 from AutoTrader.helper import logger
-from AutoTrader.data.models import Tick
+from AutoTrader.models import Tick
 import pickle
 import os
+from dotenv import load_dotenv
+load_dotenv()
 from typing import List
 from AutoTrader.helper.utils import check_dir
 log = logger.get_logger(__name__)

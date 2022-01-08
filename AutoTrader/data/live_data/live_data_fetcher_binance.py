@@ -1,10 +1,8 @@
 from AutoTrader.data.live_data.live_data_fetcher import LiveDataFetcher
-from AutoTrader.trading.strategies.strategy import Strategy
-from AutoTrader.data.data_structures.structure import TickStructure
 from binance import ThreadedWebsocketManager
 from typing import Callable
 from AutoTrader.helper import logger
-from AutoTrader.data.models import Tick
+from AutoTrader.data import Tick
 
 log = logger.get_logger(__name__)
 

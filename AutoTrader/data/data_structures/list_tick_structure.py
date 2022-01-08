@@ -1,6 +1,6 @@
 from AutoTrader.data.data_structures.structure import TickStructure
 import plotly.graph_objects as go
-from AutoTrader.data.models import Tick
+from AutoTrader.models import Tick
 from typing import List
 
 

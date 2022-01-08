@@ -2,7 +2,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 import plotly.graph_objects as go
 from AutoTrader.exceptions import DataStructureNotFound
-from AutoTrader.data.models import Tick
+from AutoTrader.models import Tick
 from typing import List
 
 class TickStructure(ABC):

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Callable
 from AutoTrader.exceptions import LiveDataFetcherNotFound
-from AutoTrader.data.models import Tick
+from AutoTrader.models import Tick
 
 class LiveDataFetcher(ABC):
 

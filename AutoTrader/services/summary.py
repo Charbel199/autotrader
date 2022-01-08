@@ -1,9 +1,10 @@
 from typing import List
 import numpy as np
 from AutoTrader.helper import date_helper
+from AutoTrader.models import Transaction
 
 
-def get_trades_summary(transactions: List[dict], initial_balance: float) -> dict:
+def get_trades_summary(transactions: List[Transaction], initial_balance: float) -> dict:
     trades = []
     hold_times = []
     hold_times_win = []
@@ -25,12 +26,12 @@ def get_trades_summary(transactions: List[dict], initial_balance: float) -> dict
     if len(transactions) < 2:
         return {}
 
-    total_duration = transactions[-1]['Time'] - transactions[0]['Time']
+    total_duration = transactions[-1].Time - transactions[0].Time
 
     for i in range(0, len(transactions), 2):
-        profit = (transactions[i + 1]['Price'] - transactions[i]['Price']) * transactions[i]['Amount']
-        buy_time = int(transactions[i]['Time'])
-        sell_time = int(transactions[i + 1]['Time'])
+        profit = (transactions[i + 1].Price - transactions[i].Price) * transactions[i].Quantity
+        buy_time = int(transactions[i].Time)
+        sell_time = int(transactions[i + 1].Time)
         hold_time = abs(sell_time - buy_time)
 
         number_of_trades += 1
@@ -60,12 +61,12 @@ def get_trades_summary(transactions: List[dict], initial_balance: float) -> dict
 
         balance += profit
         trades.append({
-            'Symbol': transactions[i]['Symbol'],
+            'Symbol': transactions[i].Symbol,
             'BuyTime': date_helper.from_timestamp_to_date(buy_time),
             'SellTime': date_helper.from_timestamp_to_date(sell_time),
-            'Amount': transactions[i]['Amount'],
-            'BuyPrice': transactions[i]['Price'],
-            'SellPrice': transactions[i + 1]['Price'],
+            'Amount': transactions[i].Quantity,
+            'BuyPrice': transactions[i].Price,
+            'SellPrice': transactions[i + 1].Price,
             'Profit': profit,
             'Balance': balance,
             'Outcome': 'Win' if profit > 0 else 'Loss'
