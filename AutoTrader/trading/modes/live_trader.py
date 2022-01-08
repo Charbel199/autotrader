@@ -3,7 +3,7 @@ from AutoTrader.data.data_structures.structure import TickStructure
 from AutoTrader.data.previous_data.data_fetcher import DataFetcher
 from AutoTrader.data.live_data.live_data_fetcher import LiveDataFetcher
 from AutoTrader.trading.accounts.account import Account
-from AutoTrader.data.models import Tick
+from AutoTrader.models import Tick
 
 
 class LiveTrader(object):
