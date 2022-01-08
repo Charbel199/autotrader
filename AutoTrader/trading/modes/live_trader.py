@@ -15,6 +15,8 @@ class LiveTrader(object):
 
     def __init__(self,
                  symbol: str,
+                 primary_symbol: str,
+                 secondary_symbol: str,
                  timeframe: str,
                  live_data_fetcher: LiveDataFetcher,
                  data_fetcher: DataFetcher,
@@ -26,6 +28,8 @@ class LiveTrader(object):
         self.live_data_fetcher = live_data_fetcher
         self.strategy = strategy
         self.symbol = symbol
+        self.primary_symbol = primary_symbol
+        self.secondary_symbol = secondary_symbol
         self.timeframe = timeframe
         self.data_fetcher = data_fetcher
         self.back_date = back_date
@@ -70,23 +74,24 @@ from AutoTrader.data.live_data.live_data_fetcher import get_live_fetcher
 class LiveTraderRunner(object):
     live_traders = []
 
-    def __init__(self, live_fetcher_provider):
+    def __init__(self, live_fetcher_provider: str, account: str):
         self.live_data_fetcher = get_live_fetcher(live_fetcher_provider)
+        self.account = get_account(account)
 
     def prepare_live_trader(self,
                             symbol: str,
+                            primary_symbol: str,
+                            secondary_symbol: str,
                             timeframe: str,
-                            account_provider: str,
                             data_fetcher_provider: str,
                             data_structure_provider: str,
                             strategy_provider: str,
-                            balance: float = 100,
                             back_date: str = None) -> LiveTrader:
-        account = get_account(account_provider, balance)
+
         data_fetcher = get_fetcher(data_fetcher_provider)
         data_structure = get_data_structure(data_structure_provider)
-        strategy = get_strategy(strategy_provider, data_structure, account, symbol)
-        live_trader_instance = LiveTrader(symbol, timeframe, self.live_data_fetcher, data_fetcher, data_structure, strategy, account, back_date)
+        strategy = get_strategy(strategy_provider, data_structure, self.account, symbol, primary_symbol, secondary_symbol)
+        live_trader_instance = LiveTrader(symbol, primary_symbol, secondary_symbol, timeframe, self.live_data_fetcher, data_fetcher, data_structure, strategy, self.account, back_date)
         self.live_traders.append(live_trader_instance)
         return live_trader_instance
 

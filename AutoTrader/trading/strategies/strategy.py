@@ -12,10 +12,14 @@ class Strategy(ABC):
     def __init__(self,
                  data_structure: TickStructure,
                  account: Account,
-                 symbol: str):
+                 symbol: str,
+                 primary_symbol: str,
+                 secondary_symbol: str):
         self.data_structure = data_structure
         self.account = account
         self.symbol = symbol
+        self.primary_symbol = primary_symbol
+        self.secondary_symbol = secondary_symbol
         self.transactions_allowed = True
         self.number_of_trades = 0
         self.number_of_stop_losses = 0
@@ -47,8 +51,8 @@ class Strategy(ABC):
 
 
 # Get strategy
-def get_strategy(name: str, data_structure: TickStructure, account: Account, symbol: str) -> Strategy:
+def get_strategy(name: str, data_structure: TickStructure, account: Account, symbol: str, primary_symbol: str, secondary_symbol: str) -> Strategy:
     for strategy in Strategy.__subclasses__():
         if strategy.condition(name):
-            return strategy(data_structure, account, symbol)
+            return strategy(data_structure, account, symbol, primary_symbol, secondary_symbol)
     raise StrategyNotFound(f"Strategy: {name} not found")

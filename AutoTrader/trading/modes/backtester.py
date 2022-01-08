@@ -16,6 +16,8 @@ class BackTester(object):
 
     def __init__(self,
                  symbol: str,
+                 primary_symbol: str,
+                 secondary_symbol: str,
                  timeframe: str,
                  data_fetcher: DataFetcher,
                  data_structure: TickStructure,
@@ -26,6 +28,8 @@ class BackTester(object):
         self.data_structure = data_structure
         self.strategy = strategy
         self.symbol = symbol
+        self.primary_symbol = primary_symbol
+        self.secondary_symbol = secondary_symbol
         self.timeframe = timeframe
         self.data_fetcher = data_fetcher
         self.account = account
@@ -61,24 +65,24 @@ import threading
 class BackTesterRunner(object):
     threads = []
 
-    def __init__(self):
-        pass
+    def __init__(self, account: str):
+        self.account = get_account(account)
 
     def prepare_backtester(self,
                            symbol: str,
+                           primary_symbol: str,
+                           secondary_symbol: str,
                            timeframe: str,
-                           account_provider: str,
                            data_fetcher_provider: str,
                            data_structure_provider: str,
                            strategy_provider: str,
                            start_date: str,
-                           balance: float = 100,
                            end_date: str = None) -> BackTester:
-        account = get_account(account_provider, balance)
+
         data_fetcher = get_fetcher(data_fetcher_provider)
         data_structure = get_data_structure(data_structure_provider)
-        strategy = get_strategy(strategy_provider, data_structure, account, symbol)
-        backtester_instance = BackTester(symbol, timeframe, data_fetcher, data_structure, strategy, account, start_date, end_date)
+        strategy = get_strategy(strategy_provider, data_structure, self.account, symbol, primary_symbol, secondary_symbol)
+        backtester_instance = BackTester(symbol, primary_symbol, secondary_symbol, timeframe, data_fetcher, data_structure, strategy, self.account, start_date, end_date)
         # backtester_instance.run_backtester()
         thread = threading.Thread(target=backtester_instance.run_backtester)
         thread.start()
