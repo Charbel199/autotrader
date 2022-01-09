@@ -11,6 +11,7 @@ class Position(object):
     Symbol: str = ''
     Amount: float = 0
     Price: float = 0
+    SourceSymbol: str = ''
 
     def is_valid(self):
         return self.Time != 0

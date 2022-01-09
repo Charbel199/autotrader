@@ -102,7 +102,8 @@ class QuickStrategy(Strategy):
                         symbol=self.symbol,
                         source_symbol=self.primary_symbol,
                         destination_symbol=self.secondary_symbol,
-                        source_symbol_amount=self.data_structure.get_tick_close(),
+                        price=self.data_structure.get_tick_close(),
+                        source_symbol_total_amount=self.account.balance[self.primary_symbol],
                         transaction_type='buy'
                     )
                     self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.012)
@@ -121,7 +122,7 @@ class QuickStrategy(Strategy):
                         symbol=self.symbol,
                         source_symbol=self.primary_symbol,
                         destination_symbol=self.secondary_symbol,
-                        source_symbol_amount=self.data_structure.get_tick_close(),
+                        price=self.data_structure.get_tick_close(),
                         transaction_type='sell'
                     )
                 # Stop loss
@@ -135,7 +136,7 @@ class QuickStrategy(Strategy):
                         symbol=self.symbol,
                         source_symbol=self.primary_symbol,
                         destination_symbol=self.secondary_symbol,
-                        source_symbol_amount=self.data_structure.get_tick_close(),
+                        price=self.data_structure.get_tick_close(),
                         transaction_type='sell'
                     )
 
