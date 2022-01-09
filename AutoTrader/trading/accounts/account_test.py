@@ -2,6 +2,7 @@ from AutoTrader.trading.accounts.account import Account
 import plotly.graph_objects as go
 from AutoTrader.helper import logger
 from AutoTrader.models import Position, Transaction
+from AutoTrader.helper.date_helper import from_timestamp_to_date
 from typing import Dict
 
 log = logger.get_logger(__name__)
@@ -39,7 +40,7 @@ class AccountTest(Account):
             self.balance[destination_symbol] += destination_symbol_amount
 
             log.info(
-                f"{time} - Bought - {destination_symbol_amount} of {destination_symbol} for {source_symbol_total_amount} of {source_symbol} per token  - Fee - {fees}")
+                f"{from_timestamp_to_date(time)} - Bought - {destination_symbol_amount} of {destination_symbol} for {source_symbol_total_amount} of {source_symbol} per token  - Fee - {fees}")
 
             self.positions[destination_symbol] = Position(
                 Time=time,
@@ -56,7 +57,7 @@ class AccountTest(Account):
                 Time=time,
                 Side='Buy',
                 Quantity=destination_symbol_amount,
-                Symbol=destination_symbol,
+                Symbol=symbol,
                 Type='LIMIT',
                 Price=price
             ))
@@ -80,7 +81,7 @@ class AccountTest(Account):
             source_symbol_total_amount = destination_symbol_amount * price
             self.balance[source_symbol] += source_symbol_total_amount
             log.info(
-                f"{time} - Sold - {destination_symbol_amount} of {destination_symbol} for {source_symbol_total_amount} of {source_symbol} per token  - Fee - {fees}")
+                f"{from_timestamp_to_date(time)} - Sold - {destination_symbol_amount} of {destination_symbol} for {source_symbol_total_amount} of {source_symbol} per token  - Fee - {fees}")
 
             self.positions[destination_symbol] = Position()
             log.info(f"New balance: {self.balance[source_symbol]}")
@@ -90,10 +91,11 @@ class AccountTest(Account):
                 Time=time,
                 Side='Sell',
                 Quantity=destination_symbol_amount,
-                Symbol=destination_symbol,
+                Symbol=symbol,
                 Type='LIMIT',
                 Price=price
             ))
+        print(self.balance)
 
     def get_plot(self, symbol: str) -> go:
         buys = [d for d in self.transactions[symbol] if d.Side == "Buy"]
