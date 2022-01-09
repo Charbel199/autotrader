@@ -31,8 +31,9 @@ class Account(ABC):
                     symbol: str,
                     source_symbol: str,
                     destination_symbol: str,
-                    source_symbol_amount: float,
+                    price: float,
                     transaction_type: str,
+                    source_symbol_total_amount: float = 0,
                     destination_symbol_amount: float = 0) -> None:
         pass
 
@@ -40,6 +41,7 @@ class Account(ABC):
         # If in position when calculating profit, revert last buy
         self._undo_last_position(symbol, primary_symbol, secondary_symbol)
 
+        # Get summary
         summary = get_trades_summary(self.transactions[symbol], self.initial_balance[primary_symbol])
         log.info(print_summary(summary))
         return summary['PercentageChange'] if summary != {} else 0
@@ -53,10 +55,16 @@ class Account(ABC):
         pass
 
     def _undo_last_position(self, symbol: str, primary_symbol: str, secondary_symbol: str) -> None:
-        self.positions[secondary_symbol] = Position() if secondary_symbol not in self.positions else self.positions[secondary_symbol]
+        # If no position found with this symbol, return
+        if secondary_symbol not in self.positions:
+            return
+
         if self.positions[secondary_symbol].is_valid():
+            # Remove last transaction
             self.transactions[symbol] = self.transactions[symbol][:-1]
+            # Refund balance
             self.balance[primary_symbol] += self.positions[secondary_symbol].Price * self.positions[secondary_symbol].Amount
+            # Empty position
             self.positions[secondary_symbol] = Position()
 
     def get_all_trades(self, symbol: str, primary_symbol: str, secondary_symbol: str) -> list:

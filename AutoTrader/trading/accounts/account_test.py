@@ -19,27 +19,38 @@ class AccountTest(Account):
                     symbol: str,
                     source_symbol: str,
                     destination_symbol: str,
-                    source_symbol_amount: float,
+                    price: float,
                     transaction_type: str,
+                    source_symbol_total_amount: float = 0,
                     destination_symbol_amount: float = 0) -> None:
 
         if transaction_type == 'buy':
-            if destination_symbol_amount == 0:
-                destination_symbol_amount = self.balance[source_symbol] / source_symbol_amount
+            # Subtract the total amount of source symbol spent
+            self.balance[source_symbol] -= source_symbol_total_amount
 
-            cost = destination_symbol_amount * source_symbol_amount  # Amount of initial symbol used
-            print(self.balance, ' selling ', source_symbol, ' amount ', source_symbol_amount)
-            self.balance[source_symbol] -= cost * (1 + self.transaction_percentage) + self.transaction_percentage
+            # Apply transaction fees (Orders are executed immediately as this is a 'test account')
+            fees = source_symbol_total_amount * self.transaction_percentage + self.transaction_fee
+            source_symbol_total_amount -= fees
+
+            # Calculate the amount of destination_symbol that will be bought
+            destination_symbol_amount = source_symbol_total_amount / price
+
+            # Add the total amount of destination symbol bought
+            self.balance[destination_symbol] += destination_symbol_amount
 
             log.info(
-                f"{time} - Bought - {destination_symbol_amount} of {destination_symbol} at {source_symbol_amount} of {source_symbol}  - Fee - {self.transaction_fee + cost * self.transaction_percentage}")
+                f"{time} - Bought - {destination_symbol_amount} of {destination_symbol} for {source_symbol_total_amount} of {source_symbol} per token  - Fee - {fees}")
+
             self.positions[destination_symbol] = Position(
                 Time=time,
                 Symbol=destination_symbol,
                 Amount=destination_symbol_amount,
-                Price=source_symbol_amount
+                Price=price,
+                SourceSymbol=source_symbol
             )
+
             log.info(f"New position {self.positions[destination_symbol]}")
+            # Add transaction
             self.transactions[symbol] = [] if symbol not in self.transactions else self.transactions[symbol]
             self.transactions[symbol].append(Transaction(
                 Time=time,
@@ -47,26 +58,42 @@ class AccountTest(Account):
                 Quantity=destination_symbol_amount,
                 Symbol=destination_symbol,
                 Type='LIMIT',
-                Price=source_symbol_amount
+                Price=price
             ))
-        if transaction_type == 'sell':
-            if self.positions[destination_symbol].Time != time:
-                if destination_symbol_amount == 0:
-                    destination_symbol_amount = self.positions[destination_symbol].Amount
-                self.balance[source_symbol] += destination_symbol_amount * source_symbol_amount
-                log.info(f"{time} - Sold - {destination_symbol_amount} of {destination_symbol} at {source_symbol_amount} of {source_symbol}")
-                log.info(f"New balance: {self.balance[source_symbol]}")
-                self.positions[destination_symbol] = Position()
-                self.transactions[symbol] = [] if symbol not in self.transactions else self.transactions[symbol]
 
-                self.transactions[symbol].append(Transaction(
-                    Time=time,
-                    Side='Sell',
-                    Quantity=destination_symbol_amount,
-                    Symbol=destination_symbol,
-                    Type='LIMIT',
-                    Price=source_symbol_amount
-                ))
+        if transaction_type == 'sell':
+            # Sell only if position time is different from current time
+            if self.positions[destination_symbol].Time == time:
+                return
+
+            # Set amount of destination symbol
+            destination_symbol_amount = self.positions[destination_symbol].Amount
+
+            # Subtract the total amount of destination symbol spent
+            self.balance[destination_symbol] -= destination_symbol_amount
+
+            # Apply transaction fees (Orders are executed immediately as this is a 'test account')
+            fees = destination_symbol_amount * self.transaction_percentage + self.transaction_fee
+            destination_symbol_amount -= fees
+
+            # Amount of source symbol bought
+            source_symbol_total_amount = destination_symbol_amount * price
+            self.balance[source_symbol] += source_symbol_total_amount
+            log.info(
+                f"{time} - Sold - {destination_symbol_amount} of {destination_symbol} for {source_symbol_total_amount} of {source_symbol} per token  - Fee - {fees}")
+
+            self.positions[destination_symbol] = Position()
+            log.info(f"New balance: {self.balance[source_symbol]}")
+
+            self.transactions[symbol] = [] if symbol not in self.transactions else self.transactions[symbol]
+            self.transactions[symbol].append(Transaction(
+                Time=time,
+                Side='Sell',
+                Quantity=destination_symbol_amount,
+                Symbol=destination_symbol,
+                Type='LIMIT',
+                Price=price
+            ))
 
     def get_plot(self, symbol: str) -> go:
         buys = [d for d in self.transactions[symbol] if d.Side == "Buy"]
