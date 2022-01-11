@@ -22,7 +22,7 @@ class ADX(Indicator):
         last_candlestick = self.data_structure.get_last_candlestick()
 
         if self.data_structure.get_number_of_rows() >= 2:
-            before_last_candlestick = self.data_structure.get_before_last_candlestick()
+            before_last_candlestick = self.data_structure.get_specific_candlestick(n=-2)
             # Calculate true range
             self.list[-1]['TrueRange'] = max(last_candlestick.High - last_candlestick.Low, last_candlestick.High - before_last_candlestick.Close, before_last_candlestick.Close - last_candlestick.Low)
             self.true_range_counter += 1

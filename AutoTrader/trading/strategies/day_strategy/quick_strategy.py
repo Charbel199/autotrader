@@ -80,8 +80,8 @@ class QuickStrategy(Strategy):
             #     last_vwaps = np.array([d['VWAP'] for d in self.VWAP.get_last_values()[-14:]])
             #     last_closes = np.array([c.Close for c in self.data_structure.get_last_candlesticks(14)])
             #     if (last_closes>last_vwaps).all():
-            #         self.account.buy(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick_close())
-            #         self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.015)
+            #         self.account.buy(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick().Close
+            #         self.SellSignal.set_sell_target(self.data_structure.get_tick( .Close* 1.015)
 
             # Test STRAT 2
 
@@ -96,17 +96,17 @@ class QuickStrategy(Strategy):
                         self.Ichimoku.get_last_values(n=2)[-2]['TenkanSen'] < self.Ichimoku.get_last_values(n=2)[-2]['KijunSen'] and \
                         self.data_structure.get_last_candlestick().Close > self.Ichimoku.get_last_values()[-1]['SenkouSpanA']:
                     # self.account.buy(self.data_structure.get_tick().Time, self.symbol,
-                    #                  self.data_structure.get_tick_close())
+                    #                  self.data_structure.get_tick().Close
                     self.account.transaction(
                         time=self.data_structure.get_tick().Time,
                         symbol=self.symbol,
                         source_symbol=self.primary_symbol,
                         destination_symbol=self.secondary_symbol,
-                        price=self.data_structure.get_tick_close(),
+                        price=self.data_structure.get_tick().Close,
                         source_symbol_total_amount=self.account.balance[self.primary_symbol],
                         transaction_type='buy'
                     )
-                    self.SellSignal.set_sell_target(self.data_structure.get_tick_close() * 1.012)
+                    self.SellSignal.set_sell_target(self.data_structure.get_tick().Close * 1.012)
 
 
     def process_new_tick(self) -> None:
@@ -116,27 +116,27 @@ class QuickStrategy(Strategy):
                 # Sell logic
                 if self.SellSignal.process_new_tick():
                     self.number_of_trades += 1
-                    # self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick_close())
+                    # self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick().Close
                     self.account.transaction(
                         time=self.data_structure.get_tick().Time,
                         symbol=self.symbol,
                         source_symbol=self.primary_symbol,
                         destination_symbol=self.secondary_symbol,
-                        price=self.data_structure.get_tick_close(),
+                        price=self.data_structure.get_tick().Close,
                         transaction_type='sell'
                     )
                 # Stop loss
-                elif float(self.account.get_position(symbol=self.secondary_symbol).Price) * 0.98 >= self.data_structure.get_tick_close():
+                elif float(self.account.get_position(symbol=self.secondary_symbol).Price) * 0.98 >= self.data_structure.get_tick().Close:
                     self.number_of_trades += 1
                     self.number_of_stop_losses += 1
-                    log.warning(f"Hit stop-loss of {float(self.account.get_position(symbol=self.secondary_symbol).Price) * 0.99}  at {self.data_structure.get_tick_close()}")
-                    # self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick_close())
+                    log.warning(f"Hit stop-loss of {float(self.account.get_position(symbol=self.secondary_symbol).Price) * 0.99}  at {self.data_structure.get_tick().Close}")
+                    # self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick().Close
                     self.account.transaction(
                         time=self.data_structure.get_tick().Time,
                         symbol=self.symbol,
                         source_symbol=self.primary_symbol,
                         destination_symbol=self.secondary_symbol,
-                        price=self.data_structure.get_tick_close(),
+                        price=self.data_structure.get_tick().Close,
                         transaction_type='sell'
                     )
 

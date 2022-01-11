@@ -31,9 +31,6 @@ class ListTickStructure(TickStructure):
     def get_last_candlestick(self) -> Tick:
         return self.list[-1]
 
-    def get_before_last_candlestick(self) -> Tick:
-        return self.list[-2]
-
     def get_specific_candlestick(self, n: int) -> Tick:
         return self.list[n]
 
@@ -58,17 +55,6 @@ class ListTickStructure(TickStructure):
     def set_data_structure_content(self, data_structure_content: List[Tick]) -> None:
         self.list = data_structure_content
 
-    def get_tick_structure_copy(self, n: int = 0) -> TickStructure:
-        new_data_structure = TickStructure()
-        if n == 0:
-            new_data_structure.set_data_structure_content(self.list.copy())
-        else:
-            new_data_structure.set_data_structure_content(self.list[-n:])
-        return new_data_structure
-
-    def get_tick_close(self) -> float:
-        return float(self.tick.Close)
-
     def get_plot(self) -> go:
         return go.Candlestick(x=[d.Time for d in self.list],
                               open=[d.Open for d in self.list],
@@ -78,7 +64,7 @@ class ListTickStructure(TickStructure):
 
     def delete_data(self) -> None:
         self.list = []
-        self.tick = {}
+        self.tick = Tick()
 
     @staticmethod
     def condition(name: str) -> bool:

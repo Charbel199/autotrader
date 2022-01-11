@@ -5,6 +5,7 @@ from AutoTrader.exceptions import DataStructureNotFound
 from AutoTrader.models import Tick
 from typing import List
 
+
 class TickStructure(ABC):
     columns = ['Time', 'Open', 'Close', 'High', 'Low', 'Volume', 'OpenTime', 'CloseTime']
 
@@ -48,18 +49,6 @@ class TickStructure(ABC):
         pass
 
     @abstractmethod
-    def get_before_last_candlestick(self) -> Tick:
-        pass
-
-    @abstractmethod
-    def get_tick_structure_copy(self, n: int = 0) -> TickStructure:
-        pass
-
-    @abstractmethod
-    def set_data_structure_content(self, data_structure_content: List[Tick]) -> None:
-        pass
-
-    @abstractmethod
     def get_last_time(self) -> int:
         pass
 
@@ -71,9 +60,6 @@ class TickStructure(ABC):
     def get_plot(self) -> go:
         pass
 
-    @abstractmethod
-    def get_tick_close(self) -> float:
-        pass
 
     @abstractmethod
     def delete_data(self) -> None:
