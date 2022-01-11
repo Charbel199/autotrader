@@ -8,7 +8,7 @@ def from_binance_date_to_timestamp(date: str) -> int:
     try:
         timestamp = time.mktime(datetime.strptime(date, "%d %b, %Y").timetuple())
         return int(timestamp)
-    except:
+    except Exception:
         raise ValueError(f"Couldn't convert {date} to timestamp.")
 
 
@@ -16,7 +16,7 @@ def from_timestamp_to_binance_date(timestamp: int) -> str:
     try:
         date = datetime.fromtimestamp(timestamp).strftime("%d %b %Y %H:%M ")
         return date
-    except:
+    except Exception:
         raise ValueError(f"Couldn't convert {timestamp} to date.")
 
 
@@ -27,7 +27,7 @@ def get_previous_timestamp(timestamp: int, hours: int = 0, minutes: int = 0) -> 
         if minutes != 0:
             timestamp -= 60 * minutes
         return timestamp
-    except:
+    except Exception:
         raise ValueError(f"Couldn't get previous timestamp from {timestamp} going back {hours} hours and {minutes} minutes.")
 
 
@@ -38,7 +38,7 @@ def get_next_timestamp(timestamp: int, hours: int = 0, minutes: int = 0) -> int:
         if minutes != 0:
             timestamp += 60 * minutes
         return timestamp
-    except:
+    except Exception:
         raise ValueError(f"Couldn't get next timestamp from {timestamp} going forward {hours} hours and {minutes} minutes.")
 
 
@@ -56,7 +56,7 @@ def from_timestamp_to_date(timestamp: int) -> str:
     try:
         date = datetime.fromtimestamp(timestamp).strftime("%d %b %Y %H:%M ")
         return date
-    except:
+    except Exception:
         raise ValueError(f"Couldn't convert {timestamp} to date.")
 
 
