@@ -1,4 +1,4 @@
-from AutoTrader.data.data_structures.structure import TickStructure
+from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import numpy as np
 import plotly.graph_objects as go
 from AutoTrader.trading.indicators.inidicator import Indicator
@@ -7,19 +7,19 @@ from AutoTrader.trading.indicators.inidicator import Indicator
 class RSI(Indicator):
     # columns = ['Time', 'Gain', 'Loss', 'AverageGain', 'AverageLoss', 'RS', 'RSI']
     period = 14
-    data_structure: TickStructure
+    candlesticks: Candlesticks
 
-    def __init__(self, data_structure: TickStructure):
-        super().__init__(data_structure)
+    def __init__(self, candlesticks: Candlesticks):
+        super().__init__(candlesticks)
         self.gain_counter = 0
 
     def process_new_candlestick(self) -> None:
         # Create new row
-        self.list.append({'Time': self.data_structure.get_last_time()})
+        self.list.append({'Time': self.candlesticks.get_last_time()})
 
         # Compute gain and loss
-        if self.data_structure.get_number_of_rows() >= 2:
-            change = self.data_structure.get_last_candlestick().Close - self.data_structure.get_specific_candlestick(n=-2).Close
+        if self.candlesticks.get_number_of_rows() >= 2:
+            change = self.candlesticks.get_last_candlestick().Close - self.candlesticks.get_specific_candlestick(n=-2).Close
             if change > 0:
                 self.list[-1]['Gain'] = change
                 self.list[-1]['Loss'] = 0

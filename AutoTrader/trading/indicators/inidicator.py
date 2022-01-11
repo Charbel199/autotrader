@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from AutoTrader.data.data_structures.structure import TickStructure
+from AutoTrader.data.data_structures.candlesticks import Candlesticks
 
 
 class Indicator(ABC):
-    def __init__(self, data_structure: TickStructure):
+    def __init__(self, candlesticks: Candlesticks):
         self.list = []
-        self.data_structure = data_structure
+        self.candlesticks = candlesticks
 
     @abstractmethod
     def process_new_candlestick(self) -> None:

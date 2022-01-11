@@ -1,7 +1,7 @@
 from AutoTrader.ml.data_collector.features_generator.features_generator import get_features_generator
 from AutoTrader.data.previous_data.data_fetcher import get_fetcher
 import pandas as pd
-from AutoTrader.data.data_structures.structure import get_data_structure
+from AutoTrader.data.data_structures.candlesticks import get_data_structure
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 from AutoTrader.helper import date_helper, logger
@@ -21,7 +21,7 @@ class DataCollectorManual(object):
                  symbols: list,
                  timeframe: str,
                  data_fetcher_provider: str,
-                 data_structure_provider: str,
+                 candlesticks_provider: str,
                  features_generator_provider: str,
                  candlestick_generator_processor_provider: str,
                  start_date: str):
@@ -30,9 +30,9 @@ class DataCollectorManual(object):
         self.clicked_candlesticks = []
         self.start_date = start_date
         data_fetcher = get_fetcher(data_fetcher_provider)
-        data_structure = get_data_structure(data_structure_provider)
-        features_generator = get_features_generator(features_generator_provider, data_structure)
-        self.generator = get_candlestick_generator(candlestick_generator_processor_provider, features_generator, data_fetcher, data_structure, symbols, timeframe)
+        candlesticks = get_data_structure(candlesticks_provider)
+        features_generator = get_features_generator(features_generator_provider, candlesticks)
+        self.generator = get_candlestick_generator(candlestick_generator_processor_provider, features_generator, data_fetcher, candlesticks, symbols, timeframe)
         self.generator.fetch_new_candlesticks(date_helper.get_random_timestamp(date_helper.from_binance_date_to_timestamp(start_date)), 8)
 
     def process_collected_data(self) -> None:

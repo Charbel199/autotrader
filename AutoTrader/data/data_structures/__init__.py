@@ -1,1 +1,1 @@
-from AutoTrader.data.data_structures.list_tick_structure import ListTickStructure
+from AutoTrader.data.data_structures.list_candlesticks import ListCandlesticks

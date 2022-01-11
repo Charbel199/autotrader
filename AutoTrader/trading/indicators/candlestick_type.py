@@ -1,22 +1,20 @@
-from AutoTrader.data.data_structures.structure import TickStructure
+from AutoTrader.data.data_structures.candlesticks import Candlesticks
 from AutoTrader.trading.indicators.inidicator import Indicator
 
 
 class CandlestickType(Indicator):
     # columns = ['Time', 'Type']
-    data_structure: TickStructure
+    candlesticks: Candlesticks
 
-    def __init__(self, data_structure: TickStructure):
-        super().__init__(data_structure)
-        self.list = []
-        self.data_structure = data_structure
+    def __init__(self, candlesticks: Candlesticks):
+        super().__init__(candlesticks)
 
     def process_new_candlestick(self) -> None:
 
         # Create new row
-        self.list.append({'Time': self.data_structure.get_last_time()})
+        self.list.append({'Time': self.candlesticks.get_last_time()})
         candlestick_type = ''
-        last_candlestick = self.data_structure.get_last_candlestick()
+        last_candlestick = self.candlesticks.get_last_candlestick()
         last_close = last_candlestick.Close
         last_open = last_candlestick.Open
         last_high = last_candlestick.High
@@ -27,8 +25,8 @@ class CandlestickType(Indicator):
         candle_range = last_high - last_low
 
         # Get type
-        if self.data_structure.get_number_of_rows() >= 2:
-            before_last_candlestick = self.data_structure.get_last_candlestick()
+        if self.candlesticks.get_number_of_rows() >= 2:
+            before_last_candlestick = self.candlesticks.get_last_candlestick()
             before_last_high = before_last_candlestick.High
             before_last_low = before_last_candlestick.Low
 
@@ -70,14 +68,14 @@ class CandlestickType(Indicator):
                     last_close < last_open:
                 candlestick_type = 'BearishEngulfing'
 
-        if self.data_structure.get_number_of_rows() >= 3:
+        if self.candlesticks.get_number_of_rows() >= 3:
             # Bullish swing
             if last_low > before_last_low and \
-                    before_last_low < self.data_structure.get_specific_value('Low', -3):
+                    before_last_low < self.candlesticks.get_specific_value('Low', -3):
                 candlestick_type = 'BullishSwing'
             # Bearish swing
             if last_high < before_last_high and \
-                    before_last_high > self.data_structure.get_specific_value('High', -3):
+                    before_last_high > self.candlesticks.get_specific_value('High', -3):
                 candlestick_type = 'BearishSwing'
 
         self.list[-1]['Type'] = candlestick_type

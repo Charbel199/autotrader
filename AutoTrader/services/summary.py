@@ -29,7 +29,7 @@ def get_trades_summary(transactions: List[Transaction], initial_balance: float) 
     total_duration = transactions[-1].Time - transactions[0].Time
 
     for i in range(0, len(transactions), 2):
-        profit = (transactions[i + 1].Price - transactions[i].Price) * transactions[i].Quantity
+        profit = (transactions[i + 1].Price - transactions[i].Price) * transactions[i+1].Quantity
         buy_time = int(transactions[i].Time)
         sell_time = int(transactions[i + 1].Time)
         hold_time = abs(sell_time - buy_time)
@@ -64,7 +64,7 @@ def get_trades_summary(transactions: List[Transaction], initial_balance: float) 
             'Symbol': transactions[i].Symbol,
             'BuyTime': date_helper.from_timestamp_to_date(buy_time),
             'SellTime': date_helper.from_timestamp_to_date(sell_time),
-            'Amount': transactions[i].Quantity,
+            'Amount': transactions[i+1].Quantity,
             'BuyPrice': transactions[i].Price,
             'SellPrice': transactions[i + 1].Price,
             'Profit': profit,

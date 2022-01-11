@@ -1,21 +1,21 @@
 from abc import ABC, abstractmethod
-from AutoTrader.data.data_structures.structure import TickStructure
+from AutoTrader.data.data_structures.candlesticks import Candlesticks
 from AutoTrader.trading.accounts.account import Account
 from plotly.graph_objs import Figure
 from AutoTrader.exceptions import StrategyNotFound
 
 
 class Strategy(ABC):
-    data_structure: TickStructure
+    candlesticks: Candlesticks
     account: Account
 
     def __init__(self,
-                 data_structure: TickStructure,
+                 candlesticks: Candlesticks,
                  account: Account,
                  symbol: str,
                  primary_symbol: str,
                  secondary_symbol: str):
-        self.data_structure = data_structure
+        self.candlesticks = candlesticks
         self.account = account
         self.symbol = symbol
         self.primary_symbol = primary_symbol
@@ -51,7 +51,7 @@ class Strategy(ABC):
 
 
 # Get strategy
-def get_strategy(name: str, data_structure: TickStructure, account: Account, symbol: str, primary_symbol: str, secondary_symbol: str) -> Strategy:
+def get_strategy(name: str, data_structure: Candlesticks, account: Account, symbol: str, primary_symbol: str, secondary_symbol: str) -> Strategy:
     for strategy in Strategy.__subclasses__():
         if strategy.condition(name):
             return strategy(data_structure, account, symbol, primary_symbol, secondary_symbol)

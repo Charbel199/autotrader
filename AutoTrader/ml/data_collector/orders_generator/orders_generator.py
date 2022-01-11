@@ -1,6 +1,3 @@
-from AutoTrader.data.previous_data.data_fetcher import DataFetcher
-from AutoTrader.data.data_structures.structure import TickStructure
-from AutoTrader.ml.data_collector.features_generator.features_generator import FeaturesGenerator
 from abc import abstractmethod
 from AutoTrader.exceptions import OrdersGeneratorException
 

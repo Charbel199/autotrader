@@ -1,5 +1,5 @@
 from AutoTrader.trading.strategies.strategy import Strategy
-from AutoTrader.data.data_structures.structure import TickStructure
+from AutoTrader.data.data_structures.candlesticks import Candlesticks
 from AutoTrader.data.previous_data.data_fetcher import DataFetcher
 from AutoTrader.trading.accounts.account import Account
 import time
@@ -10,7 +10,7 @@ log = logger.get_logger(__name__)
 
 class BackTester(object):
     strategy: Strategy
-    data_structure: TickStructure
+    candlesticks: Candlesticks
     data_fetcher: DataFetcher
     account: Account
 
@@ -20,12 +20,12 @@ class BackTester(object):
                  secondary_symbol: str,
                  timeframe: str,
                  data_fetcher: DataFetcher,
-                 data_structure: TickStructure,
+                 data_structure: Candlesticks,
                  strategy: Strategy,
                  account: Account,
                  start_date: str,
                  end_date: str = None):
-        self.data_structure = data_structure
+        self.candlesticks = data_structure
         self.strategy = strategy
         self.symbol = symbol
         self.primary_symbol = primary_symbol
@@ -44,11 +44,11 @@ class BackTester(object):
 
         start = time.time()
         for candlestick in candlesticks:
-            if self.data_structure:
-                self.data_structure.set_tick(candlestick)
+            if self.candlesticks:
+                self.candlesticks.set_tick(candlestick)
                 self.strategy.process_new_tick()
 
-                self.data_structure.add_row(candlestick)
+                self.candlesticks.add_row(candlestick)
                 self.strategy.process_new_candlestick()
 
         end = time.time()
@@ -56,7 +56,7 @@ class BackTester(object):
 
 
 from AutoTrader.data.previous_data.data_fetcher import get_fetcher
-from AutoTrader.data.data_structures.structure import get_data_structure
+from AutoTrader.data.data_structures.candlesticks import get_data_structure
 from AutoTrader.trading.strategies.strategy import get_strategy
 from AutoTrader.trading.accounts.account import get_account
 import threading
@@ -74,13 +74,13 @@ class BackTesterRunner(object):
                            secondary_symbol: str,
                            timeframe: str,
                            data_fetcher_provider: str,
-                           data_structure_provider: str,
+                           candlesticks_provider: str,
                            strategy_provider: str,
                            start_date: str,
                            end_date: str = None) -> BackTester:
 
         data_fetcher = get_fetcher(data_fetcher_provider)
-        data_structure = get_data_structure(data_structure_provider)
+        data_structure = get_data_structure(candlesticks_provider)
         strategy = get_strategy(strategy_provider, data_structure, self.account, symbol, primary_symbol, secondary_symbol)
         backtester_instance = BackTester(symbol, primary_symbol, secondary_symbol, timeframe, data_fetcher, data_structure, strategy, self.account, start_date, end_date)
         # backtester_instance.run_backtester()

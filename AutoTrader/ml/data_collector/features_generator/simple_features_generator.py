@@ -1,30 +1,30 @@
 from AutoTrader.trading.indicators.adx_indicator import ADX
 from AutoTrader.trading.indicators.rsi_indicator import RSI
 from AutoTrader.ml.data_collector.features_generator.features_generator import FeaturesGenerator
-from AutoTrader.data.data_structures.structure import TickStructure
+from AutoTrader.data.data_structures.candlesticks import Candlesticks
 
 
 class SimpleFeaturesGenerator(FeaturesGenerator):
-    def __init__(self, data_structure: TickStructure):
-        super().__init__(data_structure)
-        self.ADX = ADX(data_structure)
-        self.RSI = RSI(data_structure)
+    def __init__(self, candlesticks: Candlesticks):
+        super().__init__(candlesticks)
+        self.ADX = ADX(candlesticks)
+        self.RSI = RSI(candlesticks)
 
     def process_candlesticks(self, candlesticks: list) -> dict:
         for candlestick in candlesticks:
-            if self.data_structure:
-                self.data_structure.add_row(candlestick)
+            if self.candlesticks:
+                self.candlesticks.add_row(candlestick)
                 self.ADX.process_new_candlestick()
                 self.RSI.process_new_candlestick()
-                self.data_structure.set_tick(candlestick)
+                self.candlesticks.set_tick(candlestick)
         data = {
-            'Ticks': self.data_structure.get_data(),
+            'Ticks': self.candlesticks.get_data(),
             'ADX': self.ADX.get_all_values(),
             'RSI': self.RSI.get_all_values()
         }
 
         # Empty data
-        self.data_structure.delete_data()
+        self.candlesticks.delete_data()
         self.ADX.delete_data()
         self.RSI.delete_data()
         return data

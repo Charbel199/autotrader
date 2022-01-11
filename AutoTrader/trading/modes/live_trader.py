@@ -1,5 +1,5 @@
 from AutoTrader.trading.strategies.strategy import Strategy
-from AutoTrader.data.data_structures.structure import TickStructure
+from AutoTrader.data.data_structures.candlesticks import Candlesticks
 from AutoTrader.data.previous_data.data_fetcher import DataFetcher
 from AutoTrader.data.live_data.live_data_fetcher import LiveDataFetcher
 from AutoTrader.trading.accounts.account import Account
@@ -8,7 +8,7 @@ from AutoTrader.models import Tick
 
 class LiveTrader(object):
     strategy: Strategy
-    data_structure: TickStructure
+    candlesticks: Candlesticks
     data_fetcher: DataFetcher
     live_data_fetcher: LiveDataFetcher
     account: Account
@@ -20,11 +20,11 @@ class LiveTrader(object):
                  timeframe: str,
                  live_data_fetcher: LiveDataFetcher,
                  data_fetcher: DataFetcher,
-                 data_structure: TickStructure,
+                 data_structure: Candlesticks,
                  strategy: Strategy,
                  account: Account,
                  back_date: str = None):
-        self.data_structure = data_structure
+        self.candlesticks = data_structure
         self.live_data_fetcher = live_data_fetcher
         self.strategy = strategy
         self.symbol = symbol
@@ -42,9 +42,9 @@ class LiveTrader(object):
             )
             self.strategy.disable_transactions()
             for candlestick in candlesticks:
-                if self.data_structure:
-                    self.data_structure.set_tick(candlestick)
-                    self.data_structure.add_row(candlestick)
+                if self.candlesticks:
+                    self.candlesticks.set_tick(candlestick)
+                    self.candlesticks.add_row(candlestick)
                     self.strategy.process_new_candlestick()
             self.strategy.enable_transactions()
         self.live_data_fetcher.run(self.symbol, self.timeframe, self.process_message)
@@ -53,19 +53,19 @@ class LiveTrader(object):
         self.live_data_fetcher.stop()
 
     def process_message(self, tick: Tick) -> None:
-        if self.data_structure:
-            previous_tick = self.data_structure.get_tick()
-            self.data_structure.set_tick(tick)
+        if self.candlesticks:
+            previous_tick = self.candlesticks.get_tick()
+            self.candlesticks.set_tick(tick)
             self.strategy.process_new_tick()
 
             # Only add to rows if it's a new candlestick
             if previous_tick.is_valid() and tick.CloseTime != previous_tick.CloseTime:
-                self.data_structure.add_row(previous_tick)
+                self.candlesticks.add_row(previous_tick)
                 self.strategy.process_new_candlestick()
 
 
 from AutoTrader.data.previous_data.data_fetcher import get_fetcher
-from AutoTrader.data.data_structures.structure import get_data_structure
+from AutoTrader.data.data_structures.candlesticks import get_data_structure
 from AutoTrader.trading.strategies.strategy import get_strategy
 from AutoTrader.trading.accounts.account import get_account
 from AutoTrader.data.live_data.live_data_fetcher import get_live_fetcher
@@ -83,12 +83,12 @@ class LiveTraderRunner(object):
                             primary_symbol: str,
                             secondary_symbol: str,
                             timeframe: str,
-                            data_fetcher_provider: str,
+                            candlesticks_provider: str,
                             data_structure_provider: str,
                             strategy_provider: str,
                             back_date: str = None) -> LiveTrader:
 
-        data_fetcher = get_fetcher(data_fetcher_provider)
+        data_fetcher = get_fetcher(candlesticks_provider)
         data_structure = get_data_structure(data_structure_provider)
         strategy = get_strategy(strategy_provider, data_structure, self.account, symbol, primary_symbol, secondary_symbol)
         live_trader_instance = LiveTrader(symbol, primary_symbol, secondary_symbol, timeframe, self.live_data_fetcher, data_fetcher, data_structure, strategy, self.account, back_date)

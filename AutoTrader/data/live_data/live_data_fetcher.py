@@ -3,6 +3,7 @@ from typing import Callable
 from AutoTrader.exceptions import LiveDataFetcherNotFound
 from AutoTrader.models import Tick
 
+
 class LiveDataFetcher(ABC):
 
     def __init__(self):

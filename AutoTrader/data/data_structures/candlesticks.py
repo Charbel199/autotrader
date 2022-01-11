@@ -6,7 +6,7 @@ from AutoTrader.models import Tick
 from typing import List
 
 
-class TickStructure(ABC):
+class Candlesticks(ABC):
     columns = ['Time', 'Open', 'Close', 'High', 'Low', 'Volume', 'OpenTime', 'CloseTime']
 
     def __init__(self):
@@ -76,8 +76,8 @@ class TickStructure(ABC):
 
 
 # Get fetcher based on broker name
-def get_data_structure(name) -> TickStructure:
-    for data_structure in TickStructure.__subclasses__():
+def get_data_structure(name) -> Candlesticks:
+    for data_structure in Candlesticks.__subclasses__():
         if data_structure.condition(name):
             return data_structure()
     raise DataStructureNotFound(f"Data structure: {name} not found")

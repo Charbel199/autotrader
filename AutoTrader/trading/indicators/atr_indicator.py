@@ -1,4 +1,4 @@
-from AutoTrader.data.data_structures.structure import TickStructure
+from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import numpy as np
 import plotly.graph_objects as go
 from AutoTrader.trading.indicators.inidicator import Indicator
@@ -8,22 +8,22 @@ class ATR(Indicator):
     # columns = ['Time', 'TrueRange', 'ATR']
     period = 14
     true_range_counter = 0
-    data_structure: TickStructure
+    candlesticks: Candlesticks
 
-    def __init__(self, data_structure: TickStructure):
-        super().__init__(data_structure)
+    def __init__(self, candlesticks: Candlesticks):
+        super().__init__(candlesticks)
 
     def process_new_candlestick(self) -> None:
 
         # Create new row
-        self.list.append({'Time': self.data_structure.get_last_time()})
-        number_of_rows = self.data_structure.get_number_of_rows()
+        self.list.append({'Time': self.candlesticks.get_last_time()})
+        number_of_rows = self.candlesticks.get_number_of_rows()
 
         if number_of_rows >= 2:
-            current_candlestick = self.data_structure.get_last_candlestick()
+            current_candlestick = self.candlesticks.get_last_candlestick()
             current_high = current_candlestick.High
             current_low = current_candlestick.Low
-            previous_close = self.data_structure.get_last_candlesticks(n=2)[-2].Close
+            previous_close = self.candlesticks.get_last_candlesticks(n=2)[-2].Close
             self.list[-1]['TrueRange'] = max((current_high - current_low), abs(current_high - previous_close),
                                              abs(current_low - previous_close))
             self.true_range_counter += 1

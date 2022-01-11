@@ -1,4 +1,4 @@
-from AutoTrader.data.data_structures.structure import TickStructure
+from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import numpy as np
 import plotly.graph_objects as go
 from AutoTrader.trading.indicators.inidicator import Indicator
@@ -7,10 +7,10 @@ from AutoTrader.trading.indicators.inidicator import Indicator
 class ADX(Indicator):
     # columns = ['Time', 'TrueRange', 'ATR', 'H-pH', 'pL-L', '+DX', '-DX', 'Smooth+DX', 'Smooth-DX', '+DMI', '-DMI', 'DX','ADX']
     period = 14
-    data_structure: TickStructure
+    candlesticks: Candlesticks
 
-    def __init__(self, data_structure: TickStructure):
-        super().__init__(data_structure)
+    def __init__(self, candlesticks: Candlesticks):
+        super().__init__(candlesticks)
         self.true_range_counter = 0
         self.atr_counter = 0
         self.dx_counter = 0
@@ -18,11 +18,11 @@ class ADX(Indicator):
 
     def process_new_candlestick(self) -> None:
         # Create new row
-        self.list.append({'Time': self.data_structure.get_last_time()})
-        last_candlestick = self.data_structure.get_last_candlestick()
+        self.list.append({'Time': self.candlesticks.get_last_time()})
+        last_candlestick = self.candlesticks.get_last_candlestick()
 
-        if self.data_structure.get_number_of_rows() >= 2:
-            before_last_candlestick = self.data_structure.get_specific_candlestick(n=-2)
+        if self.candlesticks.get_number_of_rows() >= 2:
+            before_last_candlestick = self.candlesticks.get_specific_candlestick(n=-2)
             # Calculate true range
             self.list[-1]['TrueRange'] = max(last_candlestick.High - last_candlestick.Low, last_candlestick.High - before_last_candlestick.Close, before_last_candlestick.Close - last_candlestick.Low)
             self.true_range_counter += 1

@@ -1,5 +1,5 @@
 from AutoTrader.data.previous_data.data_fetcher import DataFetcher
-from AutoTrader.data.data_structures.structure import TickStructure
+from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import collections
 import random
 from AutoTrader.helper import date_helper, logger
@@ -11,16 +11,16 @@ log = logger.get_logger(__name__)
 
 class CandlestickContinuousGenerator(CandlestickGenerator):
     data_fetcher: DataFetcher
-    data_structure: TickStructure
+    candlesticks: Candlesticks
     candlestick_processor: FeaturesGenerator
 
     def __init__(self,
                  features_generator: FeaturesGenerator,
                  data_fetcher: DataFetcher,
-                 data_structure: TickStructure,
+                 candlesticks: Candlesticks,
                  symbols: list,
                  timeframe: str):
-        super().__init__(features_generator, data_fetcher, data_structure, symbols, timeframe)
+        super().__init__(features_generator, data_fetcher, candlesticks, symbols, timeframe)
         self.buffer = collections.deque()
 
     def fetch_new_candlesticks(self, start_timestamp: int, duration: int) -> None:

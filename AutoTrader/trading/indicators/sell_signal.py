@@ -1,4 +1,4 @@
-from AutoTrader.data.data_structures.structure import TickStructure
+from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import sys
 from AutoTrader.helper import logger
 from AutoTrader.trading.indicators.inidicator import Indicator
@@ -8,10 +8,10 @@ log = logger.get_logger(__name__)
 
 class SellSignal(Indicator):
     # columns = ['Time', 'SellSignal']
-    data_structure: TickStructure
+    candlesticks: Candlesticks
 
-    def __init__(self, data_structure: TickStructure, sell_below_max_percentage: float):
-        super().__init__(data_structure)
+    def __init__(self, candlesticks: Candlesticks, sell_below_max_percentage: float):
+        super().__init__(candlesticks)
         self.target = sys.maxsize
         self.max_price_reached_in_position = 0
         self.in_sell_zone = False
@@ -22,7 +22,7 @@ class SellSignal(Indicator):
 
     def process_new_tick(self):
         sell_signal = ''
-        last_tick = self.data_structure.get_tick()
+        last_tick = self.candlesticks.get_tick()
         if last_tick == {}:
             return
         last_tick_price = last_tick.Close
@@ -32,7 +32,7 @@ class SellSignal(Indicator):
             self.in_sell_zone = True
 
         if self.in_sell_zone:
-            self.list.append({'Time': self.data_structure.get_last_time()})
+            self.list.append({'Time': self.candlesticks.get_last_time()})
             # Set max price reached
             if last_tick_price > self.max_price_reached_in_position:
                 sell_signal = 'SellZone'

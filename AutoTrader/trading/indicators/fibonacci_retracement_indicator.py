@@ -1,4 +1,4 @@
-from AutoTrader.data.data_structures.structure import TickStructure
+from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import plotly.graph_objects as go
 from AutoTrader.trading.indicators.inidicator import Indicator
 
@@ -7,32 +7,32 @@ class FibonacciRetracement(Indicator):
     # columns = ['Time', 'RecentHigh', 'RecentLow', percentages ...]
     period = 1000
     percentages = [0, 0.236, 0.382, 0.5, 0.618, 1]
-    data_structure: TickStructure
+    candlesticks: Candlesticks
 
     counter = 0
 
-    def __init__(self, data_structure: TickStructure):
-        super().__init__(data_structure)
+    def __init__(self, candlesticks: Candlesticks):
+        super().__init__(candlesticks)
 
     def process_new_candlestick(self) -> None:
         # Create new row
-        self.list.append({'Time': self.data_structure.get_last_time()})
-        number_of_rows = self.data_structure.get_number_of_rows()
+        self.list.append({'Time': self.candlesticks.get_last_time()})
+        number_of_rows = self.candlesticks.get_number_of_rows()
 
         if number_of_rows >= self.period:
             if True:
                 self.list[-1]['RecentHigh'] = max(
-                    [c.High for c in self.data_structure.get_last_candlesticks(self.period)])
+                    [c.High for c in self.candlesticks.get_last_candlesticks(self.period)])
                 self.list[-1]['RecentLow'] = min(
-                    [c.Low for c in self.data_structure.get_last_candlesticks(self.period)])
+                    [c.Low for c in self.candlesticks.get_last_candlesticks(self.period)])
             # else:
-            #     if self.data_structure.get_last_candlestick().Close > self.list[-2]['RecentHigh']:
-            #         self.list[-1]['RecentHigh'] = self.data_structure.get_last_candlestick().Close
+            #     if self.candlesticks.get_last_candlestick().Close > self.list[-2]['RecentHigh']:
+            #         self.list[-1]['RecentHigh'] = self.candlesticks.get_last_candlestick().Close
             #     else:
             #         self.list[-1]['RecentHigh'] = self.list[-2]['RecentHigh']
             #
-            #     if self.data_structure.get_last_candlestick().Close < self.list[-2]['RecentLow']:
-            #         self.list[-1]['RecentLow'] = self.data_structure.get_last_candlestick().Close
+            #     if self.candlesticks.get_last_candlestick().Close < self.list[-2]['RecentLow']:
+            #         self.list[-1]['RecentLow'] = self.candlesticks.get_last_candlestick().Close
             #     else:
             #         self.list[-1]['RecentLow'] = self.list[-2]['RecentLow']
 
