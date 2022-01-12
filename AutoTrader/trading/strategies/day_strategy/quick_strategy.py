@@ -9,6 +9,7 @@ from AutoTrader.trading.indicators.chaikin_money_flow_indicator import ChaikinMo
 from AutoTrader.trading.indicators.macd_indicator import MACD
 from AutoTrader.trading.indicators.fibonacci_retracement_indicator import FibonacciRetracement
 from AutoTrader.trading.indicators.atr_indicator import ATR
+from AutoTrader.enums import *
 from plotly.subplots import make_subplots
 from AutoTrader.helper import logger
 from AutoTrader.data.data_structures.candlesticks import Candlesticks
@@ -68,7 +69,7 @@ class QuickStrategy(Strategy):
                 self.start_counter = False
                 self.counter = 0
 
-        if self.transactions_allowed and not self.account.get_position(symbol=self.secondary_symbol).is_valid() and self.candlesticks.get_number_of_rows() > 330:
+        if self.transactions_allowed and not self.account.get_position(symbol=self.symbol).is_valid() and self.candlesticks.get_number_of_rows() > 330:
 
             # TEST STRAT
 
@@ -96,46 +97,49 @@ class QuickStrategy(Strategy):
                         self.candlesticks.get_last_candlestick().Close > self.Ichimoku.get_last_values()[-1]['SenkouSpanA']:
                     # self.account.buy(self.data_structure.get_tick().Time, self.symbol,
                     #                  self.data_structure.get_tick().Close
-                    self.account.transaction(
+                    self.account.place_order(
                         time=self.candlesticks.get_tick().Time,
                         symbol=self.symbol,
                         source_symbol=self.primary_symbol,
                         destination_symbol=self.secondary_symbol,
                         price=self.candlesticks.get_tick().Close,
                         source_symbol_total_amount=self.account.balance[self.primary_symbol],
-                        transaction_type='buy'
+                        side=Side.BUY,
+                        type=OrderType.LIMIT
                     )
                     self.SellSignal.set_sell_target(self.candlesticks.get_tick().Close * 1.012)
 
     def process_new_tick(self) -> None:
         # print('Got new tick in strat ', self.data_structure.get_tick())
         if self.transactions_allowed:
-            if self.account.get_position(symbol=self.secondary_symbol).is_valid():
+            if self.account.get_position(symbol=self.symbol).is_valid():
                 # Sell logic
                 if self.SellSignal.process_new_tick():
                     self.number_of_trades += 1
                     # self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick().Close
-                    self.account.transaction(
+                    self.account.place_order(
                         time=self.candlesticks.get_tick().Time,
                         symbol=self.symbol,
                         source_symbol=self.primary_symbol,
                         destination_symbol=self.secondary_symbol,
                         price=self.candlesticks.get_tick().Close,
-                        transaction_type='sell'
+                        side=Side.SELL,
+                        type=OrderType.LIMIT
                     )
                 # Stop loss
-                elif float(self.account.get_position(symbol=self.secondary_symbol).Price) * 0.98 >= self.candlesticks.get_tick().Close:
+                elif float(self.account.get_position(symbol=self.symbol).Price) * 0.98 >= self.candlesticks.get_tick().Close:
                     self.number_of_trades += 1
                     self.number_of_stop_losses += 1
-                    log.warning(f"Hit stop-loss of {float(self.account.get_position(symbol=self.secondary_symbol).Price) * 0.99}  at {self.candlesticks.get_tick().Close}")
+                    log.warning(f"Hit stop-loss of {float(self.account.get_position(symbol=self.symbol).Price) * 0.99}  at {self.candlesticks.get_tick().Close}")
                     # self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick().Close
-                    self.account.transaction(
+                    self.account.place_order(
                         time=self.candlesticks.get_tick().Time,
                         symbol=self.symbol,
                         source_symbol=self.primary_symbol,
                         destination_symbol=self.secondary_symbol,
                         price=self.candlesticks.get_tick().Close,
-                        transaction_type='sell'
+                        side=Side.SELL,
+                        type=OrderType.LIMIT
                     )
 
     def get_figure(self) -> Figure:

@@ -63,7 +63,7 @@ get_info(backtester1, show_fig=True)
 end = time.time()
 log.info(f"Total duration: {(end - start)}")
 log.info(f"End balance: {runner.account.balance}")
-transactions = runner.account.transactions
+transactions = runner.account.orders
 
 for transaction in transactions["ADAUSDT"]:
     log.info(f"{transaction}")

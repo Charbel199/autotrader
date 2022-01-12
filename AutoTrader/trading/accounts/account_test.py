@@ -1,7 +1,8 @@
 from AutoTrader.trading.accounts.account import Account
 import plotly.graph_objects as go
 from AutoTrader.helper import logger
-from AutoTrader.models import Position, Transaction
+from AutoTrader.models import Position, Transaction, Order
+from AutoTrader.enums import *
 from AutoTrader.helper.date_helper import from_timestamp_to_date
 from typing import Dict
 
@@ -15,17 +16,18 @@ class AccountTest(Account):
     def __init__(self):
         super().__init__()
 
-    def transaction(self,
+    def place_order(self,
                     time: int,
                     symbol: str,
                     source_symbol: str,
                     destination_symbol: str,
+                    type: OrderType,
                     price: float,
-                    transaction_type: str,
+                    side: Side,
                     source_symbol_total_amount: float = 0,
                     destination_symbol_amount: float = 0) -> None:
 
-        if transaction_type == 'buy':
+        if side == Side.BUY:
             # Subtract the total amount of source symbol spent
             self.balance[source_symbol] -= source_symbol_total_amount
 
@@ -40,35 +42,30 @@ class AccountTest(Account):
             self.balance[destination_symbol] += destination_symbol_amount
 
             log.info(
-                f"{from_timestamp_to_date(time)} - Bought - {destination_symbol_amount} of {destination_symbol} for {source_symbol_total_amount} of {source_symbol} per token  - Fee - {fees}")
-
-            self.positions[destination_symbol] = Position(
-                Time=time,
-                Symbol=destination_symbol,
-                Amount=destination_symbol_amount,
-                Price=price,
-                SourceSymbol=source_symbol
-            )
-
-            log.info(f"New position {self.positions[destination_symbol]}")
+                f"{from_timestamp_to_date(time)} - Bought - {destination_symbol_amount} of {destination_symbol} for {source_symbol_total_amount} of {source_symbol}, {price} per token  - Fee - {fees}")
             # Add transaction
-            self.transactions[symbol] = [] if symbol not in self.transactions else self.transactions[symbol]
-            self.transactions[symbol].append(Transaction(
+            self.orders[symbol] = [] if symbol not in self.orders else self.orders[symbol]
+            self.orders[symbol].append(Order(
                 Time=time,
-                Side='Buy',
-                Quantity=destination_symbol_amount,
+                Side=side,
+                OriginalQuantity=destination_symbol_amount,
+                ExecutedQuantity=destination_symbol_amount,
                 Symbol=symbol,
-                Type='LIMIT',
+                Type=type,
                 Price=price
             ))
 
-        if transaction_type == 'sell':
+            self.positions[symbol] = self.orders[symbol][-1]
+            print(self.positions[symbol])
+            log.info(f"New position {self.positions[symbol]}")
+
+        if side == Side.SELL:
             # Sell only if position time is different from current time
-            if self.positions[destination_symbol].Time == time:
+            if self.positions[symbol].Time == time:
                 return
 
             # Set amount of destination symbol
-            destination_symbol_amount = self.positions[destination_symbol].Amount
+            destination_symbol_amount = self.positions[symbol].ExecutedQuantity
 
             # Subtract the total amount of destination symbol spent
             self.balance[destination_symbol] -= destination_symbol_amount
@@ -81,25 +78,27 @@ class AccountTest(Account):
             source_symbol_total_amount = destination_symbol_amount * price
             self.balance[source_symbol] += source_symbol_total_amount
             log.info(
-                f"{from_timestamp_to_date(time)} - Sold - {destination_symbol_amount} of {destination_symbol} for {source_symbol_total_amount} of {source_symbol} per token  - Fee - {fees}")
+                f"{from_timestamp_to_date(time)} - Sold - {destination_symbol_amount} of {destination_symbol} for {source_symbol_total_amount} of {source_symbol}, {price} per token  - Fee - {fees}")
 
-            self.positions[destination_symbol] = Position()
-            log.info(f"New balance: {self.balance[source_symbol]}")
-
-            self.transactions[symbol] = [] if symbol not in self.transactions else self.transactions[symbol]
-            self.transactions[symbol].append(Transaction(
+            self.orders[symbol] = [] if symbol not in self.orders else self.orders[symbol]
+            self.orders[symbol].append(Order(
                 Time=time,
-                Side='Sell',
-                Quantity=destination_symbol_amount,
+                Side=side,
+                OriginalQuantity=destination_symbol_amount,
+                ExecutedQuantity=destination_symbol_amount,
                 Symbol=symbol,
-                Type='LIMIT',
+                Type=type,
                 Price=price
             ))
+
+            self.positions[symbol] = Order()
+            log.info(f"New balance: {self.balance[source_symbol]}")
+
         print(self.balance)
 
     def get_plot(self, symbol: str) -> go:
-        buys = [d for d in self.transactions[symbol] if d.Side == "Buy"]
-        sells = [d for d in self.transactions[symbol] if d.Side == "Sell"]
+        buys = [d for d in self.orders[symbol] if d.Side == Side.BUY]
+        sells = [d for d in self.orders[symbol] if d.Side == Side.SELL]
         return go.Scatter(
             x=[d.Time for d in buys],
             y=[d.Price for d in buys],
