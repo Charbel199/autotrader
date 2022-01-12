@@ -23,11 +23,11 @@ class AccountTest(Account):
                     destination_symbol: str,
                     type: OrderType,
                     price: float,
-                    side: Side,
+                    side: OrderSide,
                     source_symbol_total_amount: float = 0,
                     destination_symbol_amount: float = 0) -> None:
 
-        if side == Side.BUY:
+        if side == OrderSide.BUY:
             # Subtract the total amount of source symbol spent
             self.balance[source_symbol] -= source_symbol_total_amount
 
@@ -59,7 +59,7 @@ class AccountTest(Account):
             print(self.positions[symbol])
             log.info(f"New position {self.positions[symbol]}")
 
-        if side == Side.SELL:
+        if side == OrderSide.SELL:
             # Sell only if position time is different from current time
             if self.positions[symbol].Time == time:
                 return
@@ -97,8 +97,8 @@ class AccountTest(Account):
         print(self.balance)
 
     def get_plot(self, symbol: str) -> go:
-        buys = [d for d in self.orders[symbol] if d.Side == Side.BUY]
-        sells = [d for d in self.orders[symbol] if d.Side == Side.SELL]
+        buys = [d for d in self.orders[symbol] if d.Side == OrderSide.BUY]
+        sells = [d for d in self.orders[symbol] if d.Side == OrderSide.SELL]
         return go.Scatter(
             x=[d.Time for d in buys],
             y=[d.Price for d in buys],

@@ -10,13 +10,13 @@ class Order(object):
 
     Time: int = 0
     Symbol: str = ''
-    Side: Side = Side.BUY
+    Side: OrderSide = OrderSide.BUY
     Type: OrderType = OrderType.LIMIT
     Price: float = 0
     OriginalQuantity: float = 0
     ExecutedQuantity: float = 0
     Total: float = 0
-    Status: Status = Status.OPEN
+    Status: OrderStatus = OrderStatus.OPEN
     OrderId: str = ''
 
     def is_valid(self):

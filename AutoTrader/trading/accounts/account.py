@@ -35,7 +35,7 @@ class Account(ABC):
                     destination_symbol: str,
                     type: OrderType,
                     price: float,
-                    side: Side,
+                    side: OrderSide,
                     source_symbol_total_amount: float = 0,
                     destination_symbol_amount: float = 0) -> None:
         pass
