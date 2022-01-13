@@ -66,6 +66,7 @@ class AccountBinance(Account):
             Symbol=symbol,
             Type=OrderType.MARKET,
             Price=self._get_average_asset_price_from_order_trades(order_trades),
+            AveragePrice=self._get_average_asset_price_from_order_trades(order_trades),
             CumulativeQuoteQuantity=float(market_buy_order['cummulativeQuoteQty']),
             Status=OrderStatus.OPEN if float(market_buy_order['origQty']) != float(market_buy_order['executedQty']) else OrderStatus.FILLED,
             OrderId=market_buy_order['orderId']
@@ -78,7 +79,7 @@ class AccountBinance(Account):
                            trade=Trade(
                                Time=int(market_buy_order['transactTime']),
                                Symbol=symbol,
-                               Side=OrderSide.BUY,
+                               Side=side,
                                IsMaker=False,
                                Price=float(trade['price']),
                                Quantity=float(trade['qty']),
@@ -91,7 +92,7 @@ class AccountBinance(Account):
         self.set_position(symbol, order) if side == OrderSide.BUY else self.reset_position(symbol)
 
         log.info(
-            f"{from_timestamp_to_date(order.Time)} - Market {str(side)} Order - {order.CumulativeQuoteQuantity} of {symbol} for a price of {order.Price}")
+            f"{from_timestamp_to_date(int(order.Time/1000))} - Market {str(side)} Order - {order.CumulativeQuoteQuantity} of {symbol} for a price of {order.Price}")
 
     def _get_average_asset_price_from_order_trades(self, order_trades: List[Dict]) -> float:
         return sum([float(fill['price']) * float(fill['qty']) for fill in order_trades]) / sum([float(fill['qty']) for fill in order_trades])
