@@ -7,6 +7,7 @@ from AutoTrader.helper import logger
 load_dotenv()
 log = logger.setup_applevel_logger(file_name='test_backtester_debug.log')
 from AutoTrader.trading.modes.backtester import BackTesterRunner, BackTester
+from AutoTrader.models import Symbol
 import time
 import pandas as pd
 
@@ -64,6 +65,10 @@ end = time.time()
 log.info(f"Total duration: {(end - start)}")
 log.info(f"End balance: {runner.account.balance}")
 transactions = runner.account.orders
+
+for transaction in transactions["ADAUSDT"]:
+    log.info(f"{transaction}")
+transactions = runner.account.trades
 
 for transaction in transactions["ADAUSDT"]:
     log.info(f"{transaction}")

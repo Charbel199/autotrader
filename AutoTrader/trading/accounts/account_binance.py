@@ -1,6 +1,6 @@
 from AutoTrader.trading.accounts.account import Account
 from AutoTrader.helper import logger
-from AutoTrader.models import Order, Trade
+from AutoTrader.models import Order, Trade, Position
 from AutoTrader.enums import OrderType, OrderSide, OrderStatus
 from AutoTrader.helper.date_helper import from_timestamp_to_date
 from typing import Dict, List
@@ -74,7 +74,9 @@ class AccountBinance(Account):
         self.add_order(symbol=symbol,
                        order=order)
         # Record trade
+        fees = 0
         for trade in order_trades:
+            fees += float(trade['commission'])
             self.add_trade(symbol=symbol,
                            trade=Trade(
                                Time=int(market_buy_order['transactTime']),
@@ -89,10 +91,15 @@ class AccountBinance(Account):
                                TradeId=trade['tradeId']
                            ))
         # Update position
-        self.set_position(symbol, order) if side == OrderSide.BUY else self.reset_position(symbol)
+        self.set_position(symbol, Position(
+            Time=order.Time,
+            AveragePrice=order.Price,
+            Symbol=symbol,
+            Quantity=order.ExecutedQuantity - fees
+        )) if side == OrderSide.BUY else self.reset_position(symbol)
 
         log.info(
-            f"{from_timestamp_to_date(int(order.Time/1000))} - Market {str(side)} Order - {order.CumulativeQuoteQuantity} of {symbol} for a price of {order.Price}")
+            f"{from_timestamp_to_date(int(order.Time / 1000))} - Market {str(side)} Order - {order.ExecutedQuantity} of {symbol} for a price of {order.AveragePrice}")
 
     def _get_average_asset_price_from_order_trades(self, order_trades: List[Dict]) -> float:
         return sum([float(fill['price']) * float(fill['qty']) for fill in order_trades]) / sum([float(fill['qty']) for fill in order_trades])

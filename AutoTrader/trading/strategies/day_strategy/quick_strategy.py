@@ -125,13 +125,13 @@ class QuickStrategy(Strategy):
                         price=self.candlesticks.get_tick().Close,
                         side=OrderSide.SELL,
                         order_type=OrderType.LIMIT,
-                        amount= self.account.get_position(symbol=self.symbol).ExecutedQuantity
+                        amount= self.account.get_position(symbol=self.symbol).Quantity
                     )
                 # Stop loss
-                elif float(self.account.get_position(symbol=self.symbol).Price) * 0.98 >= self.candlesticks.get_tick().Close:
+                elif float(self.account.get_position(symbol=self.symbol).AveragePrice) * 0.98 >= self.candlesticks.get_tick().Close:
                     self.number_of_trades += 1
                     self.number_of_stop_losses += 1
-                    log.warning(f"Hit stop-loss of {float(self.account.get_position(symbol=self.symbol).Price) * 0.99}  at {self.candlesticks.get_tick().Close}")
+                    log.warning(f"Hit stop-loss of {float(self.account.get_position(symbol=self.symbol).AveragePrice) * 0.99}  at {self.candlesticks.get_tick().Close}")
                     # self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick().Close
                     self.account.place_order(
                         time=self.candlesticks.get_tick().Time,
@@ -141,7 +141,7 @@ class QuickStrategy(Strategy):
                         price=self.candlesticks.get_tick().Close,
                         side=OrderSide.SELL,
                         order_type=OrderType.LIMIT,
-                        amount=self.account.get_position(symbol=self.symbol).ExecutedQuantity
+                        amount=self.account.get_position(symbol=self.symbol).Quantity
                     )
 
     def get_figure(self) -> Figure:
