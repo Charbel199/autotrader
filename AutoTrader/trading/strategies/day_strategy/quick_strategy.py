@@ -103,9 +103,9 @@ class QuickStrategy(Strategy):
                         source_symbol=self.primary_symbol,
                         destination_symbol=self.secondary_symbol,
                         price=self.candlesticks.get_tick().Close,
-                        source_symbol_total_amount=self.account.balance[self.primary_symbol],
+                        amount=self.account.balance[self.primary_symbol]/self.candlesticks.get_tick().Close,
                         side=OrderSide.BUY,
-                        type=OrderType.LIMIT
+                        order_type=OrderType.LIMIT
                     )
                     self.SellSignal.set_sell_target(self.candlesticks.get_tick().Close * 1.012)
 
@@ -124,7 +124,8 @@ class QuickStrategy(Strategy):
                         destination_symbol=self.secondary_symbol,
                         price=self.candlesticks.get_tick().Close,
                         side=OrderSide.SELL,
-                        type=OrderType.LIMIT
+                        order_type=OrderType.LIMIT,
+                        amount= self.account.get_position(symbol=self.symbol).ExecutedQuantity
                     )
                 # Stop loss
                 elif float(self.account.get_position(symbol=self.symbol).Price) * 0.98 >= self.candlesticks.get_tick().Close:
@@ -139,7 +140,8 @@ class QuickStrategy(Strategy):
                         destination_symbol=self.secondary_symbol,
                         price=self.candlesticks.get_tick().Close,
                         side=OrderSide.SELL,
-                        type=OrderType.LIMIT
+                        order_type=OrderType.LIMIT,
+                        amount=self.account.get_position(symbol=self.symbol).ExecutedQuantity
                     )
 
     def get_figure(self) -> Figure:

@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from AutoTrader.exceptions import AccountNotFound
 from AutoTrader.services.summary import get_trades_summary, print_summary
 from typing import Dict, List
-from AutoTrader.models import Order
+from AutoTrader.models import Order, Trade
 from AutoTrader.enums import OrderSide, OrderType
 import copy
 
@@ -20,6 +20,7 @@ class Account(ABC):
         balance = self._get_account_initial_balance()
         self.balance: Dict[str, float] = balance
         self.initial_balance: Dict[str, float] = copy.deepcopy(balance)
+        self.trades: Dict[str, List[Trade]] = {}
         self.orders: Dict[str, List[Order]] = {}
         self.open_orders: Dict[str, List[Order]] = {}
         self.positions: Dict[str, Order] = {}
@@ -30,12 +31,19 @@ class Account(ABC):
     def get_orders(self, symbol: str) -> List[Order]:
         return self.orders.get(symbol, [])
 
+    def get_trades(self, symbol: str) -> List[Trade]:
+        return self.trades.get(symbol, [])
+
     def get_open_orders(self, symbol: str) -> List[Order]:
         return self.open_orders.get(symbol, [])
 
     def add_order(self, symbol: str, order: Order) -> None:
         self.orders[symbol] = [] if symbol not in self.orders else self.orders[symbol]
         self.orders[symbol].append(order)
+
+    def add_trade(self, symbol: str, trade: Trade) -> None:
+        self.trades[symbol] = [] if symbol not in self.trades else self.trades[symbol]
+        self.trades[symbol].append(trade)
 
     def add_open_order(self, symbol: str, order: Order) -> None:
         self.open_orders[symbol] = [] if symbol not in self.open_orders else self.open_orders[symbol]
