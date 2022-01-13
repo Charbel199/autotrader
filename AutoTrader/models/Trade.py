@@ -3,7 +3,7 @@ from AutoTrader.enums import *
 
 
 @dataclass
-class Order(object):
+class Trade(object):
     """
     Trade
     """
@@ -17,7 +17,7 @@ class Order(object):
     QuoteQuantity: float = 0
     CommissionSymbol: str = ''
     Commission: float = 0
-    OrderId: str = ''
+    TradeId: str = ''
 
     def is_valid(self):
         return self.Time != 0
