@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from AutoTrader.exceptions import AccountNotFound
 from AutoTrader.services.summary import get_trades_summary, print_summary
 from typing import Dict, List
-from AutoTrader.models import Order, Trade
+from AutoTrader.models import Order, Trade, Position
 from AutoTrader.enums import OrderSide, OrderType
 import copy
 
@@ -23,10 +23,10 @@ class Account(ABC):
         self.trades: Dict[str, List[Trade]] = {}
         self.orders: Dict[str, List[Order]] = {}
         self.open_orders: Dict[str, List[Order]] = {}
-        self.positions: Dict[str, Order] = {}
+        self.positions: Dict[str, Position] = {}
 
-    def get_position(self, symbol: str) -> Order:
-        return self.positions.get(symbol, Order())
+    def get_position(self, symbol: str) -> Position:
+        return self.positions.get(symbol, Position())
 
     def get_orders(self, symbol: str) -> List[Order]:
         return self.orders.get(symbol, [])
@@ -49,8 +49,8 @@ class Account(ABC):
         self.open_orders[symbol] = [] if symbol not in self.open_orders else self.open_orders[symbol]
         self.open_orders[symbol].append(order)
 
-    def set_position(self, symbol: str, order: Order) -> None:
-        self.positions[symbol] = order
+    def set_position(self, symbol: str, position: Position) -> None:
+        self.positions[symbol] = position
 
     def add_to_balance(self, symbol: str, amount: float) -> None:
         self.balance[symbol] = self.balance.get(symbol, 0) + amount
@@ -59,7 +59,7 @@ class Account(ABC):
         self.balance[symbol] = self.balance.get(symbol) - amount
 
     def reset_position(self, symbol: str) -> None:
-        self.positions[symbol] = Order()
+        self.positions[symbol] = Position()
 
     def get_symbol_balance(self, symbol: str) -> None:
         self.get_current_balance().get(symbol, 0)
@@ -112,7 +112,7 @@ class Account(ABC):
             # Remove last transaction
             self.orders[symbol] = self.orders[symbol][:-1]
             # Refund balance
-            self.balance[primary_symbol] += position.Price * position.ExecutedQuantity
+            self.balance[primary_symbol] += position.AveragePrice * position.Quantity
             # Empty position
             self.reset_position(symbol)
 
