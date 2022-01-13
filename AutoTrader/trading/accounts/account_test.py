@@ -1,9 +1,12 @@
+import sys
+
 from AutoTrader.trading.accounts.account import Account
 from AutoTrader.helper import logger
-from AutoTrader.models import  Order
-from AutoTrader.enums import OrderType, OrderSide
+from AutoTrader.models import Order, Trade, Position
+from AutoTrader.enums import OrderType, OrderSide, OrderStatus
 from AutoTrader.helper.date_helper import from_timestamp_to_date
 from typing import Dict
+import random
 
 log = logger.get_logger(__name__)
 
@@ -33,64 +36,150 @@ class AccountTest(Account):
                     amount: float) -> None:
 
         if side == OrderSide.BUY:
-            # Subtract the total amount of source symbol spent
-            source_symbol_total_amount = amount * price
-            self.remove_from_balance(source_symbol, source_symbol_total_amount)
-
-            # Apply transaction fees (Orders are executed immediately as this is a 'test account')
-            fees = source_symbol_total_amount * self.transaction_percentage + self.transaction_fee
-            # Adjusted amount after fees
-            amount = (source_symbol_total_amount - fees) / price
-
-            # Add the total amount of destination symbol bought
-            self.add_to_balance(destination_symbol, amount)
-
-            log.info(
-                f"{from_timestamp_to_date(time)} - Buy Order - {amount} of {destination_symbol} for {source_symbol_total_amount} of {source_symbol}, {price} per token  - Fee - {fees}")
-            # Add transaction
-            self.add_order(symbol=symbol,
-                           order=Order(
-                               Time=time,
-                               Side=side,
-                               OriginalQuantity=amount,
-                               ExecutedQuantity=amount,
-                               Symbol=symbol,
-                               Type=order_type,
-                               Price=price
-                           ))
-            self.set_position(symbol=symbol, order=self.orders[symbol][-1])
-            log.info(f"New position {self.positions[symbol]}")
+            self._market_buy(
+                symbol=symbol,
+                source_symbol=source_symbol,
+                destination_symbol=destination_symbol,
+                order_type=order_type,
+                price=price,
+                quantity=amount,
+                time=time,
+                side=side
+            )
 
         if side == OrderSide.SELL:
-            # Subtract the total amount of destination symbol spent
-            self.remove_from_balance(destination_symbol, amount)
+            self._market_sell(
+                symbol=symbol,
+                source_symbol=source_symbol,
+                destination_symbol=destination_symbol,
+                order_type=order_type,
+                price=price,
+                quantity=amount,
+                time=time,
+                side=side
+            )
 
-            # Apply transaction fees (Orders are executed immediately as this is a 'test account')
-            fees = amount * self.transaction_percentage + self.transaction_fee
-            # Actual amount that will be sold
-            amount -= fees
+    def _market_buy(self,
+                    symbol: str,
+                    source_symbol: str,
+                    destination_symbol: str,
+                    quantity: float,
+                    price: float,
+                    time: int,
+                    order_type: OrderType,
+                    side: OrderSide):
+        # Launch order
+        # Subtract the total amount of source symbol spent
+        quote_order_quantity = quantity * price
+        self.remove_from_balance(source_symbol, quote_order_quantity)
+        # Apply transaction fees (Orders are executed immediately as this is a 'test account')
+        fees = quantity * self.transaction_percentage + self.transaction_fee
+        # Adjusted amount after fees
+        quantity_after_fees = quantity - fees
+        # Add the total quantity_after_fees of destination symbol bought
+        self.add_to_balance(destination_symbol, quantity_after_fees)
 
-            # Amount of source symbol bought
-            source_symbol_total_amount = amount * price
+        log.info(
+            f"{from_timestamp_to_date(time)} -  Market {str(side)} Order - {quantity} of {destination_symbol} for {price}, with a fee of {fees} {destination_symbol}")
 
-            self.add_to_balance(source_symbol, source_symbol_total_amount)
+        # Record order
+        order = Order(
+            Time=time,
+            Side=side,
+            OriginalQuantity=quantity,
+            ExecutedQuantity=quantity,
+            Symbol=symbol,
+            Type=order_type,
+            AveragePrice=price,
+            Price=price,
+            Status=OrderStatus.FILLED,
+            CumulativeQuoteQuantity=quote_order_quantity,
+            OrderId=str(random.randint(0, sys.maxsize))
+        )
+        self.add_order(symbol=symbol,
+                       order=order)
+        # Record trade
+        trade = Trade(
+            Time=time,
+            Symbol=symbol,
+            Side=side,
+            IsMaker=False,
+            Price=price,
+            Quantity=quantity,
+            QuoteQuantity=quote_order_quantity,
+            CommissionSymbol=destination_symbol,
+            Commission=fees,
+            TradeId=str(random.randint(0, sys.maxsize))
+        )
+        self.add_trade(symbol=symbol,
+                       trade=trade)
+        # Update position
+        self.set_position(symbol, Position(
+            Time = trade.Time,
+            AveragePrice=trade.Price,
+            Symbol=symbol,
+            Quantity=trade.Quantity-trade.Commission
+        ))
 
-            log.info(
-                f"{from_timestamp_to_date(time)} - Sell Order - {amount} of {destination_symbol} for {source_symbol_total_amount} of {source_symbol}, {price} per token  - Fee - {fees}")
+    def _market_sell(self,
+                     symbol: str,
+                     source_symbol: str,
+                     destination_symbol: str,
+                     quantity: float,
+                     price: float,
+                     time: int,
+                     order_type: OrderType,
+                     side: OrderSide):
+        # Launch order
 
-            self.add_order(symbol=symbol,
-                           order=Order(
-                               Time=time,
-                               Side=side,
-                               OriginalQuantity=amount,
-                               ExecutedQuantity=amount,
-                               Symbol=symbol,
-                               Type=order_type,
-                               Price=price
-                           ))
+        # Subtract the total amount of destination symbol spent
+        self.remove_from_balance(destination_symbol, quantity)
 
-            self.reset_position(symbol)
-            log.info(f"New balance: {self.get_symbol_balance(source_symbol)}")
+        # Amount of source symbol bought
+        quote_order_quantity = quantity * price
+        # Apply transaction fees (Orders are executed immediately as this is a 'test account')
+        fees = quote_order_quantity * self.transaction_percentage + self.transaction_fee
+
+        # Actual amount that will be held after fees
+        quote_order_quantity_after_fees = quote_order_quantity - fees
+        self.add_to_balance(source_symbol, quote_order_quantity_after_fees)
+
+        log.info(
+            f"{from_timestamp_to_date(time)} -  Market {str(side)} Order - {quantity} of {destination_symbol} for {price}, with a fee of {fees} {source_symbol}")
+
+        # Record order
+        order = Order(
+            Time=time,
+            Side=side,
+            OriginalQuantity=quantity,
+            ExecutedQuantity=quantity,
+            Symbol=symbol,
+            Type=order_type,
+            AveragePrice=price,
+            Price=price,
+            Status=OrderStatus.FILLED,
+            CumulativeQuoteQuantity=quote_order_quantity,
+            OrderId=str(random.randint(0, sys.maxsize))
+        )
+        self.add_order(symbol=symbol,
+                       order=order)
+        # Record trade
+        self.add_trade(symbol=symbol,
+                       trade=Trade(
+                           Time=time,
+                           Symbol=symbol,
+                           Side=side,
+                           IsMaker=False,
+                           Price=price,
+                           Quantity=quantity,
+                           QuoteQuantity=quote_order_quantity,
+                           CommissionSymbol=source_symbol,
+                           Commission=fees,
+                           TradeId=str(random.randint(0, sys.maxsize))
+                       ))
+
+        # Update position
+        self.reset_position(symbol)
 
     def get_current_balance(self) -> Dict[str, float]:
         return self.balance
