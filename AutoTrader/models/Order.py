@@ -13,9 +13,10 @@ class Order(object):
     Side: OrderSide = OrderSide.BUY
     Type: OrderType = OrderType.LIMIT
     Price: float = 0
+    AveragePrice: float = 0
     OriginalQuantity: float = 0
     ExecutedQuantity: float = 0
-    Total: float = 0
+    CumulativeQuoteQuantity: float = 0
     Status: OrderStatus = OrderStatus.OPEN
     OrderId: str = ''
 
