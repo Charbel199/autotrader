@@ -32,21 +32,12 @@ class AccountBinance(Account):
                     side: OrderSide,
                     amount: float) -> None:
 
-        if side == OrderSide.BUY:
-            if order_type == OrderType.MARKET:
-                self._market_order(
-                    symbol=symbol,
-                    quantity=amount,
-                    side=side
-                )
-
-        if side == OrderSide.SELL:
-            if order_type == OrderType.MARKET:
-                self._market_order(
-                    symbol=symbol,
-                    quantity=amount,
-                    side=side
-                )
+        if order_type == OrderType.MARKET:
+            self._market_order(
+                symbol=symbol,
+                quantity=amount,
+                side=side
+            )
 
         self.refresh_balance()
 
