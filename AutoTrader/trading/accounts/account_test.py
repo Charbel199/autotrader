@@ -126,12 +126,10 @@ class AccountTest(Account):
             # Launch order
             # Subtract the total amount of destination symbol spent
             self.remove_from_balance(destination_symbol, quantity)
-
             # Amount of source symbol bought
             quote_order_quantity = quantity * price
             # Apply transaction fees (Orders are executed immediately as this is a 'test account')
             fees = quote_order_quantity * self.transaction_percentage + self.transaction_fee
-
             # Actual amount that will be held after fees
             quote_order_quantity_after_fees = quote_order_quantity - fees
             self.add_to_balance(source_symbol, quote_order_quantity_after_fees)
