@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from AutoTrader.exceptions import AccountNotFound
 from AutoTrader.services.summary import get_trades_summary, print_summary
 from typing import Dict, List
-from AutoTrader.models import Order, Trade, Position
+from AutoTrader.models import Order, Trade, Position, TradesSummary
 from AutoTrader.enums import OrderSide, OrderType
 import copy
 
@@ -67,23 +67,13 @@ class Account(ABC):
     def refresh_balance(self) -> None:
         self.balance = self.get_current_balance()
 
-    def get_profit(self, symbol: str, primary_symbol: str, secondary_symbol: str, undo_last_position=True) -> float:
-        # If in position when calculating profit, revert last buy
-        if undo_last_position:
-            self._undo_last_position(symbol, primary_symbol, secondary_symbol)
-
-        # Get summary
-        summary = get_trades_summary(self.orders[symbol], self.initial_balance[primary_symbol])
-        log.info(print_summary(summary))
-        return summary['PercentageChange'] if summary != {} else 0
-
-    def get_all_trades(self, symbol: str, primary_symbol: str, secondary_symbol: str, undo_last_position=True) -> list:
+    def get_trades_summary(self, symbol: str, primary_symbol: str, secondary_symbol: str, undo_last_position=True) -> TradesSummary:
         # If in position when getting all trades, revert last buy
         if undo_last_position:
             self._undo_last_position(symbol, primary_symbol, secondary_symbol)
 
-        summary = get_trades_summary(self.orders[symbol], self.initial_balance[primary_symbol])
-        return summary['AllTrades']
+        trades_summary = get_trades_summary(symbol=symbol, source_symbol=primary_symbol,destination_symbol=secondary_symbol, trades= self.trades[symbol])
+        return trades_summary
 
     def get_plot(self, symbol: str) -> go:
         buys = [d for d in self.orders[symbol] if d.Side == OrderSide.BUY]

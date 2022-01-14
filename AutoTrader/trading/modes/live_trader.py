@@ -4,6 +4,9 @@ from AutoTrader.data.previous_data.data_fetcher import DataFetcher
 from AutoTrader.data.live_data.live_data_fetcher import LiveDataFetcher
 from AutoTrader.trading.accounts.account import Account
 from AutoTrader.models import Tick
+from AutoTrader.helper import logger
+
+log = logger.get_logger(__name__)
 
 
 class LiveTrader(object):
@@ -63,6 +66,16 @@ class LiveTrader(object):
                 self.candlesticks.add_row(previous_tick)
                 self.strategy.process_new_candlestick()
 
+    def live_trader_performance(self,
+                                show_fig=False,
+                                show_trades=False):
+        trades_summary = self.account.get_trades_summary(symbol=self.symbol, primary_symbol=self.primary_symbol, secondary_symbol=self.secondary_symbol)
+        log.info(trades_summary.get_text_summary(show_trades=show_trades))
+        if show_fig:
+            fig = self.strategy.get_figure()
+            fig.show()
+            fig.write_html("test.html")
+
 
 from AutoTrader.data.previous_data.data_fetcher import get_fetcher
 from AutoTrader.data.data_structures.candlesticks import get_data_structure
@@ -87,7 +100,6 @@ class LiveTraderRunner(object):
                             data_structure_provider: str,
                             strategy_provider: str,
                             back_date: str = None) -> LiveTrader:
-
         data_fetcher = get_fetcher(candlesticks_provider)
         data_structure = get_data_structure(data_structure_provider)
         strategy = get_strategy(strategy_provider, data_structure, self.account, symbol, primary_symbol, secondary_symbol)

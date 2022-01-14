@@ -54,6 +54,16 @@ class BackTester(object):
         end = time.time()
         log.info(f"Candlestick processing duration: {(end - start)}")
 
+    def backtester_performance(self,
+                               show_fig=False,
+                               show_trades=False):
+        trades_summary = self.account.get_trades_summary(symbol=self.symbol, primary_symbol=self.primary_symbol, secondary_symbol=self.secondary_symbol)
+        log.info(trades_summary.get_text_summary(show_trades=show_trades))
+        if show_fig:
+            fig = self.strategy.get_figure()
+            fig.show()
+            fig.write_html("test.html")
+
 
 from AutoTrader.data.previous_data.data_fetcher import get_fetcher
 from AutoTrader.data.data_structures.candlesticks import get_data_structure
@@ -78,7 +88,6 @@ class BackTesterRunner(object):
                            strategy_provider: str,
                            start_date: str,
                            end_date: str = None) -> BackTester:
-
         data_fetcher = get_fetcher(data_fetcher_provider)
         data_structure = get_data_structure(candlesticks_provider)
         strategy = get_strategy(strategy_provider, data_structure, self.account, symbol, primary_symbol, secondary_symbol)
