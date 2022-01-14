@@ -105,7 +105,7 @@ class QuickStrategy(Strategy):
                         price=self.candlesticks.get_tick().Close,
                         amount=self.account.balance[self.primary_symbol]/self.candlesticks.get_tick().Close,
                         side=OrderSide.BUY,
-                        order_type=OrderType.LIMIT
+                        order_type=OrderType.MARKET
                     )
                     self.SellSignal.set_sell_target(self.candlesticks.get_tick().Close * 1.012)
 
@@ -124,7 +124,7 @@ class QuickStrategy(Strategy):
                         destination_symbol=self.secondary_symbol,
                         price=self.candlesticks.get_tick().Close,
                         side=OrderSide.SELL,
-                        order_type=OrderType.LIMIT,
+                        order_type=OrderType.MARKET,
                         amount= self.account.get_position(symbol=self.symbol).Quantity
                     )
                 # Stop loss
@@ -140,7 +140,7 @@ class QuickStrategy(Strategy):
                         destination_symbol=self.secondary_symbol,
                         price=self.candlesticks.get_tick().Close,
                         side=OrderSide.SELL,
-                        order_type=OrderType.LIMIT,
+                        order_type=OrderType.MARKET,
                         amount=self.account.get_position(symbol=self.symbol).Quantity
                     )
 
