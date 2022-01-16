@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from AutoTrader.helper import logger
 import plotly.graph_objects as go
 from AutoTrader.exceptions import AccountNotFound
-from AutoTrader.services.summary import get_trades_summary, print_summary
+from AutoTrader.services.summary import get_trades_summary
 from typing import Dict, List
 from AutoTrader.models import Order, Trade, Position, TradesSummary
 from AutoTrader.enums import OrderSide, OrderType
@@ -72,7 +72,12 @@ class Account(ABC):
         if undo_last_position:
             self._undo_last_position(symbol, primary_symbol, secondary_symbol)
 
-        trades_summary = get_trades_summary(symbol=symbol, source_symbol=primary_symbol,destination_symbol=secondary_symbol, trades= self.trades[symbol])
+        trades_summary = get_trades_summary(symbol=symbol,
+                                            source_symbol=primary_symbol,
+                                            destination_symbol=secondary_symbol,
+                                            initial_balance= self.initial_balance[primary_symbol],
+                                            end_balance=self.balance[primary_symbol],
+                                            trades= self.trades[symbol])
         return trades_summary
 
     def get_plot(self, symbol: str) -> go:
@@ -101,6 +106,9 @@ class Account(ABC):
         if position.is_valid():
             # Remove last transaction
             self.orders[symbol] = self.orders[symbol][:-1]
+            # Remove last BUY Trades ? Maybe reverse pass through list and remove all buys until reaching a sell and breaking SAME WITH ORDERS
+            self.trades[symbol] = self.trades[symbol][:-1]
+
             # Refund balance
             self.balance[primary_symbol] += position.AveragePrice * position.Quantity
             # Empty position
