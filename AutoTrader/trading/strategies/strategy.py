@@ -3,6 +3,8 @@ from AutoTrader.data.data_structures.candlesticks import Candlesticks
 from AutoTrader.trading.accounts.account import Account
 from plotly.graph_objs import Figure
 from AutoTrader.exceptions import StrategyNotFound
+from AutoTrader.trading.indicators import Indicator
+from typing import List
 
 
 class Strategy(ABC):
@@ -14,7 +16,8 @@ class Strategy(ABC):
                  account: Account,
                  symbol: str,
                  primary_symbol: str,
-                 secondary_symbol: str):
+                 secondary_symbol: str,
+                 indicators: List[Indicator]):
         self.candlesticks = candlesticks
         self.account = account
         self.symbol = symbol
@@ -23,15 +26,26 @@ class Strategy(ABC):
         self.transactions_allowed = True
         self.number_of_trades = 0
         self.number_of_stop_losses = 0
+        self.indicators = indicators
 
-    # Happens AFTER updating the tick in the previous_data structure
-    @abstractmethod
+    # Happens AFTER updating the tick
     def process_new_tick(self) -> None:
+        for indicator in self.indicators:
+            indicator.process_new_tick()
+        self.new_tick_logic()
+
+    # Happens AFTER adding a new candlestick
+    def process_new_candlestick(self) -> None:
+        for indicator in self.indicators:
+            indicator.process_new_candlestick()
+        self.new_candlestick_logic()
+
+    @abstractmethod
+    def new_candlestick_logic(self) -> None:
         pass
 
-    # Happens AFTER adding the new candlestick in the previous_data structure
     @abstractmethod
-    def process_new_candlestick(self) -> None:
+    def new_tick_logic(self) -> None:
         pass
 
     def enable_transactions(self) -> None:

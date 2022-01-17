@@ -27,8 +27,7 @@ class QuickStrategy(Strategy):
                  primary_symbol: str,
                  secondary_symbol: str
                  ):
-        super().__init__(candlesticks, account, symbol, primary_symbol, secondary_symbol)
-        # self.ADX = ADX(data_structure)
+
         self.CandlestickType = CandlestickType(candlesticks)
         self.RSI = RSI(candlesticks)
         self.VWAP = VWAP(candlesticks)
@@ -39,6 +38,10 @@ class QuickStrategy(Strategy):
         self.ATR = ATR(candlesticks)
         self.FibonacciRetracement = FibonacciRetracement(candlesticks)
         self.SellSignal = SellSignal(candlesticks, sell_below_max_percentage=0.997)
+
+        super().__init__(candlesticks, account, symbol, primary_symbol, secondary_symbol,
+                        [] )
+
         self.firstStep = False
         self.secondStep = False
         self.thirdStep = False
@@ -46,21 +49,7 @@ class QuickStrategy(Strategy):
         self.start_counter = False
         self.counter = 0
 
-    def process_new_candlestick(self) -> None:
-        # self.data_structure.reduce()
-
-        # print('Got new candlestick')
-        # self.ADX.process_new_candlestick()
-        # self.CandlestickType.process_new_candlestick()
-        self.RSI.process_new_candlestick()
-        # self.BollingerBand.process_new_candlestick()
-        self.VWAP.process_new_candlestick()
-        self.Ichimoku.process_new_candlestick()
-        self.MACD.process_new_candlestick()
-        self.FibonacciRetracement.process_new_candlestick()
-        self.ATR.process_new_candlestick()
-        # print(self.Ichimoku.get_last_values())
-        # self.ChaikinMoneyFlow.process_new_candlestick()
+    def new_candlestick_logic(self) -> None:
 
         if self.start_counter:
             self.counter += 1
@@ -103,18 +92,18 @@ class QuickStrategy(Strategy):
                         source_symbol=self.primary_symbol,
                         destination_symbol=self.secondary_symbol,
                         price=self.candlesticks.get_tick().Close,
-                        amount=self.account.balance[self.primary_symbol]/self.candlesticks.get_tick().Close,
+                        amount=self.account.balance[self.primary_symbol] / self.candlesticks.get_tick().Close,
                         side=OrderSide.BUY,
                         order_type=OrderType.MARKET
                     )
                     self.SellSignal.set_sell_target(self.candlesticks.get_tick().Close * 1.012)
 
-    def process_new_tick(self) -> None:
+    def new_tick_logic(self) -> None:
         # print('Got new tick in strat ', self.data_structure.get_tick())
         if self.transactions_allowed:
             if self.account.get_position(symbol=self.symbol).is_valid():
                 # Sell logic
-                if self.SellSignal.process_new_tick():
+                if self.SellSignal.get_last_values(1)[-1]['SellSignal'] == 'sell':
                     self.number_of_trades += 1
                     # self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick().Close
                     self.account.place_order(
@@ -125,7 +114,7 @@ class QuickStrategy(Strategy):
                         price=self.candlesticks.get_tick().Close,
                         side=OrderSide.SELL,
                         order_type=OrderType.MARKET,
-                        amount= self.account.get_position(symbol=self.symbol).Quantity
+                        amount=self.account.get_position(symbol=self.symbol).Quantity
                     )
                 # Stop loss
                 elif float(self.account.get_position(symbol=self.symbol).AveragePrice) * 0.98 >= self.candlesticks.get_tick().Close:
