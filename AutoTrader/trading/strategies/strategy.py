@@ -24,8 +24,6 @@ class Strategy(ABC):
         self.primary_symbol = primary_symbol
         self.secondary_symbol = secondary_symbol
         self.transactions_allowed = True
-        self.number_of_trades = 0
-        self.number_of_stop_losses = 0
         self.indicators = indicators
 
     # Happens AFTER updating the tick

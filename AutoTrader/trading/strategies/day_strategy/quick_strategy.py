@@ -20,6 +20,9 @@ log = logger.get_logger(__name__)
 
 
 class QuickStrategy(Strategy):
+    def initialize_indicators(self):
+        pass
+
     def __init__(self,
                  candlesticks: Candlesticks,
                  account: Account,
@@ -40,7 +43,7 @@ class QuickStrategy(Strategy):
         self.SellSignal = SellSignal(candlesticks, sell_below_max_percentage=0.997)
 
         super().__init__(candlesticks, account, symbol, primary_symbol, secondary_symbol,
-                        [] )
+                        [self.CandlestickType,self.RSI, self.Ichimoku, self.SellSignal, self.ATR] )
 
         self.firstStep = False
         self.secondStep = False
@@ -104,7 +107,7 @@ class QuickStrategy(Strategy):
             if self.account.get_position(symbol=self.symbol).is_valid():
                 # Sell logic
                 if self.SellSignal.get_last_values(1)[-1]['SellSignal'] == 'sell':
-                    self.number_of_trades += 1
+
                     # self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick().Close
                     self.account.place_order(
                         time=self.candlesticks.get_tick().Time,
@@ -118,8 +121,7 @@ class QuickStrategy(Strategy):
                     )
                 # Stop loss
                 elif float(self.account.get_position(symbol=self.symbol).AveragePrice) * 0.98 >= self.candlesticks.get_tick().Close:
-                    self.number_of_trades += 1
-                    self.number_of_stop_losses += 1
+
                     log.warning(f"Hit stop-loss of {float(self.account.get_position(symbol=self.symbol).AveragePrice) * 0.99}  at {self.candlesticks.get_tick().Close}")
                     # self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick().Close
                     self.account.place_order(
@@ -136,26 +138,26 @@ class QuickStrategy(Strategy):
     def get_figure(self) -> Figure:
         fig = make_subplots(rows=3, cols=1)
         fig.append_trace(self.candlesticks.get_plot(), row=1, col=1)
-        # fig.append_trace(self.VWAP.get_plot(), row=1, col=1)
-        # fig.append_trace(self.ChaikinMoneyFlow.get_plot(), row=3, col=1)
+        # fig.append_trace(self.VWAP.get_plot()[0], row=1, col=1)
+        # fig.append_trace(self.ChaikinMoneyFlow.get_plot()[0], row=3, col=1)
         # fig.append_trace(self.BollingerBand.get_plot()[0], row=1, col=1)
         # fig.append_trace(self.BollingerBand.get_plot()[1], row=1, col=1)
         # fig.append_trace(self.BollingerBand.get_plot()[2], row=1, col=1)
 
-        # fig.append_trace(self.Ichimoku.get_plot()[0], row=1, col=1)
-        # fig.append_trace(self.Ichimoku.get_plot()[1], row=1, col=1)
-        # fig.append_trace(self.Ichimoku.get_plot()[2], row=1, col=1)
-        # fig.append_trace(self.Ichimoku.get_plot()[3], row=1, col=1)
-        # fig.append_trace(self.Ichimoku.get_plot()[4], row=1, col=1)
+        fig.append_trace(self.Ichimoku.get_plot()[0], row=1, col=1)
+        fig.append_trace(self.Ichimoku.get_plot()[1], row=1, col=1)
+        fig.append_trace(self.Ichimoku.get_plot()[2], row=1, col=1)
+        fig.append_trace(self.Ichimoku.get_plot()[3], row=1, col=1)
+        fig.append_trace(self.Ichimoku.get_plot()[4], row=1, col=1)
 
         # fig.append_trace(self.MACD.get_plot()[0], row=2, col=1)
         # fig.append_trace(self.MACD.get_plot()[1], row=2, col=1)
 
-        # fig.append_trace(self.ADX.get_plot(), row=2, col=1)
+        # fig.append_trace(self.ADX.get_plot()[0], row=2, col=1)
 
-        # fig.append_trace(self.RSI.get_plot(), row=2, col=1)
+        # fig.append_trace(self.RSI.get_plot()[0], row=2, col=1)
 
-        fig.append_trace(self.ATR.get_plot(), row=2, col=1)
+        fig.append_trace(self.ATR.get_plot()[0], row=2, col=1)
 
         # Fibonacci retracements
         for plot in self.FibonacciRetracement.get_plot():
