@@ -1,14 +1,16 @@
 from AutoTrader.trading.strategies.strategy import Strategy
-from AutoTrader.trading.indicators.rsi_indicator import RSI
-from AutoTrader.trading.indicators.candlestick_type import CandlestickType
-from AutoTrader.trading.indicators.sell_signal import SellSignal
-from AutoTrader.trading.indicators.vwap_indicator import VWAP
-from AutoTrader.trading.indicators.bollinger_band_indicator import BollingerBand
-from AutoTrader.trading.indicators.ichimoku_indicator import Ichimoku
-from AutoTrader.trading.indicators.chaikin_money_flow_indicator import ChaikinMoneyFlow
-from AutoTrader.trading.indicators.macd_indicator import MACD
-from AutoTrader.trading.indicators.fibonacci_retracement_indicator import FibonacciRetracement
-from AutoTrader.trading.indicators.atr_indicator import ATR
+from AutoTrader.trading.indicators import RSI, CandlestickType
+from AutoTrader.trading.indicators import CandlestickType
+from AutoTrader.trading.indicators import SellSignal
+from AutoTrader.trading.indicators import VWAP
+from AutoTrader.trading.indicators import BollingerBand
+from AutoTrader.trading.indicators import Ichimoku
+from AutoTrader.trading.indicators import ChaikinMoneyFlow
+from AutoTrader.trading.indicators import MACD
+from AutoTrader.trading.indicators import FibonacciRetracement
+from AutoTrader.trading.indicators import ATR
+from AutoTrader.trading.indicators import Indicator
+
 from AutoTrader.enums import *
 from plotly.subplots import make_subplots
 from AutoTrader.helper import logger
@@ -20,8 +22,27 @@ log = logger.get_logger(__name__)
 
 
 class QuickStrategy(Strategy):
-    def initialize_indicators(self):
-        pass
+
+    def initialize_variables(self):
+        # Indicators
+        self.CandlestickType = CandlestickType(self.candlesticks)
+        self.RSI = RSI(self.candlesticks)
+        self.VWAP = VWAP(self.candlesticks)
+        self.Ichimoku = Ichimoku(self.candlesticks)
+        self.BollingerBand = BollingerBand(self.candlesticks)
+        self.ChaikinMoneyFlow = ChaikinMoneyFlow(self.candlesticks)
+        self.MACD = MACD(self.candlesticks)
+        self.ATR = ATR(self.candlesticks)
+        self.FibonacciRetracement = FibonacciRetracement(self.candlesticks)
+        self.SellSignal = SellSignal(self.candlesticks, sell_below_max_percentage=0.997)
+
+        # Strategy variables
+        self.firstStep = False
+        self.secondStep = False
+        self.thirdStep = False
+
+        self.start_counter = False
+        self.counter = 0
 
     def __init__(self,
                  candlesticks: Candlesticks,
@@ -31,26 +52,7 @@ class QuickStrategy(Strategy):
                  secondary_symbol: str
                  ):
 
-        self.CandlestickType = CandlestickType(candlesticks)
-        self.RSI = RSI(candlesticks)
-        self.VWAP = VWAP(candlesticks)
-        self.Ichimoku = Ichimoku(candlesticks)
-        self.BollingerBand = BollingerBand(candlesticks)
-        self.ChaikinMoneyFlow = ChaikinMoneyFlow(candlesticks)
-        self.MACD = MACD(candlesticks)
-        self.ATR = ATR(candlesticks)
-        self.FibonacciRetracement = FibonacciRetracement(candlesticks)
-        self.SellSignal = SellSignal(candlesticks, sell_below_max_percentage=0.997)
-
-        super().__init__(candlesticks, account, symbol, primary_symbol, secondary_symbol,
-                        [self.CandlestickType,self.RSI, self.Ichimoku, self.SellSignal, self.ATR] )
-
-        self.firstStep = False
-        self.secondStep = False
-        self.thirdStep = False
-
-        self.start_counter = False
-        self.counter = 0
+        super().__init__(candlesticks, account, symbol, primary_symbol, secondary_symbol)
 
     def new_candlestick_logic(self) -> None:
 

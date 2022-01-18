@@ -16,15 +16,21 @@ class Strategy(ABC):
                  account: Account,
                  symbol: str,
                  primary_symbol: str,
-                 secondary_symbol: str,
-                 indicators: List[Indicator]):
+                 secondary_symbol: str):
+
         self.candlesticks = candlesticks
         self.account = account
         self.symbol = symbol
         self.primary_symbol = primary_symbol
         self.secondary_symbol = secondary_symbol
         self.transactions_allowed = True
-        self.indicators = indicators
+
+        self.initialize_variables()
+        # Add indicators
+        self.indicators = []
+        for key, value in vars(self).items():
+            if isinstance(value, Indicator):
+                self.indicators.append(value)
 
     # Happens AFTER updating the tick
     def process_new_tick(self) -> None:
@@ -37,6 +43,10 @@ class Strategy(ABC):
         for indicator in self.indicators:
             indicator.process_new_candlestick()
         self.new_candlestick_logic()
+
+    @abstractmethod
+    def initialize_variables(self):
+        pass
 
     @abstractmethod
     def new_candlestick_logic(self) -> None:
