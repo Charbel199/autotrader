@@ -1,5 +1,6 @@
 from AutoTrader.data.data_structures.candlesticks import Candlesticks
 from AutoTrader.trading.indicators.inidicator import Indicator
+from typing import List
 
 
 class CandlestickType(Indicator):
@@ -80,10 +81,10 @@ class CandlestickType(Indicator):
 
         self.list[-1]['Type'] = candlestick_type
 
-    def process_new_tick(self):
+    def process_new_tick(self) -> None:
         pass
 
-    def get_plot(self):
+    def get_plot(self) -> List:
         pass
 
     def delete_data(self) -> None:

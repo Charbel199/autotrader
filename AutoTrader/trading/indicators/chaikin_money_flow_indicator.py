@@ -2,6 +2,7 @@ from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import numpy as np
 import plotly.graph_objects as go
 from AutoTrader.trading.indicators.inidicator import Indicator
+from typing import List
 
 
 class ChaikinMoneyFlow(Indicator):
@@ -31,11 +32,11 @@ class ChaikinMoneyFlow(Indicator):
             money_flow_average = np.mean([d['MoneyFlowVolume'] for d in self.list[-self.period:]])
             self.list[-1]['ChaikinMoneyFlow'] = money_flow_average / volume_average
 
-    def process_new_tick(self):
+    def process_new_tick(self) -> None:
         pass
 
-    def get_plot(self):
-        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['ChaikinMoneyFlow'] if 'ChaikinMoneyFlow' in d else None for d in self.list], name="ChaikinMoneyFlow")
+    def get_plot(self) -> List:
+        return [go.Scatter(x=[d['Time'] for d in self.list], y=[d['ChaikinMoneyFlow'] if 'ChaikinMoneyFlow' in d else None for d in self.list], name="ChaikinMoneyFlow")]
 
     def delete_data(self) -> None:
         self.list = []

@@ -2,6 +2,7 @@ from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import numpy as np
 import plotly.graph_objects as go
 from AutoTrader.trading.indicators.inidicator import Indicator
+from typing import List
 
 
 class ATR(Indicator):
@@ -31,13 +32,13 @@ class ATR(Indicator):
                 self.list[-1]['ATR'] = np.mean([d['TrueRange'] for d in self.list[-self.period:]])
         # TODO: Add more weight to recent data
 
-    def process_new_tick(self):
+    def process_new_tick(self) -> None:
         pass
 
-    def get_plot(self):
-        return go.Scatter(x=[d['Time'] for d in self.list],
-                          y=[d['ATR'] if 'ATR' in d else None for d in self.list],
-                          name="ATR")
+    def get_plot(self) -> List:
+        return [go.Scatter(x=[d['Time'] for d in self.list],
+                           y=[d['ATR'] if 'ATR' in d else None for d in self.list],
+                           name="ATR")]
 
     def delete_data(self) -> None:
         self.list = []

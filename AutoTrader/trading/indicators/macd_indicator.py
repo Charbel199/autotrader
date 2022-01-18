@@ -2,6 +2,7 @@ from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import plotly.graph_objects as go
 from AutoTrader.trading.indicators.inidicator import Indicator
 import numpy as np
+from typing import List
 
 
 class MACD(Indicator):
@@ -51,16 +52,16 @@ class MACD(Indicator):
                     'Signal']) * self.multiplier_3) + self.list[-2]['Signal']
             self.signal_counter += 1
 
-    def process_new_tick(self):
+    def process_new_tick(self) -> None:
         pass
 
-    def get_plot(self):
-        return go.Scatter(x=[d['Time'] for d in self.list],
-                          y=[d['MACD'] if 'MACD' in d else None for d in self.list],
-                          name="MACD"), \
-               go.Scatter(x=[d['Time'] for d in self.list],
-                          y=[d['Signal'] if 'Signal' in d else None for d in self.list],
-                          name="Signal")
+    def get_plot(self) -> List:
+        return [go.Scatter(x=[d['Time'] for d in self.list],
+                           y=[d['MACD'] if 'MACD' in d else None for d in self.list],
+                           name="MACD"), \
+                go.Scatter(x=[d['Time'] for d in self.list],
+                           y=[d['Signal'] if 'Signal' in d else None for d in self.list],
+                           name="Signal")]
 
     def delete_data(self) -> None:
         self.list = []

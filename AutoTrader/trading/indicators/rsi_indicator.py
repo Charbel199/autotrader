@@ -2,6 +2,7 @@ from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import numpy as np
 import plotly.graph_objects as go
 from AutoTrader.trading.indicators.inidicator import Indicator
+from typing import List
 
 
 class RSI(Indicator):
@@ -38,11 +39,11 @@ class RSI(Indicator):
                 self.list[-1]['RS'] = 100
                 self.list[-1]['RSI'] = 100
 
-    def process_new_tick(self):
+    def process_new_tick(self) -> None:
         pass
 
-    def get_plot(self):
-        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['RSI'] if 'RSI' in d else None for d in self.list], name="RSI")
+    def get_plot(self) -> List:
+        return [go.Scatter(x=[d['Time'] for d in self.list], y=[d['RSI'] if 'RSI' in d else None for d in self.list], name="RSI")]
 
     def delete_data(self) -> None:
         self.list = []

@@ -2,6 +2,7 @@ from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import numpy as np
 import plotly.graph_objects as go
 from AutoTrader.trading.indicators.inidicator import Indicator
+from typing import List
 
 
 class BollingerBand(Indicator):
@@ -28,13 +29,13 @@ class BollingerBand(Indicator):
                 self.list[-1]['UpperBollingerBand'] = self.list[-1]['SMA'] + deviation * self.bollinger_band_multiplier
                 self.list[-1]['LowerBollingerBand'] = self.list[-1]['SMA'] - deviation * self.bollinger_band_multiplier
 
-    def process_new_tick(self):
+    def process_new_tick(self) -> None:
         pass
 
-    def get_plot(self):
-        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['UpperBollingerBand'] if 'UpperBollingerBand' in d else None for d in self.list], name="UpperBollingerBand"), \
-               go.Scatter(x=[d['Time'] for d in self.list], y=[d['LowerBollingerBand'] if 'LowerBollingerBand' in d else None for d in self.list], name="LowerBollingerBand"), \
-               go.Scatter(x=[d['Time'] for d in self.list], y=[d['SMA'] if 'SMA' in d else None for d in self.list], name="SMA")
+    def get_plot(self) -> List:
+        return [go.Scatter(x=[d['Time'] for d in self.list], y=[d['UpperBollingerBand'] if 'UpperBollingerBand' in d else None for d in self.list], name="UpperBollingerBand"), \
+                go.Scatter(x=[d['Time'] for d in self.list], y=[d['LowerBollingerBand'] if 'LowerBollingerBand' in d else None for d in self.list], name="LowerBollingerBand"), \
+                go.Scatter(x=[d['Time'] for d in self.list], y=[d['SMA'] if 'SMA' in d else None for d in self.list], name="SMA")]
 
     def delete_data(self) -> None:
         self.list = []

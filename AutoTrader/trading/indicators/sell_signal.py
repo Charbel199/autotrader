@@ -2,6 +2,7 @@ from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import sys
 from AutoTrader.helper import logger
 from AutoTrader.trading.indicators.inidicator import Indicator
+from typing import List
 
 log = logger.get_logger(__name__)
 
@@ -20,10 +21,14 @@ class SellSignal(Indicator):
     def process_new_candlestick(self) -> None:
         pass
 
-    def process_new_tick(self):
+    def process_new_tick(self) -> None:
+        # Create new row
+        self.list.append({'Time': self.candlesticks.get_last_time_tick()})
+
         sell_signal = ''
         last_tick = self.candlesticks.get_tick()
         if last_tick == {}:
+            self.list[-1]['SellSignal'] = sell_signal
             return
         last_tick_price = last_tick.Close
 
@@ -32,11 +37,10 @@ class SellSignal(Indicator):
             self.in_sell_zone = True
 
         if self.in_sell_zone:
-            self.list.append({'Time': self.candlesticks.get_last_time()})
+            sell_signal = 'SellZone'
             # Set max price reached
             if last_tick_price > self.max_price_reached_in_position:
-                sell_signal = 'SellZone'
-                log.info(f"Sell zone at {last_tick_price}")
+                log.info(f"New Sell zone at {last_tick_price}")
                 self.max_price_reached_in_position = last_tick_price
 
             if last_tick_price < (self.max_price_reached_in_position * self.sell_below_max_percentage):
@@ -44,21 +48,20 @@ class SellSignal(Indicator):
                 sell_signal = 'Sell'
                 log.info(f"Sell at {last_tick_price} last max was {self.max_price_reached_in_position}")
                 # Reset target and max
-                self.reset_target()
+                self._reset_target()
 
-            self.list[-1]['SellSignal'] = sell_signal
-            return sell_signal == 'Sell'
+        self.list[-1]['SellSignal'] = sell_signal
 
     def set_sell_target(self, price: float) -> None:
         self.target = price
         log.info(f"Target set to {price}")
 
-    def reset_target(self) -> None:
+    def _reset_target(self) -> None:
         self.in_sell_zone = False
         self.target = sys.maxsize
         self.max_price_reached_in_position = 0
 
-    def get_plot(self):
+    def get_plot(self) -> List:
         coordinates = []
         coordinate = {}
         for row in self.list:

@@ -1,6 +1,7 @@
 from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import plotly.graph_objects as go
 from AutoTrader.trading.indicators.inidicator import Indicator
+from typing import List
 
 
 class VWAP(Indicator):
@@ -21,11 +22,11 @@ class VWAP(Indicator):
             if volume_sum > 0:
                 self.list[-1]['VWAP'] = sum([d['VolumeClose'] for d in self.list[-self.period:]]) / volume_sum
 
-    def process_new_tick(self):
+    def process_new_tick(self) -> None:
         pass
 
-    def get_plot(self):
-        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['VWAP'] if 'VWAP' in d else None for d in self.list], name="VWAP")
+    def get_plot(self) -> List:
+        return [go.Scatter(x=[d['Time'] for d in self.list], y=[d['VWAP'] if 'VWAP' in d else None for d in self.list], name="VWAP")]
 
     def delete_data(self) -> None:
         self.list = []

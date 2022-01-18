@@ -1,6 +1,7 @@
 from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import plotly.graph_objects as go
 from AutoTrader.trading.indicators.inidicator import Indicator
+from typing import List
 
 
 class FibonacciRetracement(Indicator):
@@ -47,10 +48,10 @@ class FibonacciRetracement(Indicator):
             for percentage in self.percentages:
                 self.list[-1][str(round(percentage, 3))] = high - difference * percentage
 
-    def process_new_tick(self):
+    def process_new_tick(self) -> None:
         pass
 
-    def get_plot(self):
+    def get_plot(self) -> List:
         plot_list = []
         for percentage in self.percentages:
             percentage_text = str(round(percentage, 3))

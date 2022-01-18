@@ -1,6 +1,7 @@
 from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import plotly.graph_objects as go
 from AutoTrader.trading.indicators.inidicator import Indicator
+from typing import List
 
 
 class Ichimoku(Indicator):
@@ -58,25 +59,25 @@ class Ichimoku(Indicator):
             # Calculate SenkouSpanB
             self.list[-1]['SenkouSpanB'] = (self.list[-self.shift_period2]['HighestHigh3'] + self.list[-self.shift_period2]['LowestLow3']) / 2
 
-    def process_new_tick(self):
+    def process_new_tick(self) -> None:
         pass
 
-    def get_plot(self):
-        return go.Scatter(x=[d['Time'] for d in self.list],
-                          y=[d['TenkanSen'] if 'TenkanSen' in d else None for d in self.list],
-                          name="TenkanSen"), \
-               go.Scatter(x=[d['Time'] for d in self.list],
-                          y=[d['KijunSen'] if 'KijunSen' in d else None for d in self.list],
-                          name="KijunSen"), \
-               go.Scatter(x=[d['Time'] for d in self.list],
-                          y=[d['ChikouSpan'] if 'ChikouSpan' in d else None for d in self.list],
-                          name="ChikouSpan"), \
-               go.Scatter(x=[d['Time'] for d in self.list],
-                          y=[d['SenkouSpanA'] if 'SenkouSpanA' in d else None for d in self.list],
-                          name="SenkouSpanA"), \
-               go.Scatter(x=[d['Time'] for d in self.list],
-                          y=[d['SenkouSpanB'] if 'SenkouSpanB' in d else None for d in self.list],
-                          name="SenkouSpanB", fill='tonexty')
+    def get_plot(self) -> List:
+        return [go.Scatter(x=[d['Time'] for d in self.list],
+                           y=[d['TenkanSen'] if 'TenkanSen' in d else None for d in self.list],
+                           name="TenkanSen"), \
+                go.Scatter(x=[d['Time'] for d in self.list],
+                           y=[d['KijunSen'] if 'KijunSen' in d else None for d in self.list],
+                           name="KijunSen"), \
+                go.Scatter(x=[d['Time'] for d in self.list],
+                           y=[d['ChikouSpan'] if 'ChikouSpan' in d else None for d in self.list],
+                           name="ChikouSpan"), \
+                go.Scatter(x=[d['Time'] for d in self.list],
+                           y=[d['SenkouSpanA'] if 'SenkouSpanA' in d else None for d in self.list],
+                           name="SenkouSpanA"), \
+                go.Scatter(x=[d['Time'] for d in self.list],
+                           y=[d['SenkouSpanB'] if 'SenkouSpanB' in d else None for d in self.list],
+                           name="SenkouSpanB", fill='tonexty')]
 
     def delete_data(self) -> None:
         self.list = []

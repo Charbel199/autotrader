@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from AutoTrader.data.data_structures.candlesticks import Candlesticks
+from typing import List
 
 
 class Indicator(ABC):
@@ -12,7 +13,7 @@ class Indicator(ABC):
         pass
 
     @abstractmethod
-    def process_new_tick(self):
+    def process_new_tick(self) -> None:
         pass
 
     def get_last_values(self, n: int = 1) -> list:
@@ -26,5 +27,5 @@ class Indicator(ABC):
         pass
 
     @abstractmethod
-    def get_plot(self):
+    def get_plot(self) -> List:
         pass

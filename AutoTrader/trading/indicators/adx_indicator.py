@@ -2,6 +2,7 @@ from AutoTrader.data.data_structures.candlesticks import Candlesticks
 import numpy as np
 import plotly.graph_objects as go
 from AutoTrader.trading.indicators.inidicator import Indicator
+from typing import List
 
 
 class ADX(Indicator):
@@ -62,11 +63,11 @@ class ADX(Indicator):
             self.list[-1]['ADX'] = (self.list[-2]['ADX'] * (self.period - 1) + self.list[-1]['DX']) / self.period
             self.adx_counter += 1
 
-    def process_new_tick(self):
+    def process_new_tick(self) -> None:
         pass
 
-    def get_plot(self):
-        return go.Scatter(x=[d['Time'] for d in self.list], y=[d['ADX'] if 'ADX' in d else None for d in self.list], name="ADX")
+    def get_plot(self) -> List:
+        return [go.Scatter(x=[d['Time'] for d in self.list], y=[d['ADX'] if 'ADX' in d else None for d in self.list], name="ADX")]
 
     def delete_data(self) -> None:
         self.list = []
