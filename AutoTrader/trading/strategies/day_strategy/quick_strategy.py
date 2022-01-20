@@ -101,14 +101,14 @@ class QuickStrategy(Strategy):
                         side=OrderSide.BUY,
                         order_type=OrderType.MARKET
                     )
-                    self.SellSignal.set_sell_target(self.candlesticks.get_tick().Close * 1.012)
+                    self.SellSignal.set_sell_target(self.candlesticks.get_tick().Close * 1.01)
 
     def new_tick_logic(self) -> None:
         # print('Got new tick in strat ', self.data_structure.get_tick())
         if self.transactions_allowed:
             if self.account.get_position(symbol=self.symbol).is_valid():
                 # Sell logic
-                if self.SellSignal.get_last_values(1)[-1]['SellSignal'] == 'sell':
+                if self.SellSignal.get_last_values(1)[-1]['SellSignal'] == 'Sell':
 
                     # self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick().Close
                     self.account.place_order(
@@ -122,7 +122,7 @@ class QuickStrategy(Strategy):
                         amount=self.account.get_position(symbol=self.symbol).Quantity
                     )
                 # Stop loss
-                elif float(self.account.get_position(symbol=self.symbol).AveragePrice) * 0.98 >= self.candlesticks.get_tick().Close:
+                elif float(self.account.get_position(symbol=self.symbol).AveragePrice) * 0.99 >= self.candlesticks.get_tick().Close:
 
                     log.warning(f"Hit stop-loss of {float(self.account.get_position(symbol=self.symbol).AveragePrice) * 0.99}  at {self.candlesticks.get_tick().Close}")
                     # self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick().Close
