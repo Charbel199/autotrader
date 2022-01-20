@@ -1,6 +1,6 @@
 from AutoTrader.trading.strategies.strategy import Strategy
 from AutoTrader.trading.indicators import Indicator, RSI, CandlestickType, VWAP, Ichimoku, BollingerBand, \
-    ChaikinMoneyFlow, MACD, ATR, FibonacciRetracement, SellSignal, HeikinAshi
+    ChaikinMoneyFlow, MACD, ATR, FibonacciRetracement, SellSignal, HeikinAshi, SuperTrend
 
 from AutoTrader.enums import *
 from plotly.subplots import make_subplots
@@ -27,6 +27,7 @@ class QuickStrategy(Strategy):
         self.FibonacciRetracement = FibonacciRetracement(self.candlesticks)
         self.SellSignal = SellSignal(self.candlesticks, sell_below_max_percentage=0.997)
         self.HeikinAshi= HeikinAshi(self.candlesticks)
+        self.SuperTrend = SuperTrend(self.candlesticks)
 
         # Strategy variables
         self.firstStep = False
@@ -134,6 +135,7 @@ class QuickStrategy(Strategy):
 
         fig.append_trace(self.candlesticks.get_plot(), row=1, col=1)
         fig.append_trace(self.HeikinAshi.get_plot()[0], row=2, col=1)
+        fig.append_trace(self.SuperTrend.get_plot()[0], row=1, col=1)
 
         # fig.append_trace(self.VWAP.get_plot()[0], row=1, col=1)
         # fig.append_trace(self.ChaikinMoneyFlow.get_plot()[0], row=3, col=1)

@@ -11,3 +11,4 @@ from .sell_signal import SellSignal
 from .vwap_indicator import VWAP
 from .macd_indicator import MACD
 from .heikin_ashi_indicator import HeikinAshi
+from .supertrend_indicator import SuperTrend
