@@ -43,7 +43,7 @@ class SellSignal(Indicator):
                 log.info(f"New Sell zone at {last_tick_price}")
                 self.max_price_reached_in_position = last_tick_price
 
-            if last_tick_price < (self.max_price_reached_in_position * self.sell_below_max_percentage):
+            if last_tick_price <= (self.max_price_reached_in_position * self.sell_below_max_percentage):
                 # Sell
                 sell_signal = 'Sell'
                 log.info(f"Sell at {last_tick_price} last max was {self.max_price_reached_in_position}")
