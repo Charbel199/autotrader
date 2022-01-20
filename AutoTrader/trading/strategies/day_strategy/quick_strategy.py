@@ -1,15 +1,6 @@
 from AutoTrader.trading.strategies.strategy import Strategy
-from AutoTrader.trading.indicators import RSI, CandlestickType
-from AutoTrader.trading.indicators import CandlestickType
-from AutoTrader.trading.indicators import SellSignal
-from AutoTrader.trading.indicators import VWAP
-from AutoTrader.trading.indicators import BollingerBand
-from AutoTrader.trading.indicators import Ichimoku
-from AutoTrader.trading.indicators import ChaikinMoneyFlow
-from AutoTrader.trading.indicators import MACD
-from AutoTrader.trading.indicators import FibonacciRetracement
-from AutoTrader.trading.indicators import ATR
-from AutoTrader.trading.indicators import Indicator
+from AutoTrader.trading.indicators import Indicator, RSI, CandlestickType, VWAP, Ichimoku, BollingerBand, \
+    ChaikinMoneyFlow, MACD, ATR, FibonacciRetracement, SellSignal, HeikinAshi
 
 from AutoTrader.enums import *
 from plotly.subplots import make_subplots
@@ -35,6 +26,7 @@ class QuickStrategy(Strategy):
         self.ATR = ATR(self.candlesticks)
         self.FibonacciRetracement = FibonacciRetracement(self.candlesticks)
         self.SellSignal = SellSignal(self.candlesticks, sell_below_max_percentage=0.997)
+        self.HeikinAshi= HeikinAshi(self.candlesticks)
 
         # Strategy variables
         self.firstStep = False
@@ -139,18 +131,21 @@ class QuickStrategy(Strategy):
 
     def get_figure(self) -> Figure:
         fig = make_subplots(rows=3, cols=1)
+
         fig.append_trace(self.candlesticks.get_plot(), row=1, col=1)
+        fig.append_trace(self.HeikinAshi.get_plot()[0], row=2, col=1)
+
         # fig.append_trace(self.VWAP.get_plot()[0], row=1, col=1)
         # fig.append_trace(self.ChaikinMoneyFlow.get_plot()[0], row=3, col=1)
         # fig.append_trace(self.BollingerBand.get_plot()[0], row=1, col=1)
         # fig.append_trace(self.BollingerBand.get_plot()[1], row=1, col=1)
         # fig.append_trace(self.BollingerBand.get_plot()[2], row=1, col=1)
 
-        fig.append_trace(self.Ichimoku.get_plot()[0], row=1, col=1)
-        fig.append_trace(self.Ichimoku.get_plot()[1], row=1, col=1)
-        fig.append_trace(self.Ichimoku.get_plot()[2], row=1, col=1)
-        fig.append_trace(self.Ichimoku.get_plot()[3], row=1, col=1)
-        fig.append_trace(self.Ichimoku.get_plot()[4], row=1, col=1)
+        # fig.append_trace(self.Ichimoku.get_plot()[0], row=1, col=1)
+        # fig.append_trace(self.Ichimoku.get_plot()[1], row=1, col=1)
+        # fig.append_trace(self.Ichimoku.get_plot()[2], row=1, col=1)
+        # fig.append_trace(self.Ichimoku.get_plot()[3], row=1, col=1)
+        # fig.append_trace(self.Ichimoku.get_plot()[4], row=1, col=1)
 
         # fig.append_trace(self.MACD.get_plot()[0], row=2, col=1)
         # fig.append_trace(self.MACD.get_plot()[1], row=2, col=1)
@@ -159,11 +154,11 @@ class QuickStrategy(Strategy):
 
         # fig.append_trace(self.RSI.get_plot()[0], row=2, col=1)
 
-        fig.append_trace(self.ATR.get_plot()[0], row=2, col=1)
+        # fig.append_trace(self.ATR.get_plot()[0], row=2, col=1)
 
         # Fibonacci retracements
-        for plot in self.FibonacciRetracement.get_plot():
-            fig.append_trace(plot, row=1, col=1)
+        # for plot in self.FibonacciRetracement.get_plot():
+        #     fig.append_trace(plot, row=1, col=1)
 
         # Buy and sell
         buy_plot, sell_plot = self.account.get_plot(self.symbol)
@@ -177,7 +172,8 @@ class QuickStrategy(Strategy):
                 layer="below", line_width=0, row=1, col=1
             )
 
-        fig.update_layout(height=1600, width=1800, xaxis_rangeslider_visible=False)
+        fig.update_layout(height=4600, width=2800)
+        fig.update_xaxes(rangeslider_visible=False)
         fig.update_xaxes(matches='x')
         return fig
 
