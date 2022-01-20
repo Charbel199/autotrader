@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Dict
 from AutoTrader.models import Trade
-
+from AutoTrader.helper import date_helper
 
 @dataclass
 class TradesSummary(object):
@@ -56,7 +56,8 @@ class TradesSummary(object):
                     summary_string += f"{key: <35}->\n"
                     for trade in value:
                         summary_string += f"\t\t{trade}\n"
-
+            elif key == 'AveragePositionHoldTime' or key == 'AveragePositionHoldTimeWin' or key == 'AveragePositionHoldTimeLoss' or key == 'TotalTradesDuration':
+                summary_string += f"{key: <35}-> {date_helper.from_seconds_to_time(value)}\n"
             else:
                 summary_string += f"{key: <35}-> {value}\n"
         return summary_string
