@@ -10,3 +10,7 @@ binance~=0.3
 pymitter~=0.3.1
 python-binance~=1.0.15
 requests~=2.27.1
+fastapi~=0.72.0
+starlette~=0.17.1
+AutoTrader~=0.0.1
+uvicorn~=0.17.0

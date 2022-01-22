@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
-from AutoTrader.helper import logger
-from AutoTrader.ml.data_collector.modes.data_collector_manual import DataCollectorManual
+from app.AutoTrader.helper import logger
+from app.AutoTrader.ml.data_collector import DataCollectorManual
 
 load_dotenv()
 log = logger.setup_applevel_logger(file_name='test_data_collector_manual_debug.log')

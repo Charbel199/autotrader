@@ -1,1 +1,0 @@
-from AutoTrader.data.data_structures.list_candlesticks import ListCandlesticks
