@@ -1,2 +1,2 @@
-from .UserModel import User
-from .TestModel import Test
+from .user import User
+from .test import Test
