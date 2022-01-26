@@ -1,5 +1,4 @@
-import sys
-sys.path.append("..")
+
 from dotenv import load_dotenv
 from app.AutoTrader.helper import logger
 load_dotenv()
