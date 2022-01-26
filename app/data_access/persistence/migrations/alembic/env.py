@@ -8,8 +8,8 @@ from alembic import context
 import os
 from dotenv import load_dotenv
 
-from app.core.common.base_entity import Base
-from app.core import entities
+from app.data_access.persistence.base_entity import Base
+from app.data_access.persistence import models
 
 load_dotenv()
 
