@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
-from app.AutoTrader.trading.modes.live_trader import LiveTraderRunner
-from app.AutoTrader.helper import logger
+from AutoTrader.trading.modes.live_trader import LiveTraderRunner
+from AutoTrader.helper import logger
 
 load_dotenv()
 log = logger.setup_applevel_logger(file_name='test_live_trader_debug.log')

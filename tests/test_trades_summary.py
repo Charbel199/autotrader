@@ -1,4 +1,4 @@
-from app.AutoTrader.models import TradesSummary, Trade
+from AutoTrader import TradesSummary, Trade
 
 ts = TradesSummary(
     Trades= [Trade()]

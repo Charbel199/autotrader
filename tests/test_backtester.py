@@ -1,9 +1,10 @@
 
 from dotenv import load_dotenv
-from app.AutoTrader.helper import logger
+from AutoTrader.helper import logger
+
 load_dotenv()
 log = logger.setup_applevel_logger(file_name='test_backtester_debug.log')
-from app.AutoTrader.trading.modes.backtester import BackTesterRunner
+from AutoTrader.trading.modes.backtester import BackTesterRunner
 import time
 
 
