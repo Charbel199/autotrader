@@ -2,6 +2,9 @@ import uvicorn
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from app.api.controllers import main_router
+from dotenv import load_dotenv
+load_dotenv()
+
 
 app = FastAPI(version='1.0', title='AutoTrader API',
               description="AutoTrader API")

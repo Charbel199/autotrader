@@ -1,12 +1,9 @@
 from sqlalchemy import create_engine
 from app.data_access.persistence.config import Settings
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
 from sqlalchemy import exc
 from sqlalchemy import event
 from sqlalchemy import select
-
-load_dotenv()
 
 DATABASE_CONNECTION_URL = Settings.DATABASE_URL
 engine = create_engine(
