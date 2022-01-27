@@ -1,5 +1,5 @@
 from sqlalchemy import Boolean, Column, Integer, String
-
+from sqlalchemy.orm import relationship
 from app.data_access.persistence.base_entity import Base
 
 
@@ -10,3 +10,4 @@ class SymbolPair(Base):
     primary_symbol = Column(String, nullable=False)
     secondary_symbol = Column(String, nullable=False)
 
+    bot_instances = relationship("BotInstances", back_populates="symbol_pair")

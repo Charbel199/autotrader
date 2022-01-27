@@ -15,3 +15,4 @@ class ExchangeInstance(Base):
 
     exchange = relationship("Exchange", back_populates="exchange_instances")
     user = relationship("User", back_populates="exchange_instances")
+    bot_instances = relationship("BotInstances", back_populates="exchange_instance")

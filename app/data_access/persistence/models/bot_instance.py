@@ -1,5 +1,5 @@
 from sqlalchemy import Boolean, Column, Integer, String, ForeignKey
-
+from sqlalchemy.orm import relationship
 from app.data_access.persistence.base_entity import Base
 from .exchange_instance import ExchangeInstance
 from .bot import Bot
@@ -16,3 +16,10 @@ class BotInstance(Base):
     symbol_pair_id = Column(Integer, ForeignKey(SymbolPair.id))
     bot_id = Column(Integer, ForeignKey(Bot.id))
     is_on = Column(Boolean, default=False)
+
+    bot = relationship("Bot", back_populates="bot_instances")
+    user = relationship("User", back_populates="bot_instances")
+    symbol_pair = relationship("SymbolPair", back_populates="bot_instances")
+    exchange_instance = relationship("ExchangeInstance", back_populates="bot_instances")
+
+
