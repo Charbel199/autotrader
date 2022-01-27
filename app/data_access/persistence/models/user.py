@@ -15,4 +15,5 @@ class User(Base):
     is_superuser = Column(Boolean, default=False)
     is_verified = Column(Boolean, default=False)
 
-
+    exchange_instances = relationship("ExchangeInstance", back_populates="user")
+    bot_instances = relationship("BotInstance", back_populates="user")
