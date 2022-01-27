@@ -1,6 +1,6 @@
 from sqlalchemy import Boolean, Column, Integer, String
-
 from app.data_access.persistence.base_entity import Base
+from sqlalchemy.orm import relationship
 
 
 class User(Base):
@@ -14,3 +14,5 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     is_superuser = Column(Boolean, default=False)
     is_verified = Column(Boolean, default=False)
+
+
