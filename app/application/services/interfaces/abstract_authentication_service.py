@@ -8,3 +8,6 @@ class AbstractAuthenticationService(ABC):
 
     @abstractmethod
     async def register_user(self, user_data: entity_user.UserCreate) -> entity_user.UserCreateResponse: raise NotImplementedError
+
+    @abstractmethod
+    async def get_current_active_user(self, token: str) -> entity_user.UserToken: raise NotImplementedError
