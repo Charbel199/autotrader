@@ -14,18 +14,23 @@ class AuthenticationService(AbstractAuthenticationService):
         self.token_service = token_service
 
     async def authenticate_user(self, email: str, password: str) -> str:
+        # Check if user exists
         user = await self.user_service.get_user(email)
         if user.id is None:
             raise NotFoundException()
+        # Compare hashed passwords
         correct_password = bcrypt.verify(password, user.hashed_password)
         if not correct_password:
             raise WrongPasswordException()
+        # Generate token
         token = await self.token_service.encode_token(entity_user.UserToken.from_orm(user).dict())
         return token
 
     async def register_user(self, user_data: entity_user.UserCreate) -> entity_user.UserCreateResponse:
+        # Check if user exists
         existing_user = await self.user_service.get_user(user_data.email)
         if existing_user.id is not None:
             raise UserAlreadyExistsException()
+        # Create new user
         user = await self.user_service.add_user(user_data)
         return user
