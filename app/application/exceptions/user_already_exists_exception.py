@@ -1,4 +1,7 @@
-class UserAlreadyExistsException(Exception):
+from .user_exception import UserException
+
+
+class UserAlreadyExistsException(UserException):
     def __init__(self, email):
         self.email = email
 
