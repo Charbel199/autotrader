@@ -1,3 +1,4 @@
 class WrongPasswordException(Exception):
-    pass
+    def __str__(self):
+        return "Wrong password"
 
