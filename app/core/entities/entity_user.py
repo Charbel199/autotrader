@@ -10,7 +10,14 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    hashed_password: str = None
+    password: str = None
+
+
+class UserCreateResponse(UserBase):
+    id: int = None
+    is_active: bool = True
+    is_superuser: bool = False
+    is_verified: bool = False
 
 
 class User(UserBase):
@@ -18,6 +25,7 @@ class User(UserBase):
     is_active: bool = True
     is_superuser: bool = False
     is_verified: bool = False
+    hashed_password: str = None
 
     class Config:
         orm_mode = True

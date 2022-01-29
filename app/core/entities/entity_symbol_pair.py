@@ -1,13 +1,14 @@
 from typing import Optional, List
-from .bot_instance import BotInstance
+from .entity_bot_instance import BotInstance
 from pydantic import BaseModel, EmailStr
 
 
-class BotBase(BaseModel):
-    bot_name: str = None
+class SymbolPairBase(BaseModel):
+    primary_symbol: str = None
+    secondary_symbol: str = None
 
 
-class Bot(BotBase):
+class SymbolPair(SymbolPairBase):
     id: int = None
     bot_instances: List[BotInstance] = []
 
