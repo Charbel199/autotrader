@@ -15,6 +15,7 @@ class UserRepository(AbstractUserRepository):
         )
         session.add(new_user)
         session.commit()
+        session.refresh(new_user)
         session.close()
         return new_user
 
