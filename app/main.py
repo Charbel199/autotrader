@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from app.api.controllers import main_router
 from dotenv import load_dotenv
+from app.api.middlewares import ExceptionHandlingMiddleware
 load_dotenv()
 
 
@@ -16,6 +17,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.middleware("http")(ExceptionHandlingMiddleware())
+
 app.include_router(main_router)
 
 if __name__ == '__main__':
