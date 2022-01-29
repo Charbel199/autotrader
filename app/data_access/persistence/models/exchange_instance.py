@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from app.data_access.persistence.base_entity import Base
 from .exchange import Exchange
@@ -15,4 +15,4 @@ class ExchangeInstance(Base):
 
     exchange = relationship("Exchange", back_populates="exchange_instances")
     user = relationship("User", back_populates="exchange_instances")
-    bot_instances = relationship("BotInstances", back_populates="exchange_instance")
+    bot_instances = relationship("BotInstance", back_populates="exchange_instance")

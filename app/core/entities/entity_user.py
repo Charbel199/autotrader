@@ -19,6 +19,21 @@ class UserCreateResponse(UserBase):
     is_superuser: bool = False
     is_verified: bool = False
 
+    class Config:
+        orm_mode = True
+        allow_population_by_field_name = True
+
+
+class UserToken(UserBase):
+    id: int = None
+    is_active: bool = True
+    is_superuser: bool = False
+    is_verified: bool = False
+
+    class Config:
+        orm_mode = True
+        allow_population_by_field_name = True
+
 
 class User(UserBase):
     id: int = None
@@ -29,3 +44,4 @@ class User(UserBase):
 
     class Config:
         orm_mode = True
+        allow_population_by_field_name = True
