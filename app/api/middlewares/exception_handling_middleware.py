@@ -9,17 +9,25 @@ from starlette.status import (
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 from starlette.requests import Request
-from app.application.exceptions.user_already_exists_exception import UserAlreadyExistsException
+from app.application.exceptions.user_exception import UserException
+
 
 
 class ExceptionHandlingMiddleware:
+
     async def __call__(self, request: Request, call_next):
         try:
             response = await call_next(request)
             return response
         except Exception as e:
-            print("I've been called! , ", type(e) is UserAlreadyExistsException)
-            return JSONResponse(
-                status_code=400,
-                content={"message": "HI"},
-            )
+            exception_type = type(e)
+
+            if issubclass(exception_type, UserException):
+                return JSONResponse(
+                    status_code=400,
+                    content={e.args},
+                )
+            else:
+                return JSONResponse(
+                    status_code=500
+                )
