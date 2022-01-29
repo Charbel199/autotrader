@@ -17,3 +17,4 @@ class User(Base):
 
     exchange_instances = relationship("ExchangeInstance", back_populates="user")
     bot_instances = relationship("BotInstance", back_populates="user")
+
