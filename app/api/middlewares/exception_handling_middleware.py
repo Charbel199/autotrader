@@ -12,7 +12,6 @@ from starlette.requests import Request
 from app.application.exceptions.user_exception import UserException
 
 
-
 class ExceptionHandlingMiddleware:
 
     async def __call__(self, request: Request, call_next):
@@ -28,6 +27,7 @@ class ExceptionHandlingMiddleware:
                     content={e.args},
                 )
             else:
+                print(e.args)
                 return JSONResponse(
                     status_code=500
                 )
