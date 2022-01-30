@@ -9,8 +9,7 @@ import os
 from dotenv import load_dotenv
 
 from app.data_access.persistence.base_entity import Base
-from app.data_access.persistence import models
-
+from app.core import entities
 load_dotenv()
 
 # this is the Alembic Config object, which provides
