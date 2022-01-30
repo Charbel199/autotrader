@@ -1,5 +1,5 @@
 from .interfaces.abstract_user_service import AbstractUserService
-from app.core.entities import entity_user
+from app.application.models import user_model
 from app.data_access.repositories.interfaces.abstract_user_repository import AbstractUserRepository
 from passlib.hash import bcrypt
 from .interfaces.abstract_token_service import AbstractTokenService
@@ -15,15 +15,15 @@ class UserService(AbstractUserService):
         self.user_repository = user_repository
         self.token_service = token_service
 
-    async def get_user(self, email: str) -> entity_user.User:
+    async def get_user(self, email: str) -> user_model.User:
         user_from_db = await self.user_repository.get_user_from_email(email)
-        user = entity_user.User.from_orm(user_from_db)
+        user = user_model.User.from_orm(user_from_db)
         return user
 
-    async def add_user(self, user_data: entity_user.UserCreate) -> entity_user.UserCreateResponse:
+    async def add_user(self, user_data: user_model.UserCreate) -> user_model.UserCreateResponse:
         user_data.password = bcrypt.hash(user_data.password)
         user_from_db = await self.user_repository.add_user(user_data)
-        user = entity_user.UserCreateResponse.from_orm(user_from_db)
+        user = user_model.UserCreateResponse.from_orm(user_from_db)
         return user
 
     async def authenticate_user(self, email: str, password: str) -> str:
@@ -36,10 +36,10 @@ class UserService(AbstractUserService):
         if not correct_password:
             raise WrongPasswordException()
         # Generate token
-        token = await self.token_service.encode_token(entity_user.UserToken.from_orm(user).dict())
+        token = await self.token_service.encode_token(user_model.UserToken.from_orm(user).dict())
         return token
 
-    async def register_user(self, user_data: entity_user.UserCreate) -> entity_user.UserCreateResponse:
+    async def register_user(self, user_data: user_model.UserCreate) -> user_model.UserCreateResponse:
         # Check if user exists
         existing_user = await self.get_user(user_data.email)
         if existing_user.id is not None:
@@ -48,10 +48,10 @@ class UserService(AbstractUserService):
         user = await self.add_user(user_data)
         return user
 
-    async def get_current_active_user(self, token: str) -> entity_user.UserToken:
+    async def get_current_active_user(self, token: str) -> user_model.UserToken:
         payload = await self.token_service.decode_token(token)
         current_user = await self.get_user(payload['email'])
-        current_user = entity_user.UserToken.from_orm(current_user)
+        current_user = user_model.UserToken.from_orm(current_user)
         if current_user.id is None:
             raise NotFoundException()
         return current_user

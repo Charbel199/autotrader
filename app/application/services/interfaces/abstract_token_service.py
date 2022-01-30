@@ -1,6 +1,6 @@
 from abc import ABC, ABCMeta, abstractmethod
-from app.core.entities import entity_user
 from typing import Dict
+
 
 class AbstractTokenService(ABC):
     @abstractmethod
