@@ -1,5 +1,5 @@
 from typing import Optional, List
-from .entity_bot_instance import BotInstance
+from .bot_instance_model import BotInstance
 from pydantic import BaseModel, EmailStr
 
 

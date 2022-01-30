@@ -1,5 +1,5 @@
 from typing import Optional, List
-from .entity_exchange_instance import ExchangeInstance
+from .exchange_instance_model import ExchangeInstance
 from pydantic import BaseModel, EmailStr
 
 
