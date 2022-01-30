@@ -1,11 +1,11 @@
 from .interfaces.abstract_user_repository import AbstractUserRepository
-from app.data_access.persistence.models import user
+from app.core.entities import user
 from app.data_access.persistence.database import Session
-from ...core.entities import entity_user
+from app.application.models import user_model
 
 
 class UserRepository(AbstractUserRepository):
-    async def add_user(self, user_data: entity_user.UserCreate) -> user.User:
+    async def add_user(self, user_data: user_model.UserCreate) -> user.User:
         session = Session()
         new_user = user.User(
             email=user_data.email,
