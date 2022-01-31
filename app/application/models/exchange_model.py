@@ -7,6 +7,13 @@ class ExchangeBase(BaseModel):
     exchange_name: str = None
 
 
+class ExchangeInformation(ExchangeBase):
+    id: int = None
+
+    class Config:
+        orm_mode = True
+
+
 class Exchange(ExchangeBase):
     id: int = None
     exchange_instances: List[ExchangeInstance] = []
