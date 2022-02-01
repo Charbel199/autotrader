@@ -7,11 +7,15 @@ class ExchangeInstanceBase(BaseModel):
     api_key: str = None
     api_secret: str = None
 
+
 class ExchangeInstanceCreate(BaseModel):
-    pass
+    exchange_id: int = None
+    user_id: int = None
+
 
 class ExchangeInstanceCreateResponse(ExchangeInstanceBase):
     pass
+
 
 class ExchangeInstance(ExchangeInstanceBase):
     id: int = None
