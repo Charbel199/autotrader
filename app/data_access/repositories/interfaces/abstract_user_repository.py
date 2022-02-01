@@ -7,4 +7,4 @@ class AbstractUserRepository(ABC):
     async def get_user_from_email(self, email: str) -> user.User: raise NotImplementedError
 
     @abstractmethod
-    async def add_user(self, user_data: user_model.UserCreate) -> user.User: raise NotImplementedError
+    async def add_user(self, user_to_add: user.User) -> user.User: raise NotImplementedError

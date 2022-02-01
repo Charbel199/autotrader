@@ -5,19 +5,13 @@ from app.application.models import user_model
 
 
 class UserRepository(AbstractUserRepository):
-    async def add_user(self, user_data: user_model.UserCreate) -> user.User:
+    async def add_user(self, user_to_add: user.User) -> user.User:
         session = Session()
-        new_user = user.User(
-            email=user_data.email,
-            hashed_password=user_data.password,
-            first_name=user_data.first_name,
-            last_name=user_data.last_name
-        )
-        session.add(new_user)
+        session.add(user_to_add)
         session.commit()
-        session.refresh(new_user)
+        session.refresh(user_to_add)
         session.close()
-        return new_user
+        return user_to_add
 
     async def get_user_from_email(self, email: str) -> user.User:
         session = Session()

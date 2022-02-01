@@ -6,6 +6,7 @@ from .interfaces.abstract_token_service import AbstractTokenService
 from app.application.exceptions.wrong_password_exception import WrongPasswordException
 from app.application.exceptions.not_found_exception import NotFoundException
 from app.application.exceptions.user_already_exists_exception import UserAlreadyExistsException
+from app.core.entities.user import User
 
 
 class UserService(AbstractUserService):
@@ -22,7 +23,7 @@ class UserService(AbstractUserService):
 
     async def add_user(self, user_data: user_model.UserCreate) -> user_model.UserCreateResponse:
         user_data.password = bcrypt.hash(user_data.password)
-        user_from_db = await self.user_repository.add_user(user_data)
+        user_from_db = await self.user_repository.add_user(User(**dict(user_data)))
         user = user_model.UserCreateResponse.from_orm(user_from_db)
         return user
 
