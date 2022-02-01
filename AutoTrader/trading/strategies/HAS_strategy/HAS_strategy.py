@@ -1,7 +1,7 @@
 from plotly.graph_objs import Figure
 
 from AutoTrader.trading.strategies.strategy import Strategy
-from AutoTrader.trading.indicators import SuperTrend, HeikinAshi, SellSignal, ADX
+from AutoTrader.trading.indicators import SuperTrend, HeikinAshi, SellSignal, ADX, EMA
 from AutoTrader.data.data_structures.candlesticks import Candlesticks
 from AutoTrader.trading.accounts.account import Account
 from AutoTrader.enums import OrderSide,OrderType
@@ -107,5 +107,6 @@ class HASStrategy(Strategy):
         self.SuperTrend = SuperTrend(self.candlesticks)
         self.SellSignal = SellSignal(self.candlesticks, sell_below_max_percentage=1)
         self.ADX = ADX(self.candlesticks)
+        self.EMA = EMA(self.candlesticks)
         self.stop_loss = 0
         self.target = 0

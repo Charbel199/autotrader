@@ -12,3 +12,4 @@ from .vwap_indicator import VWAP
 from .macd_indicator import MACD
 from .heikin_ashi_indicator import HeikinAshi
 from .supertrend_indicator import SuperTrend
+from .ema_indicator import EMA
