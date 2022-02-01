@@ -6,11 +6,11 @@ from typing import List
 
 class VWAP(Indicator):
     # columns = ['Time', 'VolumeClose', 'VWAP']
-    period = 288
     candlesticks: Candlesticks
 
-    def __init__(self, candlesticks: Candlesticks):
+    def __init__(self, candlesticks: Candlesticks, **kwargs):
         super().__init__(candlesticks)
+        self.period = kwargs.get('period', 288)
 
     def process_new_candlestick(self) -> None:
         # Create new row

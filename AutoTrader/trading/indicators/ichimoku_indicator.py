@@ -6,15 +6,16 @@ from typing import List
 
 class Ichimoku(Indicator):
     # columns = ['Time', 'HighestHigh1', 'LowestLow1', 'TenkanSen(Conversion)', 'HighestHigh2', 'LowestLow2', 'KijunSen(BaseLine)', 'ChikouSpan', 'SenkouSpanA', 'HighestHigh3', 'LowestLow3', 'SenkouSpanB']
-    period_1 = 9
-    period_2 = 26
-    period_3 = 52
-    shift_period1 = 26
-    shift_period2 = 26
+
     candlesticks: Candlesticks
 
-    def __init__(self, candlesticks: Candlesticks):
+    def __init__(self, candlesticks: Candlesticks, **kwargs):
         super().__init__(candlesticks)
+        self.period_1 = kwargs.get('period_1', 9)
+        self.period_2 = kwargs.get('period_2', 26)
+        self.period_3 = kwargs.get('period_3', 52)
+        self.shift_period_1 = kwargs.get('shift_period_1', 26)
+        self.shift_period_2 = kwargs.get('period', 26)
 
     def process_new_candlestick(self) -> None:
         # Create new row
@@ -43,10 +44,10 @@ class Ichimoku(Indicator):
             if len(self.list) >= self.period_2:
                 self.list[-self.period_2]['ChikouSpan'] = self.candlesticks.get_last_candlestick().Close
 
-        if number_of_rows >= self.period_2 + self.shift_period1:
+        if number_of_rows >= self.period_2 + self.shift_period_1:
             # Calculate SenkouSpanA
-            self.list[-1]['SenkouSpanA'] = (self.list[-self.shift_period1]['TenkanSen'] +
-                                            self.list[-self.shift_period1]['KijunSen']) / 2
+            self.list[-1]['SenkouSpanA'] = (self.list[-self.shift_period_1]['TenkanSen'] +
+                                            self.list[-self.shift_period_1]['KijunSen']) / 2
 
         if number_of_rows >= self.period_3:
             # Calculate highest high and lowest low
@@ -55,9 +56,9 @@ class Ichimoku(Indicator):
             self.list[-1]['LowestLow3'] = min(
                 [c.Close for c in self.candlesticks.get_last_candlesticks(self.period_3)])
 
-        if number_of_rows >= self.period_3 + self.shift_period2:
+        if number_of_rows >= self.period_3 + self.shift_period_2:
             # Calculate SenkouSpanB
-            self.list[-1]['SenkouSpanB'] = (self.list[-self.shift_period2]['HighestHigh3'] + self.list[-self.shift_period2]['LowestLow3']) / 2
+            self.list[-1]['SenkouSpanB'] = (self.list[-self.shift_period_2]['HighestHigh3'] + self.list[-self.shift_period_2]['LowestLow3']) / 2
 
     def process_new_tick(self) -> None:
         pass

@@ -11,12 +11,12 @@ class SellSignal(Indicator):
     # columns = ['Time', 'SellSignal']
     candlesticks: Candlesticks
 
-    def __init__(self, candlesticks: Candlesticks, sell_below_max_percentage: float):
+    def __init__(self, candlesticks: Candlesticks, **kwargs):
         super().__init__(candlesticks)
         self.target = sys.maxsize
         self.max_price_reached_in_position = 0
         self.in_sell_zone = False
-        self.sell_below_max_percentage = sell_below_max_percentage
+        self.sell_below_max_percentage = kwargs.get('sell_below_max_percentage', 1)
 
     def process_new_candlestick(self) -> None:
         pass

@@ -7,11 +7,12 @@ from typing import List
 
 class ChaikinMoneyFlow(Indicator):
     # columns = ['Time', 'ChaikinMultiplier', 'MoneyFlowVolume', 'ChaikinMoneyFlow']
-    period = 21
+
     candlesticks: Candlesticks
 
-    def __init__(self, candlesticks: Candlesticks):
+    def __init__(self, candlesticks: Candlesticks, **kwargs):
         super().__init__(candlesticks)
+        self.period = kwargs.get('period', 21)
         self.money_flow_volume_counter = 0
 
     def process_new_candlestick(self) -> None:

@@ -7,11 +7,12 @@ from typing import List
 
 class RSI(Indicator):
     # columns = ['Time', 'Gain', 'Loss', 'AverageGain', 'AverageLoss', 'RS', 'RSI']
-    period = 14
+
     candlesticks: Candlesticks
 
-    def __init__(self, candlesticks: Candlesticks):
+    def __init__(self, candlesticks: Candlesticks, **kwargs):
         super().__init__(candlesticks)
+        self.period = kwargs.get('period', 14)
         self.gain_counter = 0
 
     def process_new_candlestick(self) -> None:

@@ -7,12 +7,12 @@ from typing import List
 
 class BollingerBand(Indicator):
     # columns = ['Time', 'SMA', 'UpperBollingerBand', 'LowerBollingerBand']
-    period = 19
-    bollinger_band_multiplier = 2
     candlesticks: Candlesticks
 
-    def __init__(self, candlesticks: Candlesticks):
+    def __init__(self, candlesticks: Candlesticks, **kwargs):
         super().__init__(candlesticks)
+        self.period = kwargs.get('period', 19)
+        self.bollinger_band_multiplier = kwargs.get('bollinger_band_multiplier', 2)
         self.sma_counter = 0
 
     def process_new_candlestick(self) -> None:

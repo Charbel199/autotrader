@@ -7,12 +7,13 @@ from typing import List
 
 class ATR(Indicator):
     # columns = ['Time', 'TrueRange', 'ATR']
-    period = 14
+
     true_range_counter = 0
     candlesticks: Candlesticks
 
-    def __init__(self, candlesticks: Candlesticks):
+    def __init__(self, candlesticks: Candlesticks, **kwargs):
         super().__init__(candlesticks)
+        self.period = kwargs.get('period', 14)
 
     def process_new_candlestick(self) -> None:
 

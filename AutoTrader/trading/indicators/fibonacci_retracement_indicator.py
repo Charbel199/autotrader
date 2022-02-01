@@ -6,14 +6,15 @@ from typing import List
 
 class FibonacciRetracement(Indicator):
     # columns = ['Time', 'RecentHigh', 'RecentLow', percentages ...]
-    period = 1000
+
     percentages = [0, 0.236, 0.382, 0.5, 0.618, 1]
     candlesticks: Candlesticks
 
     counter = 0
 
-    def __init__(self, candlesticks: Candlesticks):
+    def __init__(self, candlesticks: Candlesticks, **kwargs):
         super().__init__(candlesticks)
+        self.period = kwargs.get('period', 1000)
 
     def process_new_candlestick(self) -> None:
         # Create new row

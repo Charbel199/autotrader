@@ -7,11 +7,11 @@ from typing import List
 
 class ADX(Indicator):
     # columns = ['Time', 'TrueRange', 'ATR', 'H-pH', 'pL-L', '+DX', '-DX', 'Smooth+DX', 'Smooth-DX', '+DMI', '-DMI', 'DX','ADX']
-    period = 14
     candlesticks: Candlesticks
 
-    def __init__(self, candlesticks: Candlesticks):
+    def __init__(self, candlesticks: Candlesticks, **kwargs):
         super().__init__(candlesticks)
+        self.period = kwargs.get('period', 14)
         self.true_range_counter = 0
         self.atr_counter = 0
         self.dx_counter = 0

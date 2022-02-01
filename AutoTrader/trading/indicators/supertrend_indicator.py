@@ -7,15 +7,16 @@ from typing import List
 
 class SuperTrend(Indicator):
     # columns = ['Time', 'TrueRange', 'ATR','BasicUpperBand','BasicLowerBand','FinalUpperBand','FinalLowerBand','Supertrend','IsUpper']
-    period = 10
-    multiplier = 3
+
     true_range_counter = 0
     basic_band_counter = 0
 
     candlesticks: Candlesticks
 
-    def __init__(self, candlesticks: Candlesticks):
+    def __init__(self, candlesticks: Candlesticks, **kwargs):
         super().__init__(candlesticks)
+        self.period = kwargs.get('period', 10)
+        self.multiplier = kwargs.get('multiplier', 3)
 
     def process_new_candlestick(self) -> None:
 
@@ -50,7 +51,6 @@ class SuperTrend(Indicator):
                         self.list[-2]['Supertrend'] = 0
                         self.list[-1]['IsUpper'] = False
 
-
                     previous_supertrend = self.list[-2]['Supertrend']
 
                     if previous_supertrend == self.list[-2]['FinalUpperBand'] and current_close < self.list[-1]['FinalUpperBand']:
@@ -77,8 +77,8 @@ class SuperTrend(Indicator):
         pass
 
     def get_plot(self) -> List:
-        return [go.Scatter(x=[d['Time'] for d in self.list[self.period+1:]],
-                           y=[d['Supertrend'] if 'Supertrend' in d else None for d in self.list[self.period+1:]],
+        return [go.Scatter(x=[d['Time'] for d in self.list[self.period + 1:]],
+                           y=[d['Supertrend'] if 'Supertrend' in d else None for d in self.list[self.period + 1:]],
                            name="Supertrend")]
 
     def delete_data(self) -> None:
