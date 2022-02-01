@@ -8,13 +8,16 @@ class ExchangeInstanceBase(BaseModel):
     api_secret: str = None
 
 
-class ExchangeInstanceCreate(BaseModel):
+class ExchangeInstanceCreate(ExchangeInstanceBase):
     exchange_id: int = None
-    user_id: int = None
 
 
 class ExchangeInstanceCreateResponse(ExchangeInstanceBase):
-    pass
+    exchange_id: int = None
+    user_id: int = None
+
+    class Config:
+        orm_mode = True
 
 
 class ExchangeInstance(ExchangeInstanceBase):

@@ -9,13 +9,17 @@ class BotInstanceBase(BaseModel):
 
 class BotInstanceCreate(BaseModel):
     exchange_instance_id: int = None
-    user_id: int = None
     symbol_pair_id: int = None
     bot_id: int = None
 
 
 class BotInstanceCreateResponse(BotInstanceBase):
-    is_on: bool = False
+    exchange_instance_id: int = None
+    symbol_pair_id: int = None
+    bot_id: int = None
+
+    class Config:
+        orm_mode = True
 
 
 class BotInstance(BotInstanceBase):
