@@ -7,7 +7,7 @@ from AutoTrader.enums import OrderType, OrderSide, OrderStatus
 from AutoTrader.helper.date_helper import from_timestamp_to_date
 from typing import Dict
 import random
-
+import copy
 log = logger.get_logger(__name__)
 
 
@@ -140,7 +140,7 @@ class AccountTest(Account):
         return self.balance
 
     def _get_account_initial_balance(self) -> Dict[str, float]:
-        return self.account_balance
+        return copy.deepcopy(self.account_balance)
 
     @staticmethod
     def condition(name: str) -> bool:
