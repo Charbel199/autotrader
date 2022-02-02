@@ -71,7 +71,8 @@ class Account(ABC):
         # If in position when getting all trades, revert last buy
         if undo_last_position:
             self._undo_last_position(symbol, primary_symbol, secondary_symbol)
-
+        if symbol not in self.trades:
+            return TradesSummary()
         trades_summary = get_trades_summary(symbol=symbol,
                                             source_symbol=primary_symbol,
                                             destination_symbol=secondary_symbol,
@@ -81,6 +82,8 @@ class Account(ABC):
         return trades_summary
 
     def get_plot(self, symbol: str) -> go:
+        if symbol not in self.orders:
+            return go.Scatter(),go.Scatter()
         buys = [d for d in self.orders[symbol] if d.Side == OrderSide.BUY]
         sells = [d for d in self.orders[symbol] if d.Side == OrderSide.SELL]
         return go.Scatter(
