@@ -6,6 +6,7 @@ from AutoTrader.data.data_structures.candlesticks import Candlesticks
 from AutoTrader.trading.accounts.account import Account
 from plotly.subplots import make_subplots
 from AutoTrader.helper import logger
+from AutoTrader.enums import OrderType, OrderSide, OrderStatus
 
 log = logger.get_logger(__name__)
 
@@ -25,7 +26,7 @@ class RSIStrategy(Strategy):
         if self.transactions_allowed and not self.account.get_position(symbol=self.symbol).is_valid() and self.candlesticks.get_number_of_rows() > 200:
 
             last_two_RSI = self.RSI.get_last_values(2)
-            if last_two_RSI[-2]['RSI']>30 and last_two_RSI[-1]['RSI']<30:
+            if last_two_RSI[-2]['RSI'] > 30 and last_two_RSI[-1]['RSI'] < 30:
                 self.account.place_order(
                     time=self.candlesticks.get_tick().Time,
                     symbol=self.symbol,
@@ -59,7 +60,7 @@ class RSIStrategy(Strategy):
                         amount=self.account.get_position(symbol=self.symbol).Quantity
                     )
                 # Stop loss
-                elif  float(self.account.get_position(symbol=self.symbol).AveragePrice) * 0.99 >= self.candlesticks.get_tick().Close:
+                elif float(self.account.get_position(symbol=self.symbol).AveragePrice) * 0.99 >= self.candlesticks.get_tick().Close:
 
                     log.warning(f"Hit stop-loss of {self.stop_loss}  at {self.candlesticks.get_tick().Close}")
                     # self.account.sell(self.data_structure.get_tick().Time, self.symbol, self.data_structure.get_tick().Close
@@ -78,7 +79,6 @@ class RSIStrategy(Strategy):
         fig = make_subplots(rows=2, cols=1)
 
         fig.append_trace(self.candlesticks.get_plot(), row=1, col=1)
-
 
         buy_plot, sell_plot = self.account.get_plot(self.symbol)
         fig.append_trace(buy_plot, row=1, col=1)
