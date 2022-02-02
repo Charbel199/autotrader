@@ -40,6 +40,9 @@ class TradesSummary(object):
     LargestProfit: float = 0
     LargestLoss: int = 0
 
+    # Drawdown
+    MaximumDrawdown: float = 0
+
     # Fees
     Fees: Dict[str, float] = Dict
 

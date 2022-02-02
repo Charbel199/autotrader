@@ -32,6 +32,8 @@ def get_trades_summary(
     longest_winning_streak_counter = 0
     longest_loosing_streak_counter = 0
 
+    cumulative_balances = [trade_blocks[0][0].QuoteQuantity]
+
     for trade_block in trade_blocks:
         buy_quote = 0
         sell_quote = 0
@@ -44,6 +46,7 @@ def get_trades_summary(
 
             if trade.Side == OrderSide.SELL:
                 sell_quote += trade.QuoteQuantity - trade.Commission
+                cumulative_balances.append(sell_quote)
 
         profit = sell_quote - buy_quote
         hold_time = abs(trade_block[-1].Time - trade_block[0].Time)
@@ -73,6 +76,8 @@ def get_trades_summary(
             longest_loosing_streak_counter += 1
             longest_loosing_streak = max(longest_loosing_streak, longest_loosing_streak_counter)
             longest_winning_streak_counter = 0
+    print(cumulative_balances)
+    maximum_drawdown = min([(min(cumulative_balances[i+1:])/balance)-1 for i, balance in enumerate(cumulative_balances[:-1])])
 
     return TradesSummary(
         InitialQuoteBalance=initial_balance,
@@ -92,6 +97,7 @@ def get_trades_summary(
         LongestNumberOfTradesLosingStreak=longest_loosing_streak,
         LargestProfit=largest_profit,
         LargestLoss=largest_loss,
+        MaximumDrawdown=round(maximum_drawdown * 100, 2),
         Fees=fees,
         TotalTradesDuration=trades[-1].Time - trades[0].Time
     )
