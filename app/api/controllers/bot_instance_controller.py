@@ -35,3 +35,27 @@ async def get_bot(bot_instance_id: int,
                   current_user: user_model.UserToken = Depends(get_current_active_user)):
     bot_instance = await bot_instance_service.get_bot_instance(current_user, bot_instance_id)
     return bot_instance
+
+from AutoTrader.trading.modes.live_trader import LiveTraderRunner
+
+@router.get("/launch")
+async def launch_bot():
+    import time
+
+    start_date = "2 Feb, 2022"
+    global live_runner
+    live_runner = LiveTraderRunner(live_fetcher_provider='binance', account='testAccount')
+
+    live_trader1 = live_runner.prepare_live_trader(symbol="BTCUSDT", primary_symbol="BTC", secondary_symbol="USDT", timeframe="1m",
+                                                   strategy_provider="SHEA_strategy", data_structure_provider="list", candlesticks_provider="binance",
+                                                   back_date=start_date)
+    print("STARTING")
+    live_runner.start_all_live_traders()
+
+@router.get("/stop")
+async def stop_bot():
+    global live_runner
+    live_runner.stop_all_live_traders()
+    print('stop')
+
+
