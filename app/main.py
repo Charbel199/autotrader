@@ -17,6 +17,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# To change
 app.middleware("http")(ExceptionHandlingMiddleware())
 
 app.include_router(main_router)
